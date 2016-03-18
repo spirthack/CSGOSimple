@@ -15,22 +15,22 @@ extern LRESULT ImGui_ImplDX9_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, 
 
 namespace Hooks
 {
-     std::unique_ptr<VFTableHook>		g_pD3DDevice9Hook = nullptr;
-     std::unique_ptr<VFTableHook>		g_pClientModeHook = nullptr;
-     std::unique_ptr<VFTableHook>		g_pMatSurfaceHook = nullptr;
+     std::unique_ptr<VFTableHook>       g_pD3DDevice9Hook        = nullptr;
+     std::unique_ptr<VFTableHook>       g_pClientModeHook        = nullptr;
+     std::unique_ptr<VFTableHook>       g_pMatSurfaceHook        = nullptr;
 
-     std::unique_ptr<DrawManager>		g_pRenderer = nullptr;
+     std::unique_ptr<DrawManager>       g_pRenderer              = nullptr;
 
-     EndScene_t					g_fnOriginalEndScene = nullptr;
-     Reset_t						g_fnOriginalReset = nullptr;
-     CreateMove_t					g_fnOriginalCreateMove = nullptr;
-     PlaySound_t					g_fnOriginalPlaySound = nullptr;
+     EndScene_t                         g_fnOriginalEndScene     = nullptr;
+     Reset_t                            g_fnOriginalReset        = nullptr;
+     CreateMove_t                       g_fnOriginalCreateMove   = nullptr;
+     PlaySound_t                        g_fnOriginalPlaySound    = nullptr;
 
-     WNDPROC						g_pOldWindowProc = nullptr; //Old WNDPROC pointer
-     HWND							g_hWindow = nullptr; //Handle to the CSGO window
+     WNDPROC                            g_pOldWindowProc         = nullptr; //Old WNDPROC pointer
+     HWND                               g_hWindow                = nullptr; //Handle to the CSGO window
 
-     bool							vecPressedKeys[256] = {};
-     bool							g_bWasInitialized = false;
+     bool                               vecPressedKeys[256]      = {};
+     bool                               g_bWasInitialized        = false;
 
      void Initialize() {
           //Builds the netvar database
@@ -52,11 +52,11 @@ namespace Hooks
                g_pOldWindowProc = (WNDPROC)SetWindowLongPtr(g_hWindow, GWL_WNDPROC, (LONG_PTR)Hooked_WndProc);
 
 
-          g_fnOriginalReset = g_pD3DDevice9Hook->Hook(16, Hooked_Reset);							//Hooks IDirect3DDevice9::EndScene
-          g_fnOriginalEndScene = g_pD3DDevice9Hook->Hook(42, Hooked_EndScene);					//Hooks IDirect3DDevice9::Reset
+          g_fnOriginalReset = g_pD3DDevice9Hook->Hook(16, Hooked_Reset);                                 //Hooks IDirect3DDevice9::EndScene
+          g_fnOriginalEndScene = g_pD3DDevice9Hook->Hook(42, Hooked_EndScene);                      //Hooks IDirect3DDevice9::Reset
 
-          g_fnOriginalPlaySound = g_pMatSurfaceHook->Hook(82, (PlaySound_t)Hooked_PlaySound);		//Hooks ISurface::PlaySound
-          g_fnOriginalCreateMove = g_pClientModeHook->Hook(24, (CreateMove_t)Hooked_CreateMove);	//Hooks IClientMode::CreateMove
+          g_fnOriginalPlaySound = g_pMatSurfaceHook->Hook(82, (PlaySound_t)Hooked_PlaySound);       //Hooks ISurface::PlaySound
+          g_fnOriginalCreateMove = g_pClientModeHook->Hook(24, (CreateMove_t)Hooked_CreateMove);    //Hooks IClientMode::CreateMove
      }
 
      void Restore() {

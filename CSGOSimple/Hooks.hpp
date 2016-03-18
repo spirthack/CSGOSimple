@@ -43,8 +43,8 @@ namespace Hooks
      //---------------------------------------------------
      HRESULT   __stdcall Hooked_EndScene(IDirect3DDevice9* pDevice);
      HRESULT   __stdcall Hooked_Reset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPresentationParameters);
-     bool	     __stdcall Hooked_CreateMove(float sample_input_frametime, SourceEngine::CUserCmd* pCmd);
-     void	     __stdcall Hooked_PlaySound(const char* szFileName);
+     bool      __stdcall Hooked_CreateMove(float sample_input_frametime, SourceEngine::CUserCmd* pCmd);
+     void      __stdcall Hooked_PlaySound(const char* szFileName);
 
      //We're gonna replace the main window's WNDPROC for this one to capture user input and pass it down to the GUI
      LRESULT   __stdcall Hooked_WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
