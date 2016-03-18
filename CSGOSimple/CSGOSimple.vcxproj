@@ -164,7 +164,7 @@
   <ItemGroup>
     <ClCompile Include="DrawManager.cpp" />
     <ClCompile Include="EntityESP.cpp" />
-    <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="Hooks.cpp" />
     <ClCompile Include="ImGUI\DX9\imgui_impl_dx9.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
