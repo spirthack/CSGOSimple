@@ -164,9 +164,9 @@ namespace Hooks
                     }
                     ImGui::End(); //End main window
 
-                                  //You can add more windows here if you want, just follow the style above
-                                  //Begin(...) to start a new window, End() to finish it
-                                  //More about ImGui: https://github.com/ocornut/imgui
+                    //You can add more windows here if you want, just follow the style above
+                    //Begin(...) to start a new window, End() to finish it
+                    //More about ImGui: https://github.com/ocornut/imgui
                }
 
                //Begins rendering
