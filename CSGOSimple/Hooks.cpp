@@ -52,7 +52,7 @@ namespace Hooks
                g_pOldWindowProc = (WNDPROC)SetWindowLongPtr(g_hWindow, GWL_WNDPROC, (LONG_PTR)Hooked_WndProc);
 
 
-          g_fnOriginalReset = g_pD3DDevice9Hook->Hook(16, Hooked_Reset);                                 //Hooks IDirect3DDevice9::EndScene
+          g_fnOriginalReset = g_pD3DDevice9Hook->Hook(16, Hooked_Reset);                            //Hooks IDirect3DDevice9::EndScene
           g_fnOriginalEndScene = g_pD3DDevice9Hook->Hook(42, Hooked_EndScene);                      //Hooks IDirect3DDevice9::Reset
 
           g_fnOriginalPlaySound = g_pMatSurfaceHook->Hook(82, (PlaySound_t)Hooked_PlaySound);       //Hooks ISurface::PlaySound
@@ -130,7 +130,7 @@ namespace Hooks
           if(g_bWasInitialized && Options::g_bMainWindowOpen && ImGui_ImplDX9_WndProcHandler(hWnd, uMsg, wParam, lParam))
                return true; //Input was consumed, return
 
-                            //Input was not consumed by the GUI, call original WindowProc to pass the input to the game
+          //Input was not consumed by the GUI, call original WindowProc to pass the input to the game
           return CallWindowProc(g_pOldWindowProc, hWnd, uMsg, wParam, lParam);
      }
 
@@ -188,7 +188,7 @@ namespace Hooks
 
                          if(!pEntity->IsAlive() || pEntity->IsDormant()) continue; //Skip Dead and Dormant entities
 
-                                                                                   //We only want to iterate over players. Make sure the ClassID is correct
+                         //We only want to iterate over players. Make sure the ClassID is correct
                          if(pEntity->GetClientClass()->m_ClassID == SourceEngine::EClassIds::CCSPlayer) {
 
                               EntityESP esp(pEntity);
@@ -251,7 +251,7 @@ namespace Hooks
                if((pCmd->buttons & IN_JUMP) && !(pLocal->GetFlags() & (int)SourceEngine::EntityFlags::FL_ONGROUND))
                     pCmd->buttons &= ~IN_JUMP; //Release the JUMP button
 
-                                               //This will effectively press JUMP everytime we land
+               //This will effectively press JUMP everytime we land
           }
 
           //RCS
