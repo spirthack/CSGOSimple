@@ -17,11 +17,13 @@ void EntityESP::RenderESP(DrawManager& renderer) {
 
      if(!pLocal) return;
 
+     //Checks if its an enemy
      auto bIsEnemy = pLocal->GetTeamNum() != m_pEntity->GetTeamNum();
 
      auto allyColor = Options::g_bESPAllyColor;
      auto enemyColor = Options::g_bESPEnemyColor;
 
+     //Get the appropriate drawing color
      auto d3dColor = bIsEnemy ?
           D3DCOLOR_RGBA(int(enemyColor[0] * 255.0f), int(enemyColor[1] * 255.0f), int(enemyColor[2] * 255.0f), int(enemyColor[3] * 255.0f)) :
           D3DCOLOR_RGBA(int(allyColor[0] * 255.0f), int(allyColor[1] * 255.0f), int(allyColor[2] * 255.0f), int(allyColor[3] * 255.0f));
@@ -29,6 +31,7 @@ void EntityESP::RenderESP(DrawManager& renderer) {
      auto vOrigin = m_pEntity->GetOrigin();
      auto vHead = Utils::GetEntityBone(m_pEntity, ECSPlayerBones::head_0);
 
+     //Offset the head a bit, so the box looks nicer
      vHead.z += 15.0f;
 
      Vector vScreenOrigin, vScreenHead;
@@ -48,17 +51,20 @@ void EntityESP::RenderName(DrawManager& renderer) {
 
      if(!pLocal) return;
 
+     //Checks if its an enemy
      auto bIsEnemy = pLocal->GetTeamNum() != m_pEntity->GetTeamNum();
 
      auto allyColor = Options::g_bESPAllyColor;
      auto enemyColor = Options::g_bESPEnemyColor;
 
+     //Get the appropriate drawing color
      auto d3dColor = bIsEnemy ?
           D3DCOLOR_RGBA(int(enemyColor[0] * 255.0f), int(enemyColor[1] * 255.0f), int(enemyColor[2] * 255.0f), int(enemyColor[3] * 255.0f)) :
           D3DCOLOR_RGBA(int(allyColor[0] * 255.0f), int(allyColor[1] * 255.0f), int(allyColor[2] * 255.0f), int(allyColor[3] * 255.0f));
 
      auto vHead = Utils::GetEntityBone(m_pEntity, ECSPlayerBones::head_0);
 
+     //Offset the head a bit
      vHead.z += 15.0f;
 
      Vector vScreenHead;

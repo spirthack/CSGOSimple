@@ -15,8 +15,10 @@ void NetvarManager::CreateDatabase() {
      auto pClientDll = SourceEngine::Interfaces::Client();
      if(pClientDll) {
           m_TableList.clear();
+          //Iterate over the class list
           for(auto pClientClass = pClientDll->GetAllClasses(); pClientClass; pClientClass = pClientClass->m_pNext) {
                if(pClientClass->m_pRecvTable) {
+                    //If the class has a RecvTable, load it
                     Load_Internal(pClientClass->m_pRecvTable);
                     m_tableCount++;
                }
@@ -31,7 +33,9 @@ void NetvarManager::DestroyDatabase() {
 void NetvarManager::LoadClass(const std::string& szClass) {
      auto pClientDll = SourceEngine::Interfaces::Client();
      if(pClientDll) {
+          //Iterate over the class list
           for(auto pClientClass = pClientDll->GetAllClasses(); pClientClass; pClientClass = pClientClass->m_pNext) {
+               //If the class name matches and it hasnt been loaded, load it
                if(pClientClass->m_pRecvTable && (szClass == pClientClass->m_pNetworkName || szClass == pClientClass->m_pRecvTable->m_pNetTableName)) {
                     if(!HasBeenLoaded(pClientClass->m_pRecvTable->m_pNetTableName)) {
                          Load_Internal(pClientClass->m_pRecvTable);
@@ -160,21 +164,32 @@ void NetvarManager::Load_Internal(SourceEngine::RecvTable* pTable) {
      DataTable table;
      table.m_iTableOffset = 0;
 
+     //Parse all the props on this table
      for(int i = 0; i < pTable->m_nProps; i++) {
           SourceEngine::RecvProp* pProp = &pTable->m_pProps[i];
 
+          //Skip trash array items
           if(!pProp || isdigit(pProp->m_pVarName[0])) continue;
+          //We dont care about the base class
           if(strcmp(pProp->m_pVarName, "baseclass") == 0) continue;
 
-          if(pProp->m_RecvType == SourceEngine::SendPropType::DPT_DataTable &&
-               pProp->m_pDataTable != NULL &&
-               pProp->m_pDataTable->m_pNetTableName[0] == 'D') {
-               table.m_ChildTables.insert(std::make_pair(pProp->m_pVarName, GetNestedTable(pProp->m_pDataTable, pProp->m_Offset)));
-          } else {
+
+          //If this prop is a table
+          if(pProp->m_RecvType == SourceEngine::SendPropType::DPT_DataTable &&  //If it is a table AND
+               pProp->m_pDataTable != NULL &&                                   //The DataTable isnt null AND
+               pProp->m_pDataTable->m_pNetTableName[0] == 'D') {                //The Table name starts with D (this is because there are some shitty nested 
+                                                                                //tables that we want to skip, and those dont start with D)
+
+               //Load it into the children list of this table
+               table.m_ChildTables.insert(std::make_pair(pProp->m_pVarName, GetNestedTable(pProp->m_pDataTable, pProp->m_Offset))); 
+
+          } else { //Its not a table, its a regular prop
+               //Append it to the prop list of this table
                table.m_ChildProps.insert(std::make_pair(pProp->m_pVarName, pProp));
           }
           m_netvarCount++;
      }
+     //Append this table to the main table list
      m_TableList.insert(std::make_pair(pTable->m_pNetTableName, table));
 }
 
