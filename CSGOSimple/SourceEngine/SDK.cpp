@@ -5,15 +5,15 @@
 
 namespace SourceEngine {
 	
-	IVEngineClient*		Interfaces::m_pEngine		= nullptr;
-	IBaseClientDLL*		Interfaces::m_pClient		= nullptr;
+	IVEngineClient*	Interfaces::m_pEngine		= nullptr;
+	IBaseClientDLL*	Interfaces::m_pClient		= nullptr;
 	IClientEntityList*	Interfaces::m_pEntityList	= nullptr;
 	CGlobalVarsBase*	Interfaces::m_pGlobals		= nullptr;
-	IPanel*				Interfaces::m_pVGuiPanel	= nullptr;
+	IPanel*			Interfaces::m_pVGuiPanel	     = nullptr;
 	ISurface*			Interfaces::m_pVGuiSurface	= nullptr;
-	CInput*				Interfaces::m_pInput		= nullptr;
+	CInput*			Interfaces::m_pInput		= nullptr;
 	IEngineTrace*		Interfaces::m_pEngineTrace	= nullptr;
-	ICvar*				Interfaces::m_pCVar			= nullptr;
+	ICvar*			Interfaces::m_pCVar			= nullptr;
 	IClientMode*		Interfaces::m_pClientMode	= nullptr;
 
 	CreateInterfaceFn GetFactory( HMODULE hMod ) {
@@ -25,7 +25,7 @@ namespace SourceEngine {
 		return (T*)f( szInterfaceVersion, NULL );
 	}
 
-	IVEngineClient*	Interfaces::Engine() {
+	IVEngineClient* Interfaces::Engine() {
 		if(!m_pEngine) {
 			CreateInterfaceFn pfnFactory = GetFactory(GetModuleHandleA(XorStr("engine.dll")));
 			m_pEngine = CaptureInterface<IVEngineClient>(pfnFactory, XorStr("VEngineClient013"));

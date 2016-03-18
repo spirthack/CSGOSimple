@@ -5,13 +5,13 @@
 
 class EntityESP {
 public:
-	EntityESP(C_CSPlayer* pEntity);
-	~EntityESP();
+     EntityESP(C_CSPlayer* pEntity);
+     ~EntityESP();
 
-	void RenderESP(DrawManager& renderer);
-	void RenderName(DrawManager& renderer);
+     void RenderESP(DrawManager& renderer);
+     void RenderName(DrawManager& renderer);
 
 private:
-	C_CSPlayer* m_pEntity;
+     C_CSPlayer* m_pEntity;
 };
 
