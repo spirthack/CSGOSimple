@@ -62,16 +62,13 @@ void EntityESP::RenderName(DrawManager& renderer) {
           D3DCOLOR_RGBA(int(enemyColor[0] * 255.0f), int(enemyColor[1] * 255.0f), int(enemyColor[2] * 255.0f), int(enemyColor[3] * 255.0f)) :
           D3DCOLOR_RGBA(int(allyColor[0] * 255.0f), int(allyColor[1] * 255.0f), int(allyColor[2] * 255.0f), int(allyColor[3] * 255.0f));
 
-     auto vHead = Utils::GetEntityBone(m_pEntity, ECSPlayerBones::head_0);
+     auto vOrigin = m_pEntity->GetOrigin();
 
-     //Offset the head a bit
-     vHead.z += 15.0f;
-
-     Vector vScreenHead;
-     if(Utils::WorldToScreen(vHead, vScreenHead)) {
+     Vector vScreenOrigin;
+     if(Utils::WorldToScreen(vOrigin, vScreenOrigin)) {
 
           PlayerInfo pInfo;
           Interfaces::Engine()->GetPlayerInfo(m_pEntity->EntIndex(), &pInfo);
-          renderer.RenderText(d3dColor, vScreenHead.x, vScreenHead.y, true, pInfo.szName);
+          renderer.RenderText(d3dColor, vScreenOrigin.x, vScreenOrigin.y, true, pInfo.szName);
      }
 }

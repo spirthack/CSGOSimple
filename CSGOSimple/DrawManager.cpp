@@ -113,7 +113,7 @@ void DrawManager::RenderText(DWORD color, int x, int y, bool centered, const cha
      if(centered) {
           RECT rec = {0,0,0,0};
           m_pDefaultFont->DrawTextA(NULL, buffer, -1, &rec, DT_CALCRECT | DT_NOCLIP, color);
-          rec = {x - rec.right / 2, y - rec.bottom, 0, 0};
+          rec = {x - rec.right / 2, y, 0, 0};
 
           drawShadow(rec);
           m_pDefaultFont->DrawTextA(NULL, buffer, -1, &rec, DT_TOP | DT_LEFT | DT_NOCLIP, color);
