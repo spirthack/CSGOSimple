@@ -33,9 +33,13 @@ namespace Hooks
      bool                               g_bWasInitialized        = false;
 
      void Initialize() {
+          AllocConsole();
+          AttachConsole(GetCurrentProcessId());
+          freopen("CON", "w", stdout);
+
           //Builds the netvar database
           NetvarManager::Instance()->CreateDatabase();
-
+          NetvarManager::Instance()->Dump("netvar_dump.txt");
           //Finds the D3D9 Device pointer
           auto dwDevice = **(uint32_t**)(Utils::FindSignature(XorStr("shaderapidx9.dll"), XorStr("A1 ? ? ? ? 50 8B 08 FF 51 0C")) + 1);
 
@@ -172,7 +176,7 @@ namespace Hooks
                //Begins rendering
                g_pRenderer->BeginRendering();
 
-               if(SourceEngine::Interfaces::Engine()->IsInGame()) {
+               if(SourceEngine::Interfaces::Engine()->IsInGame() && Options::g_bESPEnabled) {
 
                     //Iterate over the EntityList
                     for(int i = 1; i < SourceEngine::Interfaces::Engine()->GetMaxClients(); i++) {
@@ -259,7 +263,9 @@ namespace Hooks
                auto punchAngles = *pLocal->AimPunch() * 2.0f;
                if(punchAngles.x != 0.0f || punchAngles.y != 0) {
                     pCmd->viewangles -= punchAngles;
-                    Utils::Clamp(pCmd->viewangles);
+                    if(!Utils::Clamp(pCmd->viewangles)) {
+                         abort(); //Failed to clamp angles!!1! ABOOOOOORT
+                    }
                     return false;
                }
           }

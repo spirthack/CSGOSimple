@@ -1,9 +1,38 @@
 #pragma once
 
 #include <Windows.h>
-#include "SourceEngine/IClientEntity.hpp"
-#include "SourceEngine/Vector.hpp"
+#include "SourceEngine/SDK.hpp"
 #include "NetvarManager.hpp"
+#include "XorStr.hpp"
+
+class C_CSPlayer;
+
+class C_BaseCombatWeapon : public SourceEngine::IClientEntity {
+     template<class T>
+     inline T GetFieldValue(int offset) {
+          return *(T*)((DWORD)this + offset);
+     }
+
+public:
+     C_CSPlayer* GetOwner() {
+          using namespace SourceEngine;
+          static int m_hOwnerEntity = GET_NETVAR(XorStr("DT_BaseEntity"), XorStr("m_hOwnerEntity"));
+          return (C_CSPlayer*)Interfaces::EntityList()->GetClientEntityFromHandle(GetFieldValue<CHandle<C_CSPlayer>>(m_hOwnerEntity));
+     }
+     float NextPrimaryAttack() {
+          static int m_flNextPrimaryAttack = GET_NETVAR(XorStr("DT_BaseCombatWeapon"), XorStr("LocalActiveWeaponData"), XorStr("m_flNextPrimaryAttack"));
+          return GetFieldValue<float>(m_flNextPrimaryAttack);
+     }
+     int GetId() {
+          typedef int(__thiscall* tGetId)(void*);
+          return SourceEngine::CallVFunction<tGetId>(this, 458)(this);
+     }
+     const char* GetName() {
+          typedef const char* (__thiscall* tGetName)(void*);
+          return SourceEngine::CallVFunction<tGetName>(this, 378)(this);
+     }
+};
+
 
 class C_CSPlayer : public SourceEngine::IClientEntity {
      template<class T>
@@ -18,6 +47,11 @@ class C_CSPlayer : public SourceEngine::IClientEntity {
 public:
      static C_CSPlayer* GetLocalPlayer() {
           return (C_CSPlayer*)SourceEngine::Interfaces::EntityList()->GetClientEntity(SourceEngine::Interfaces::Engine()->GetLocalPlayer());
+     }
+     C_BaseCombatWeapon* GetActiveWeapon() {
+          using namespace SourceEngine;
+          static int m_hActiveWeapon = GET_NETVAR(XorStr("DT_BaseCombatCharacter"), XorStr("m_hActiveWeapon"));
+          return (C_BaseCombatWeapon*)Interfaces::EntityList()->GetClientEntityFromHandle(GetFieldValue<CHandle<IClientEntity>>(m_hActiveWeapon));
      }
      int GetHealth() {
           static int m_iHealth = GET_NETVAR(XorStr("DT_BasePlayer"), XorStr("m_iHealth"));
