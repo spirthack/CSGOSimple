@@ -53,7 +53,7 @@ namespace Hooks
 
           //Replace the WindowProc with our own to capture user input
           if(g_hWindow)
-               g_pOldWindowProc = (WNDPROC)SetWindowLongPtr(g_hWindow, GWL_WNDPROC, (LONG_PTR)Hooked_WndProc);
+               g_pOldWindowProc = (WNDPROC)SetWindowLongPtr(g_hWindow, GWLP_WNDPROC, (LONG_PTR)Hooked_WndProc);
 
 
           g_fnOriginalReset = g_pD3DDevice9Hook->Hook(16, Hooked_Reset);                            //Hooks IDirect3DDevice9::EndScene
@@ -65,7 +65,7 @@ namespace Hooks
 
      void Restore() {
           //Restore the WindowProc
-          SetWindowLongPtr(g_hWindow, GWL_WNDPROC, (LONG_PTR)g_pOldWindowProc);
+          SetWindowLongPtr(g_hWindow, GWLP_WNDPROC, (LONG_PTR)g_pOldWindowProc);
 
           //Remove the hooks
           g_pD3DDevice9Hook->RestoreTable();
