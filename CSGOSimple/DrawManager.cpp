@@ -51,20 +51,11 @@ void DrawManager::BeginRendering() {
 
 
      m_pDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
-     m_pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-     m_pDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
-     m_pDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-     m_pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-     m_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-     m_pDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
-     m_pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-     m_pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-     m_pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, FALSE);
-     m_pDevice->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, TRUE);
-     m_pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+
+     m_pDevice->SetRenderState(D3DRS_ZENABLE, false);
+     m_pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
      m_pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-     m_pDevice->SetRenderState(D3DRS_SRCBLENDALPHA, D3DBLEND_INVDESTALPHA);
-     m_pDevice->SetRenderState(D3DRS_DESTBLENDALPHA, D3DBLEND_ONE);
+     m_pDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, false);
      m_pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xFFFFFFFF);
 }
 
