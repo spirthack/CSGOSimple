@@ -57,6 +57,7 @@ void DrawManager::BeginRendering() {
      m_pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
      m_pDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, false);
      m_pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xFFFFFFFF);
+     m_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 }
 
 void DrawManager::EndRendering() {
