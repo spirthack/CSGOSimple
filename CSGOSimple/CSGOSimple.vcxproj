@@ -175,6 +175,7 @@
     <ClCompile Include="SourceEngine\Convar.cpp" />
     <ClCompile Include="SourceEngine\CRC.cpp" />
     <ClCompile Include="SourceEngine\SDK.cpp" />
+    <ClCompile Include="SourceEngine\UtlString.cpp" />
     <ClCompile Include="SourceEngine\Vector.cpp" />
     <ClCompile Include="SourceEngine\Vector2D.cpp" />
     <ClCompile Include="SourceEngine\Vector4D.cpp" />
@@ -196,7 +197,7 @@
     <ClInclude Include="SourceEngine\CInput.hpp" />
     <ClInclude Include="SourceEngine\ClientClass.hpp" />
     <ClInclude Include="SourceEngine\Color.hpp" />
-    <ClInclude Include="SourceEngine\Convar.h" />
+    <ClInclude Include="SourceEngine\Convar.hpp" />
     <ClInclude Include="SourceEngine\CRC.hpp" />
     <ClInclude Include="SourceEngine\Definitions.hpp" />
     <ClInclude Include="SourceEngine\IAppSystem.hpp" />
@@ -219,6 +220,9 @@
     <ClInclude Include="SourceEngine\QAngle.hpp" />
     <ClInclude Include="SourceEngine\Recv.hpp" />
     <ClInclude Include="SourceEngine\SDK.hpp" />
+    <ClInclude Include="SourceEngine\UtlMemory.hpp" />
+    <ClInclude Include="SourceEngine\UtlString.hpp" />
+    <ClInclude Include="SourceEngine\UtlVector.hpp" />
     <ClInclude Include="SourceEngine\Vector.hpp" />
     <ClInclude Include="SourceEngine\Vector2D.hpp" />
     <ClInclude Include="SourceEngine\Vector4D.hpp" />

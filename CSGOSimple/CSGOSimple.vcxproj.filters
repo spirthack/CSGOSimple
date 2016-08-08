@@ -72,6 +72,9 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SourceEngine\UtlString.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Options.hpp">
@@ -200,13 +203,22 @@
     <ClInclude Include="EntityESP.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SourceEngine\Convar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SourceEngine\IConVar.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SourceEngine\ICvar.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceEngine\Convar.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceEngine\UtlMemory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceEngine\UtlString.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceEngine\UtlVector.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

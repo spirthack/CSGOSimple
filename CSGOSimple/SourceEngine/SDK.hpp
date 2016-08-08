@@ -28,7 +28,7 @@
 #include "IClientMode.hpp"
 #include "CInput.hpp"
 #include "ICvar.hpp"
-#include "Convar.h"
+#include "Convar.hpp"
 
 namespace SourceEngine {
      class Interfaces {
