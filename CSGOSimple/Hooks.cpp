@@ -215,8 +215,6 @@ namespace Hooks
                 }
             }
 
-            g_pRenderer->RenderText(0xFFFF0000, 50, 50, false, "%d - %f", convar->GetInt(), convar->GetFloat());
-
             //Renders the GUI
             ImGui::Render();
 
