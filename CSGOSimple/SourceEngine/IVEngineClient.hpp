@@ -145,7 +145,7 @@ namespace SourceEngine {
           virtual int                   GetAppID() = 0;
           virtual Vector                GetLightForPointFast( const Vector &pos, bool bClamp ) = 0;
           virtual void                  ClientCmd_Unrestricted( char  const*, int, bool );
-          virtual void                  ClientCmd_Unrestricted( const char *szCmdString ) = 0; // 114
+          virtual void                  ClientCmd_Unrestricted( const char *szCmdString, bool bDelayed ) = 0; // 114
           virtual void                  SetRestrictServerCommands( bool bRestrict ) = 0;
           virtual void                  SetRestrictClientCommands( bool bRestrict ) = 0;
           virtual void                  SetOverlayBindProxy( int iOverlayID, void *pBindProxy ) = 0;
