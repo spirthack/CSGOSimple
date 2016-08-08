@@ -30,30 +30,32 @@
 #include "ICvar.hpp"
 #include "Convar.hpp"
 
-namespace SourceEngine {
-     class Interfaces {
-     public:
-          static IVEngineClient*        Engine();
-          static IBaseClientDLL*        Client();
-          static IClientEntityList*     EntityList();
-          static CGlobalVarsBase*       GlobalVars();
-          static IPanel*                VGUIPanel();
-          static ISurface*              MatSurface();
-          static CInput*                Input();
-          static IEngineTrace*          EngineTrace();
-          static ICvar*                 CVar();
-          static IClientMode*           ClientMode();
+namespace SourceEngine
+{
+    class Interfaces
+    {
+    public:
+        static IVEngineClient*        Engine();
+        static IBaseClientDLL*        Client();
+        static IClientEntityList*     EntityList();
+        static CGlobalVarsBase*       GlobalVars();
+        static IPanel*                VGUIPanel();
+        static ISurface*              MatSurface();
+        static CInput*                Input();
+        static IEngineTrace*          EngineTrace();
+        static ICvar*                 CVar();
+        static IClientMode*           ClientMode();
 
-     private:
-          static IVEngineClient*        m_pEngine;
-          static IBaseClientDLL*        m_pClient;
-          static IClientEntityList*     m_pEntityList;
-          static CGlobalVarsBase*       m_pGlobals;
-          static IPanel*                m_pVGuiPanel;
-          static ISurface*              m_pVGuiSurface;
-          static CInput*                m_pInput;
-          static IEngineTrace*          m_pEngineTrace;
-          static ICvar*                 m_pCVar;
-          static IClientMode*           m_pClientMode;
-     };
+    private:
+        static IVEngineClient*        m_pEngine;
+        static IBaseClientDLL*        m_pClient;
+        static IClientEntityList*     m_pEntityList;
+        static CGlobalVarsBase*       m_pGlobals;
+        static IPanel*                m_pVGuiPanel;
+        static ISurface*              m_pVGuiSurface;
+        static CInput*                m_pInput;
+        static IEngineTrace*          m_pEngineTrace;
+        static ICvar*                 m_pCVar;
+        static IClientMode*           m_pClientMode;
+    };
 }

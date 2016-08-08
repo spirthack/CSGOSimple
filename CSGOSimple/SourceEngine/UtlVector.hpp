@@ -22,7 +22,8 @@ inline void Destruct(T* pMemory)
 namespace SourceEngine
 {
     template< class T, class A = CUtlMemory<T> >
-    class CUtlVector {
+    class CUtlVector
+    {
         typedef A CAllocator;
     public:
         typedef T ElemType_t;
@@ -75,7 +76,7 @@ namespace SourceEngine
         void SetCount(int count);
         void SetCountNonDestructively(int count); //sets count by adding or removing elements to tail TODO: This should probably be the default behavior for SetCount
         void CopyArray(const T *pArray, int size); //Calls SetSize and copies each element.
-        // Fast swap
+                                                   // Fast swap
         void Swap(CUtlVector< T, A > &vec);
         // Add the specified array to the tail.
         int AddVectorToTail(CUtlVector<T, A> const &src);
@@ -97,7 +98,7 @@ namespace SourceEngine
         void RemoveMultipleFromTail(int num); // removes num elements from tail
         void RemoveAll();                // doesn't deallocate memory
         void Purge(); // Memory deallocation
-        // Purges the list and calls delete on each element in it.
+                      // Purges the list and calls delete on each element in it.
         void PurgeAndDeleteElements();
         // Compacts the vector to the number of elements actually in use 
         void Compact();
@@ -124,7 +125,8 @@ namespace SourceEngine
         // it's in release builds so this can be used in libraries correctly
         T *m_pElements;
 
-        inline void ResetDbgInfo() {
+        inline void ResetDbgInfo()
+        {
             m_pElements = Base();
         }
     };
@@ -758,7 +760,7 @@ namespace SourceEngine
         void CopyAndAddToTail(char const *pString)			// clone the string and add to the end
         {
             char *pNewStr = new char[1 + strlen(pString)];
-            strcpy_s(pNewStr, 1 + strlen(pString),  pString);
+            strcpy_s(pNewStr, 1 + strlen(pString), pString);
             AddToTail(pNewStr);
         }
 
@@ -768,9 +770,7 @@ namespace SourceEngine
         }
 
     };
-
-
-
+    
     // <Sergiy> placing it here a few days before Cert to minimize disruption to the rest of codebase
     class CSplitString : public CUtlVector<char*, CUtlMemory<char*, int> >
     {

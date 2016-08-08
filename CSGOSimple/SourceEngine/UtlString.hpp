@@ -7,7 +7,8 @@
 
 namespace SourceEngine
 {
-    class CUtlBinaryBlock {
+    class CUtlBinaryBlock
+    {
     public:
         CUtlBinaryBlock(int growSize = 0, int initSize = 0);
 
@@ -46,39 +47,48 @@ namespace SourceEngine
     //-----------------------------------------------------------------------------
     // class inlines
     //-----------------------------------------------------------------------------
-    inline const void *CUtlBinaryBlock::Get() const {
+    inline const void *CUtlBinaryBlock::Get() const
+    {
         return m_Memory.Base();
     }
 
-    inline void *CUtlBinaryBlock::Get() {
+    inline void *CUtlBinaryBlock::Get()
+    {
         return m_Memory.Base();
     }
 
-    inline int CUtlBinaryBlock::Length() const {
+    inline int CUtlBinaryBlock::Length() const
+    {
         return m_nActualLength;
     }
 
-    inline unsigned char& CUtlBinaryBlock::operator[](int i) {
+    inline unsigned char& CUtlBinaryBlock::operator[](int i)
+    {
         return m_Memory[i];
     }
 
-    inline const unsigned char& CUtlBinaryBlock::operator[](int i) const {
+    inline const unsigned char& CUtlBinaryBlock::operator[](int i) const
+    {
         return m_Memory[i];
     }
 
-    inline bool CUtlBinaryBlock::IsReadOnly() const {
+    inline bool CUtlBinaryBlock::IsReadOnly() const
+    {
         return m_Memory.IsReadOnly();
     }
 
-    inline bool CUtlBinaryBlock::IsEmpty() const {
+    inline bool CUtlBinaryBlock::IsEmpty() const
+    {
         return Length() == 0;
     }
 
-    inline void CUtlBinaryBlock::Clear() {
+    inline void CUtlBinaryBlock::Clear()
+    {
         SetLength(0);
     }
 
-    inline void CUtlBinaryBlock::Purge() {
+    inline void CUtlBinaryBlock::Purge()
+    {
         SetLength(0);
         m_Memory.Purge();
     }
@@ -87,7 +97,8 @@ namespace SourceEngine
     // Simple string class. 
     // NOTE: This is *not* optimal! Use in tools, but not runtime code
     //-----------------------------------------------------------------------------
-    class CUtlString {
+    class CUtlString
+    {
     public:
         CUtlString();
         CUtlString(const char *pString);
@@ -179,15 +190,18 @@ namespace SourceEngine
     //-----------------------------------------------------------------------------
     // Inline methods
     //-----------------------------------------------------------------------------
-    inline bool CUtlString::IsEmpty() const {
+    inline bool CUtlString::IsEmpty() const
+    {
         return Length() == 0;
     }
 
-    inline int __cdecl CUtlString::SortCaseInsensitive(const CUtlString *pString1, const CUtlString *pString2) {
+    inline int __cdecl CUtlString::SortCaseInsensitive(const CUtlString *pString1, const CUtlString *pString2)
+    {
         return _stricmp(pString1->String(), pString2->String());
     }
 
-    inline int __cdecl CUtlString::SortCaseSensitive(const CUtlString *pString1, const CUtlString *pString2) {
+    inline int __cdecl CUtlString::SortCaseSensitive(const CUtlString *pString1, const CUtlString *pString2)
+    {
         return strcmp(pString1->String(), pString2->String());
     }
 

@@ -4,7 +4,8 @@
 namespace SourceEngine
 {
     template< class T, class I = int >
-    class CUtlMemory {
+    class CUtlMemory
+    {
     public:
         // constructor, destructor
         CUtlMemory(int nGrowSize = 0, int nInitSize = 0);
@@ -15,7 +16,8 @@ namespace SourceEngine
         // Set the size by which the memory grows
         void Init(int nGrowSize = 0, int nInitSize = 0);
 
-        class Iterator_t {
+        class Iterator_t
+        {
         public:
             Iterator_t(I i) : index(i) {}
             I index;
@@ -63,11 +65,13 @@ namespace SourceEngine
         void SetGrowSize(int size);
 
     protected:
-        void ValidateGrowSize() {
+        void ValidateGrowSize()
+        {
 
         }
 
-        enum {
+        enum
+        {
             EXTERNAL_BUFFER_MARKER = -1,
             EXTERNAL_CONST_BUFFER_MARKER = -2,
         };
