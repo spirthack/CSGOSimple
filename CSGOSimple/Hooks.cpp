@@ -144,8 +144,11 @@ namespace Hooks
 
     HRESULT __stdcall Hooked_EndScene(IDirect3DDevice9* pDevice)
     {
+        static SourceEngine::ConVar* convar;
+
         if(!g_bWasInitialized) {
             GUI_Init(pDevice);
+            convar = SourceEngine::Interfaces::CVar()->FindVar("cl_mouseenable");
         } else {
             //We don't want ImGui to draw the cursor when the main window isnt open
             ImGui::GetIO().MouseDrawCursor = Options::g_bMainWindowOpen;
@@ -173,9 +176,9 @@ namespace Hooks
                 }
                 ImGui::End(); //End main window
 
-                              //You can add more windows here if you want, just follow the style above
-                              //Begin(...) to start a new window, End() to finish it
-                              //More about ImGui: https://github.com/ocornut/imgui
+                //You can add more windows here if you want, just follow the style above
+                //Begin(...) to start a new window, End() to finish it
+                //More about ImGui: https://github.com/ocornut/imgui
             }
 
             //Begins rendering
@@ -197,7 +200,7 @@ namespace Hooks
 
                     if(!pEntity->IsAlive() || pEntity->IsDormant()) continue; //Skip Dead and Dormant entities
 
-                                                                              //We only want to iterate over players. Make sure the ClassID is correct
+                    //We only want to iterate over players. Make sure the ClassID is correct
                     if(pEntity->GetClientClass()->m_ClassID == SourceEngine::EClassIds::CCSPlayer) {
 
                         EntityESP esp(pEntity);
@@ -211,6 +214,8 @@ namespace Hooks
 
                 }
             }
+
+            g_pRenderer->RenderText(0xFFFF0000, 50, 50, false, "%d - %f", convar->GetInt(), convar->GetFloat());
 
             //Renders the GUI
             ImGui::Render();
@@ -260,9 +265,8 @@ namespace Hooks
         if(Options::g_bBHopEnabled) {
             //If the player is pressing the JUMP button AND we are on not on ground
             if((pCmd->buttons & IN_JUMP) && !(pLocal->GetFlags() & (int)SourceEngine::EntityFlags::FL_ONGROUND))
-                pCmd->buttons &= ~IN_JUMP; //Release the JUMP button
-
-                                           //This will effectively press JUMP everytime we land
+                pCmd->buttons &= ~IN_JUMP;  //Release the JUMP button
+                                            //This will effectively press JUMP everytime we land
         }
 
         //RCS
@@ -281,29 +285,31 @@ namespace Hooks
 
     void __stdcall Hooked_PlaySound(const char* szFileName)
     {
+        //Outdated
+
         //This is the function that is called when you press the big ACCEPT button
-        static auto IsReady = reinterpret_cast<void(__cdecl*)()>(Utils::FindSignature(XorStr("client.dll"), XorStr("55 8B EC 51 56 8B 35 ? ? ? ? 80 7E 58 00")));
-
-        //Call original PlaySound
-        g_fnOriginalPlaySound(SourceEngine::Interfaces::MatSurface(), szFileName);
-
-        if(!Options::g_bAutoAccept || SourceEngine::Interfaces::Engine()->IsInGame()) return;
-
-        //This is the beep sound that is played when we have found a game
-        if(!strcmp(szFileName, "weapons/hegrenade/beep.wav")) {
-
-            //Accept the game
-            IsReady();
-
-            //This will flash the CSGO window on the taskbar
-            //so we know a game was found (you cant hear the beep sometimes cause it auto-accepts too fast)
-            FLASHWINFO fi;
-            fi.cbSize = sizeof(FLASHWINFO);
-            fi.hwnd = g_hWindow;
-            fi.dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG;
-            fi.uCount = 0;
-            fi.dwTimeout = 0;
-            FlashWindowEx(&fi);
-        }
+        //static auto IsReady = reinterpret_cast<void(__cdecl*)()>(Utils::FindSignature(XorStr("client.dll"), XorStr("55 8B EC 51 56 8B 35 ? ? ? ? 80 7E 58 00")));
+        //
+        ////Call original PlaySound
+        //g_fnOriginalPlaySound(SourceEngine::Interfaces::MatSurface(), szFileName);
+        //
+        //if(!Options::g_bAutoAccept || SourceEngine::Interfaces::Engine()->IsInGame()) return;
+        //
+        ////This is the beep sound that is played when we have found a game
+        //if(!strcmp(szFileName, "weapons/hegrenade/beep.wav")) {
+        //
+        //    //Accept the game
+        //    IsReady();
+        //
+        //    //This will flash the CSGO window on the taskbar
+        //    //so we know a game was found (you cant hear the beep sometimes cause it auto-accepts too fast)
+        //    FLASHWINFO fi;
+        //    fi.cbSize = sizeof(FLASHWINFO);
+        //    fi.hwnd = g_hWindow;
+        //    fi.dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG;
+        //    fi.uCount = 0;
+        //    fi.dwTimeout = 0;
+        //    FlashWindowEx(&fi);
+        //}
     }
 }

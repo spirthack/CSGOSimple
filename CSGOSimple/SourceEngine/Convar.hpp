@@ -286,7 +286,8 @@ namespace SourceEngine
     //-----------------------------------------------------------------------------
     FORCEINLINE_CVAR float ConVar::GetFloat(void) const
     {
-        return m_pParent->m_Value.m_fValue;
+        DWORD xored = *(DWORD*)&m_pParent->m_Value.m_fValue ^ (DWORD)this;
+        return *(float*)&xored;
     }
 
     //-----------------------------------------------------------------------------
@@ -295,7 +296,7 @@ namespace SourceEngine
     //-----------------------------------------------------------------------------
     FORCEINLINE_CVAR int ConVar::GetInt(void) const
     {
-        return m_pParent->m_Value.m_nValue;
+        return (int)(m_pParent->m_Value.m_nValue ^ (DWORD)this);
     }
 
     //-----------------------------------------------------------------------------

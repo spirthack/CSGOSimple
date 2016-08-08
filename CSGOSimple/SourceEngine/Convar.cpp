@@ -626,8 +626,8 @@ namespace SourceEngine
 
         // Redetermine value
         float flOldValue = m_Value.m_fValue;
-        m_Value.m_fValue = fNewValue;
-        m_Value.m_nValue = (int)fNewValue;
+        *(DWORD*)&m_Value.m_fValue = *(DWORD*)&fNewValue ^ (DWORD)this;
+        *(DWORD*)&m_Value.m_nValue = *(DWORD*)&fNewValue ^ (DWORD)this;
 
         if(!(m_nFlags & FCVAR_NEVER_AS_STRING)) {
             char tempVal[32];
@@ -654,8 +654,8 @@ namespace SourceEngine
 
         // Redetermine value
         float flOldValue = m_Value.m_fValue;
-        m_Value.m_fValue = fValue;
-        m_Value.m_nValue = nValue;
+        *(DWORD*)&m_Value.m_fValue = *(DWORD*)&fValue ^ (DWORD)this;
+        *(DWORD*)&m_Value.m_nValue = *(DWORD*)&nValue ^ (DWORD)this;
 
         if(!(m_nFlags & FCVAR_NEVER_AS_STRING)) {
             char tempVal[32];
@@ -702,7 +702,8 @@ namespace SourceEngine
         if(callback)
             m_fnChangeCallbacks.AddToTail(callback);
 
-        m_Value.m_fValue = (float)atof(m_Value.m_pszString);
+        float value = (float)atof(m_Value.m_pszString);
+        *(DWORD*)&m_Value.m_fValue = *(DWORD*)&value ^ (DWORD)this;
 
         // Bounds Check, should never happen, if it does, no big deal
         if(m_bHasMin && (m_Value.m_fValue < m_fMinVal)) {
@@ -713,7 +714,7 @@ namespace SourceEngine
             //Assert(0);
         }
 
-        m_Value.m_nValue = (int)m_Value.m_fValue;
+        *(DWORD*)&m_Value.m_nValue = *(DWORD*)&m_Value.m_fValue;
 
         BaseClass::Create(pName, pHelpString, flags);
     }
