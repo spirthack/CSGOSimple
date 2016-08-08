@@ -28,7 +28,7 @@ namespace SourceEngine {
      IVEngineClient* Interfaces::Engine() {
           if(!m_pEngine) {
                CreateInterfaceFn pfnFactory = GetFactory(GetModuleHandleA(XorStr("engine.dll")));
-               m_pEngine = CaptureInterface<IVEngineClient>(pfnFactory, XorStr("VEngineClient013"));
+               m_pEngine = CaptureInterface<IVEngineClient>(pfnFactory, XorStr("VEngineClient014"));
           }
           return m_pEngine;
      }
