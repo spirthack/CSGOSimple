@@ -40,7 +40,7 @@ namespace SourceEngine
     {
         if(!m_pClient) {
             CreateInterfaceFn pfnFactory = GetFactory(GetModuleHandleA(XorStr("client.dll")));
-            m_pClient = CaptureInterface<IBaseClientDLL>(pfnFactory, XorStr("VClient017"));
+            m_pClient = CaptureInterface<IBaseClientDLL>(pfnFactory, XorStr("VClient018"));
         }
         return m_pClient;
     }
