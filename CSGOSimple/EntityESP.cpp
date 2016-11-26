@@ -43,7 +43,7 @@ void EntityESP::RenderESP(DrawManager& renderer)
 
         float height = abs(vScreenHead.y - vScreenOrigin.y);
         float width = height * 0.65f;
-        renderer.RenderRect(d3dColor, vScreenOrigin.x - width / 2, vScreenOrigin.y, width, -height);
+        renderer.AddRect({vScreenOrigin.x - width / 2, vScreenHead.y}, width, height, d3dColor);
     }
 }
 
@@ -73,6 +73,6 @@ void EntityESP::RenderName(DrawManager& renderer)
 
         player_info_t pInfo;
         Interfaces::Engine()->GetPlayerInfo(m_pEntity->EntIndex(), &pInfo);
-        renderer.RenderText(d3dColor, vScreenOrigin.x, vScreenOrigin.y, true, pInfo.szName);
+        renderer.AddText({vScreenOrigin.x, vScreenOrigin.y}, d3dColor, centered_x | outline, pInfo.szName);
     }
 }

@@ -6,7 +6,8 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
         DisableThreadLibraryCalls(hModule);
         CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)Hooks::Initialize, NULL, NULL, NULL);
     } else if(dwReason == DLL_PROCESS_DETACH) {
-        Hooks::Restore();
+        if(!lpReserved) 
+            Hooks::Restore();
     }
     return TRUE;
 }

@@ -168,7 +168,6 @@
     <ClCompile Include="Hooks.cpp" />
     <ClCompile Include="ImGUI\DX9\imgui_impl_dx9.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
-    <ClCompile Include="ImGUI\imgui_demo.cpp" />
     <ClCompile Include="ImGUI\imgui_draw.cpp" />
     <ClCompile Include="NetvarManager.cpp" />
     <ClCompile Include="Options.cpp" />

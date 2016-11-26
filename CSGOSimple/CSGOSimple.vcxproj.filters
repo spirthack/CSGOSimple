@@ -48,9 +48,6 @@
     <ClCompile Include="ImGUI\imgui.cpp">
       <Filter>ImGUI</Filter>
     </ClCompile>
-    <ClCompile Include="ImGUI\imgui_demo.cpp">
-      <Filter>ImGUI</Filter>
-    </ClCompile>
     <ClCompile Include="ImGUI\imgui_draw.cpp">
       <Filter>ImGUI</Filter>
     </ClCompile>

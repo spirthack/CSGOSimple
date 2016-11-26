@@ -69,6 +69,8 @@ namespace Hooks
         //Restore the WindowProc
         SetWindowLongPtr(g_hWindow, GWLP_WNDPROC, (LONG_PTR)g_pOldWindowProc);
 
+        g_pRenderer->InvalidateObjects();
+
         //Remove the hooks
         g_pD3DDevice9Hook->RestoreTable();
         g_pClientModeHook->RestoreTable();
@@ -80,6 +82,7 @@ namespace Hooks
         //Initializes the GUI and the renderer
         ImGui_ImplDX9_Init(g_hWindow, pDevice);
         g_pRenderer = make_unique<DrawManager>(pDevice);
+        g_pRenderer->CreateObjects();
         g_bWasInitialized = true;
     }
 
@@ -241,12 +244,12 @@ namespace Hooks
         //Device is on LOST state.
 
         ImGui_ImplDX9_InvalidateDeviceObjects(); //Invalidate GUI resources
-        g_pRenderer->OnLostDevice();
+        g_pRenderer->InvalidateObjects();
 
         //Call original Reset.
         auto hr = g_fnOriginalReset(pDevice, pPresentationParameters);
 
-        g_pRenderer->OnResetDevice();
+        g_pRenderer->CreateObjects();
         ImGui_ImplDX9_CreateDeviceObjects(); //Recreate GUI resources
         return hr;
     }
@@ -288,8 +291,10 @@ namespace Hooks
         //This is the function that is called when you press the big ACCEPT button
         //static auto IsReady = reinterpret_cast<void(__cdecl*)()>(Utils::FindSignature(XorStr("client.dll"), XorStr("55 8B EC 51 56 8B 35 ? ? ? ? 80 7E 58 00")));
         //
-        ////Call original PlaySound
-        //g_fnOriginalPlaySound(SourceEngine::Interfaces::MatSurface(), szFileName);
+
+        //Call original PlaySound
+        g_fnOriginalPlaySound(SourceEngine::Interfaces::MatSurface(), szFileName);
+
         //
         //if(!Options::g_bAutoAccept || SourceEngine::Interfaces::Engine()->IsInGame()) return;
         //
