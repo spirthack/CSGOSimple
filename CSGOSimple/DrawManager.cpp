@@ -167,9 +167,9 @@ void DrawManager::AddText(ImVec2 point, ImU32 color, text_flags flags, const cha
 
     if(flags & outline) {
         _drawList->AddText(font, font->FontSize, ImVec2{point.x - 1, point.y - 1}, 0xFF000000, buffer);
-        _drawList->AddText(font, font->FontSize, ImVec2{point.x + 2, point.y    }, 0xFF000000, buffer);
-        _drawList->AddText(font, font->FontSize, ImVec2{point.x    , point.y + 2}, 0xFF000000, buffer);
-        _drawList->AddText(font, font->FontSize, ImVec2{point.x - 2, point.y    }, 0xFF000000, buffer);
+        _drawList->AddText(font, font->FontSize, ImVec2{point.x + 1, point.y    }, 0xFF000000, buffer);
+        _drawList->AddText(font, font->FontSize, ImVec2{point.x    , point.y + 1}, 0xFF000000, buffer);
+        _drawList->AddText(font, font->FontSize, ImVec2{point.x - 1, point.y    }, 0xFF000000, buffer);
     }
 
     if(flags & drop_shadow && !(flags & outline)) {
