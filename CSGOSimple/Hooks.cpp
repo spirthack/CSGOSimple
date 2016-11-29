@@ -32,6 +32,9 @@ namespace Hooks
     bool                               vecPressedKeys[256] = {};
     bool                               g_bWasInitialized = false;
 
+	using IsReadyFn = void(__cdecl*)();
+	IsReadyFn IsReady;
+
     void Initialize()
     {
         AllocConsole();
@@ -286,33 +289,28 @@ namespace Hooks
 
     void __stdcall Hooked_PlaySound(const char* szFileName)
     {
-        //Outdated
+		//Call original PlaySound
+		g_fnOriginalPlaySound(SourceEngine::Interfaces::MatSurface(), szFileName);
 
-        //This is the function that is called when you press the big ACCEPT button
-        //static auto IsReady = reinterpret_cast<void(__cdecl*)()>(Utils::FindSignature(XorStr("client.dll"), XorStr("55 8B EC 51 56 8B 35 ? ? ? ? 80 7E 58 00")));
-        //
-
-        //Call original PlaySound
-        g_fnOriginalPlaySound(SourceEngine::Interfaces::MatSurface(), szFileName);
-
-        //
-        //if(!Options::g_bAutoAccept || SourceEngine::Interfaces::Engine()->IsInGame()) return;
-        //
-        ////This is the beep sound that is played when we have found a game
-        //if(!strcmp(szFileName, "weapons/hegrenade/beep.wav")) {
-        //
-        //    //Accept the game
-        //    IsReady();
-        //
-        //    //This will flash the CSGO window on the taskbar
-        //    //so we know a game was found (you cant hear the beep sometimes cause it auto-accepts too fast)
-        //    FLASHWINFO fi;
-        //    fi.cbSize = sizeof(FLASHWINFO);
-        //    fi.hwnd = g_hWindow;
-        //    fi.dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG;
-        //    fi.uCount = 0;
-        //    fi.dwTimeout = 0;
-        //    FlashWindowEx(&fi);
-        //}
-    }
+		if(!Options::g_bAutoAccept || SourceEngine::Interfaces::Engine()->IsInGame()) return;
+        
+		//This is the beep sound that is played when we have found a game
+		if(!strcmp(szFileName, "weapons/hegrenade/beep.wav")) {
+			
+			//This is the function that is called when you press the big ACCEPT button
+			IsReady = (IsReadyFn)((DWORD)Utils::FindSignature(XorStr("client.dll"), XorStr("55 8B EC 83 E4 F8 83 EC 08 56 8B 35 ?? ?? ?? ?? 57 8B 8E")));
+			//Accept the game
+			IsReady();
+			
+			//This will flash the CSGO window on the taskbar
+			//so we know a game was found (you cant hear the beep sometimes cause it auto-accepts too fast)
+			FLASHWINFO fi;
+			fi.cbSize = sizeof(FLASHWINFO);
+			fi.hwnd = g_hWindow;
+			fi.dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG;
+			fi.uCount = 0;
+			fi.dwTimeout = 0;
+			FlashWindowEx(&fi);
+		}
+	}
 }
