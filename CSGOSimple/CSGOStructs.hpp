@@ -7,7 +7,7 @@
 
 class C_CSPlayer;
 
-class C_BaseCombatWeapon : public SourceEngine::IClientEntity
+class C_BaseCombatWeapon : public se::IClientEntity
 {
     template<class T>
     inline T GetFieldValue(int offset)
@@ -18,7 +18,7 @@ class C_BaseCombatWeapon : public SourceEngine::IClientEntity
 public:
     C_CSPlayer* GetOwner()
     {
-        using namespace SourceEngine;
+        using namespace se;
         static int m_hOwnerEntity = GET_NETVAR(XorStr("DT_BaseEntity"), XorStr("m_hOwnerEntity"));
         return (C_CSPlayer*)Interfaces::EntityList()->GetClientEntityFromHandle(GetFieldValue<CHandle<C_CSPlayer>>(m_hOwnerEntity));
     }
@@ -30,17 +30,17 @@ public:
     int GetId()
     {
         typedef int(__thiscall* tGetId)(void*);
-        return SourceEngine::CallVFunction<tGetId>(this, 458)(this);
+        return se::CallVFunction<tGetId>(this, 458)(this);
     }
     const char* GetName()
     {
         typedef const char* (__thiscall* tGetName)(void*);
-        return SourceEngine::CallVFunction<tGetName>(this, 378)(this);
+        return se::CallVFunction<tGetName>(this, 378)(this);
     }
 };
 
 
-class C_CSPlayer : public SourceEngine::IClientEntity
+class C_CSPlayer : public se::IClientEntity
 {
     template<class T>
     inline T GetFieldValue(int offset)
@@ -56,11 +56,11 @@ class C_CSPlayer : public SourceEngine::IClientEntity
 public:
     static C_CSPlayer* GetLocalPlayer()
     {
-        return (C_CSPlayer*)SourceEngine::Interfaces::EntityList()->GetClientEntity(SourceEngine::Interfaces::Engine()->GetLocalPlayer());
+        return (C_CSPlayer*)se::Interfaces::EntityList()->GetClientEntity(se::Interfaces::Engine()->GetLocalPlayer());
     }
     C_BaseCombatWeapon* GetActiveWeapon()
     {
-        using namespace SourceEngine;
+        using namespace se;
         static int m_hActiveWeapon = GET_NETVAR(XorStr("DT_BaseCombatCharacter"), XorStr("m_hActiveWeapon"));
         return (C_BaseCombatWeapon*)Interfaces::EntityList()->GetClientEntityFromHandle(GetFieldValue<CHandle<IClientEntity>>(m_hActiveWeapon));
     }
@@ -84,28 +84,28 @@ public:
         static int m_fFlags = GET_NETVAR(XorStr("DT_BasePlayer"), XorStr("m_fFlags"));
         return GetFieldValue<int>(m_fFlags);
     }
-    SourceEngine::Vector GetViewOffset()
+    se::Vector GetViewOffset()
     {
         static int m_vecViewOffset = GET_NETVAR(XorStr("DT_BasePlayer"), XorStr("localdata"), XorStr("m_vecViewOffset[0]"));
-        return GetFieldValue<SourceEngine::Vector>(m_vecViewOffset);
+        return GetFieldValue<se::Vector>(m_vecViewOffset);
     }
-    SourceEngine::Vector GetOrigin()
+    se::Vector GetOrigin()
     {
         static int m_vecOrigin = GET_NETVAR(XorStr("DT_BaseEntity"), XorStr("m_vecOrigin"));
-        return GetFieldValue<SourceEngine::Vector>(m_vecOrigin);
+        return GetFieldValue<se::Vector>(m_vecOrigin);
     }
-    SourceEngine::Vector GetEyePos()
+    se::Vector GetEyePos()
     {
         return GetOrigin() + GetViewOffset();
     }
-    SourceEngine::Vector* ViewPunch()
+    se::Vector* ViewPunch()
     {
         static int m_viewPunchAngle = GET_NETVAR(XorStr("DT_BasePlayer"), XorStr("localdata"), XorStr("m_Local"), XorStr("m_viewPunchAngle"));
-        return GetFieldPointer<SourceEngine::Vector>(m_viewPunchAngle);
+        return GetFieldPointer<se::Vector>(m_viewPunchAngle);
     }
-    SourceEngine::Vector* AimPunch()
+    se::Vector* AimPunch()
     {
         static int m_aimPunchAngle = GET_NETVAR(XorStr("DT_BasePlayer"), XorStr("localdata"), XorStr("m_Local"), XorStr("m_aimPunchAngle"));
-        return GetFieldPointer<SourceEngine::Vector>(m_aimPunchAngle);
+        return GetFieldPointer<se::Vector>(m_aimPunchAngle);
     }
 };

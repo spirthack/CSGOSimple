@@ -3,7 +3,7 @@
 #include "Definitions.hpp"
 #include "VMatrix.hpp"
 
-namespace SourceEngine
+namespace se
 {
     class IPanel;
     class C_BaseEntity;

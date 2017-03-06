@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 
-namespace SourceEngine
+namespace se
 {
     typedef void* (*CreateInterfaceFn)(const char *pName, int *pReturnCode);
     typedef void* (*InstantiateInterfaceFn)();

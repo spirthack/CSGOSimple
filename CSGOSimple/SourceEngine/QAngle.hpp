@@ -4,7 +4,7 @@
 
 #include "Vector.hpp"
 
-namespace SourceEngine
+namespace se
 {
     //he he
     typedef Vector QAngle;

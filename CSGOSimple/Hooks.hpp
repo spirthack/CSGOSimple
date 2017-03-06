@@ -35,15 +35,15 @@ namespace Hooks
     //---------------------------------------------------
     typedef long(__stdcall* EndScene_t)(IDirect3DDevice9* device);
     typedef long(__stdcall* Reset_t)(IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* pp);
-    typedef bool(__thiscall* CreateMove_t)(SourceEngine::IClientMode*, float, SourceEngine::CUserCmd*);
-    typedef void(__thiscall* PlaySound_t)(SourceEngine::ISurface*, const char*);
+    typedef bool(__thiscall* CreateMove_t)(se::IClientMode*, float, se::CUserCmd*);
+    typedef void(__thiscall* PlaySound_t)(se::ISurface*, const char*);
 
     //---------------------------------------------------
     // Hooked functions
     //---------------------------------------------------
     HRESULT   __stdcall Hooked_EndScene(IDirect3DDevice9* pDevice);
     HRESULT   __stdcall Hooked_Reset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPresentationParameters);
-    bool      __stdcall Hooked_CreateMove(float sample_input_frametime, SourceEngine::CUserCmd* pCmd);
+    bool      __stdcall Hooked_CreateMove(float sample_input_frametime, se::CUserCmd* pCmd);
     void      __stdcall Hooked_PlaySound(const char* szFileName);
 
     //We're gonna replace the main window's WNDPROC for this one to capture user input and pass it down to the GUI

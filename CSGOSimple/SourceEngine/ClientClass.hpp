@@ -5,7 +5,7 @@
 #include "Recv.hpp"
 #include "IClientNetworkable.hpp"
 
-namespace SourceEngine
+namespace se
 {
     class ClientClass;
 

@@ -1,6 +1,6 @@
 #include "CRC.hpp"
 
-namespace SourceEngine
+namespace se
 {
 
 #define BigShort( val )       WordSwap( val )

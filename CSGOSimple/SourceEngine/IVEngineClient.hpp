@@ -8,7 +8,7 @@
 #include "Vector.hpp"
 #include "VMatrix.hpp"
 
-namespace SourceEngine
+namespace se
 {
 
     typedef struct InputContextHandle_t__ *InputContextHandle_t;

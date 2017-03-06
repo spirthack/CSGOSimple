@@ -49,8 +49,8 @@ namespace Hooks
 
         //Create the virtual table hooks
         g_pD3DDevice9Hook = make_unique<VFTableHook>((PPDWORD)dwDevice, true);
-        g_pClientModeHook = make_unique<VFTableHook>((PPDWORD)SourceEngine::Interfaces::ClientMode(), true);
-        g_pMatSurfaceHook = make_unique<VFTableHook>((PPDWORD)SourceEngine::Interfaces::MatSurface(), true);
+        g_pClientModeHook = make_unique<VFTableHook>((PPDWORD)se::Interfaces::ClientMode(), true);
+        g_pMatSurfaceHook = make_unique<VFTableHook>((PPDWORD)se::Interfaces::MatSurface(), true);
 
         //Find CSGO main window
         while(!(g_hWindow = FindWindowA(XorStr("Valve001"), NULL))) Sleep(200);
@@ -135,7 +135,7 @@ namespace Hooks
                 Options::g_bMainWindowOpen = !Options::g_bMainWindowOpen;
 
                 //Use cl_mouseenable convar to disable the mouse when the window is open 
-                static auto cl_mouseenable = SourceEngine::Interfaces::CVar()->FindVar(XorStr("cl_mouseenable"));
+                static auto cl_mouseenable = se::Interfaces::CVar()->FindVar(XorStr("cl_mouseenable"));
                 cl_mouseenable->SetValue(!Options::g_bMainWindowOpen);
             }
         }
@@ -150,11 +150,11 @@ namespace Hooks
 
     HRESULT __stdcall Hooked_EndScene(IDirect3DDevice9* pDevice)
     {
-        static SourceEngine::ConVar* convar;
+        static se::ConVar* convar;
 
         if(!g_bWasInitialized) {
             GUI_Init(pDevice);
-            convar = SourceEngine::Interfaces::CVar()->FindVar("cl_mouseenable");
+            convar = se::Interfaces::CVar()->FindVar("cl_mouseenable");
         } else {
             //We don't want ImGui to draw the cursor when the main window isnt open
             ImGui::GetIO().MouseDrawCursor = Options::g_bMainWindowOpen;
@@ -190,24 +190,24 @@ namespace Hooks
             //Begins rendering
             g_pRenderer->BeginRendering();
 
-            if(SourceEngine::Interfaces::Engine()->IsInGame() && Options::g_bESPEnabled) {
+            if(se::Interfaces::Engine()->IsInGame() && Options::g_bESPEnabled) {
 
                 //Iterate over the EntityList
-                for(int i = 1; i < SourceEngine::Interfaces::Engine()->GetMaxClients(); i++) {
+                for(int i = 1; i < se::Interfaces::Engine()->GetMaxClients(); i++) {
 
                     //Skip the local player
-                    if(i == SourceEngine::Interfaces::Engine()->GetLocalPlayer())
+                    if(i == se::Interfaces::Engine()->GetLocalPlayer())
                         continue;
 
                     //Gets the entity by index
-                    auto pEntity = static_cast<C_CSPlayer*>(SourceEngine::Interfaces::EntityList()->GetClientEntity(i));
+                    auto pEntity = static_cast<C_CSPlayer*>(se::Interfaces::EntityList()->GetClientEntity(i));
 
                     if(!pEntity) continue; //Null check
 
                     if(!pEntity->IsAlive() || pEntity->IsDormant()) continue; //Skip Dead and Dormant entities
 
                     //We only want to iterate over players. Make sure the ClassID is correct
-                    if(pEntity->GetClientClass()->m_ClassID == SourceEngine::EClassIds::CCSPlayer) {
+                    if(pEntity->GetClientClass()->m_ClassID == se::EClassIds::CCSPlayer) {
 
                         EntityESP esp(pEntity);
 
@@ -257,10 +257,10 @@ namespace Hooks
         return hr;
     }
 
-    bool __stdcall Hooked_CreateMove(float sample_input_frametime, SourceEngine::CUserCmd* pCmd)
+    bool __stdcall Hooked_CreateMove(float sample_input_frametime, se::CUserCmd* pCmd)
     {
         //Call original CreateMove
-        bool bRet = g_fnOriginalCreateMove(SourceEngine::Interfaces::ClientMode(), sample_input_frametime, pCmd);
+        bool bRet = g_fnOriginalCreateMove(se::Interfaces::ClientMode(), sample_input_frametime, pCmd);
 
         //Get the Local player pointer
         auto pLocal = C_CSPlayer::GetLocalPlayer();
@@ -268,7 +268,7 @@ namespace Hooks
         //BunnyHop
         if(Options::g_bBHopEnabled) {
             //If the player is pressing the JUMP button AND we are on not on ground
-            if((pCmd->buttons & IN_JUMP) && !(pLocal->GetFlags() & (int)SourceEngine::EntityFlags::FL_ONGROUND))
+            if((pCmd->buttons & IN_JUMP) && !(pLocal->GetFlags() & (int)se::EntityFlags::FL_ONGROUND))
                 pCmd->buttons &= ~IN_JUMP;  //Release the JUMP button
                                             //This will effectively press JUMP everytime we land
         }
@@ -290,9 +290,9 @@ namespace Hooks
     void __stdcall Hooked_PlaySound(const char* szFileName)
     {
 		//Call original PlaySound
-		g_fnOriginalPlaySound(SourceEngine::Interfaces::MatSurface(), szFileName);
+		g_fnOriginalPlaySound(se::Interfaces::MatSurface(), szFileName);
 
-		if(!Options::g_bAutoAccept || SourceEngine::Interfaces::Engine()->IsInGame()) return;
+		if(!Options::g_bAutoAccept || se::Interfaces::Engine()->IsInGame()) return;
         
 		//This is the beep sound that is played when we have found a game
 		if(!strcmp(szFileName, "weapons/hegrenade/beep.wav")) {

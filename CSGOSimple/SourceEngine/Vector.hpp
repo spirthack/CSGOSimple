@@ -3,7 +3,7 @@
 #include "Definitions.hpp"
 #include <sstream>
 
-namespace SourceEngine
+namespace se
 {
     typedef float vec_t;
     // 3D Vector

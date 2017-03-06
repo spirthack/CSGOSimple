@@ -1,6 +1,6 @@
 #pragma once
 
-namespace SourceEngine
+namespace se
 {
     typedef float vec_t;
     // 3D Vector4D

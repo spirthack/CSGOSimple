@@ -5,7 +5,7 @@
 
 #pragma warning(push)
 #pragma warning(disable:4333 4244)
-namespace SourceEngine
+namespace se
 {
 #define DEFCOLOR_SRC(name, r, g, b) static Color name##(uint8_t a = 255){ \
                                                        return Color(r, g, b, a); \

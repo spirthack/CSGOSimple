@@ -2,7 +2,7 @@
 
 #include "QAngle.hpp"
 
-namespace SourceEngine
+namespace se
 {
 
     typedef unsigned short ClientShadowHandle_t;

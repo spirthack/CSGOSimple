@@ -3,7 +3,7 @@
 #include "../Utils.hpp"
 #include "../XorStr.hpp"
 
-namespace SourceEngine
+namespace se
 {
 
     IVEngineClient*     Interfaces::m_pEngine = nullptr;
@@ -97,8 +97,8 @@ namespace SourceEngine
     ICvar* Interfaces::CVar()
     {
         if(!m_pCVar) {
-            SourceEngine::CreateInterfaceFn pfnFactory = GetFactory(GetModuleHandleA(XorStr("vstdlib.dll")));
-            m_pCVar = CaptureInterface<SourceEngine::ICvar>(pfnFactory, XorStr("VEngineCvar007"));
+            se::CreateInterfaceFn pfnFactory = GetFactory(GetModuleHandleA(XorStr("vstdlib.dll")));
+            m_pCVar = CaptureInterface<se::ICvar>(pfnFactory, XorStr("VEngineCvar007"));
         }
         return m_pCVar;
     }

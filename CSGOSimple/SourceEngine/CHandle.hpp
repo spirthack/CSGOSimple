@@ -9,7 +9,7 @@
 #define NUM_SERIAL_NUM_SHIFT_BITS (32 - NUM_SERIAL_NUM_BITS)
 #define ENT_ENTRY_MASK             (( 1 << NUM_SERIAL_NUM_BITS) - 1)
 
-namespace SourceEngine
+namespace se
 {
     class CBaseHandle
     {

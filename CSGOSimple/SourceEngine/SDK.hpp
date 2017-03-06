@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #include "Definitions.hpp"
 
 #include "CRC.hpp"
@@ -30,7 +32,7 @@
 #include "ICvar.hpp"
 #include "Convar.hpp"
 
-namespace SourceEngine
+namespace se
 {
     class Interfaces
     {

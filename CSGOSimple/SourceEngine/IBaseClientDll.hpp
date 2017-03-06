@@ -5,7 +5,7 @@
 #include "CGlobalVarsBase.hpp"
 #include "ClientClass.hpp"
 
-namespace SourceEngine
+namespace se
 {
     class IBaseClientDLL
     {

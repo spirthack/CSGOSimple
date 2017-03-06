@@ -30,7 +30,7 @@
 #define IN_GRENADE2      (1 << 24) // grenade 2
 #define   IN_LOOKSPIN         (1 << 25)
 
-namespace SourceEngine
+namespace se
 {
     class bf_read;
     class bf_write;

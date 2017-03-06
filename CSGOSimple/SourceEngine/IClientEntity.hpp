@@ -7,7 +7,7 @@
 #include"IClientUnknown.hpp"
 #include"IClientThinkable.hpp"
 
-namespace SourceEngine
+namespace se
 {
     struct SpatializationInfo_t;
 

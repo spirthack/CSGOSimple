@@ -2,7 +2,7 @@
 
 #include "IHandleEntity.hpp"
 
-namespace SourceEngine
+namespace se
 {
     class ICollideable;
     class IClientNetworkable;

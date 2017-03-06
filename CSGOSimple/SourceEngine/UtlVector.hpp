@@ -19,7 +19,7 @@ inline void Destruct(T* pMemory)
 #endif
 }
 
-namespace SourceEngine
+namespace se
 {
     template< class T, class A = CUtlMemory<T> >
     class CUtlVector

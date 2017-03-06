@@ -2,7 +2,7 @@
 
 #include "Vector2D.hpp"
 
-namespace SourceEngine
+namespace se
 {
     Vector2D::Vector2D(void)
     {

@@ -1,6 +1,6 @@
 #include "VMatrix.hpp"
 
-namespace SourceEngine
+namespace se
 {
     //-----------------------------------------------------------------------------
     // VMatrix inlines.

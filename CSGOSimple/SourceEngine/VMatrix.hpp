@@ -4,7 +4,7 @@
 
 #include "QAngle.hpp"
 
-namespace SourceEngine
+namespace se
 {
 
     struct cplane_t

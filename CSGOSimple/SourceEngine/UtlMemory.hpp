@@ -1,7 +1,7 @@
 #pragma once
 
 #define Assert(x) 
-namespace SourceEngine
+namespace se
 {
     template< class T, class I = int >
     class CUtlMemory
@@ -128,8 +128,6 @@ namespace SourceEngine
         ValidateGrowSize();
         Assert(nGrowSize >= 0);
         if(m_nAllocationCount) {
-            UTLMEMORY_TRACK_ALLOC();
-            MEM_ALLOC_CREDIT_CLASS();
             m_pMemory = (T*)malloc(m_nAllocationCount * sizeof(T));
         }
     }
@@ -157,9 +155,6 @@ namespace SourceEngine
 
         m_nGrowSize = nGrowSize;
         if(m_nAllocationCount) {
-            UTLMEMORY_TRACK_ALLOC();
-            MEM_ALLOC_CREDIT_CLASS();
-
             int nNumBytes = m_nAllocationCount * sizeof(T);
             T *pMemory = (T*)malloc(nNumBytes);
             memcpy(pMemory, m_pMemory, nNumBytes);
@@ -549,8 +544,6 @@ namespace SourceEngine
         COMPILE_TIME_ASSERT((nAlignment & (nAlignment - 1)) == 0);
         Assert((nGrowSize >= 0) && (nGrowSize != CUtlMemory<T>::EXTERNAL_BUFFER_MARKER));
         if(CUtlMemory<T>::m_nAllocationCount) {
-            UTLMEMORY_TRACK_ALLOC();
-            MEM_ALLOC_CREDIT_CLASS();
             CUtlMemory<T>::m_pMemory = (T*)_aligned_malloc(nInitAllocationCount * sizeof(T), nAlignment);
         }
     }
@@ -634,8 +627,6 @@ namespace SourceEngine
 
         CUtlMemory<T>::m_nAllocationCount = UtlMemory_CalcNewAllocationCount(CUtlMemory<T>::m_nAllocationCount, CUtlMemory<T>::m_nGrowSize, nAllocationRequested, sizeof(T));
 
-        UTLMEMORY_TRACK_ALLOC();
-
         if(CUtlMemory<T>::m_pMemory) {
             MEM_ALLOC_CREDIT_CLASS();
             CUtlMemory<T>::m_pMemory = (T*)MemAlloc_ReallocAligned(CUtlMemory<T>::m_pMemory, CUtlMemory<T>::m_nAllocationCount * sizeof(T), nAlignment);
@@ -666,8 +657,6 @@ namespace SourceEngine
         UTLMEMORY_TRACK_FREE();
 
         CUtlMemory<T>::m_nAllocationCount = num;
-
-        UTLMEMORY_TRACK_ALLOC();
 
         if(CUtlMemory<T>::m_pMemory) {
             MEM_ALLOC_CREDIT_CLASS();

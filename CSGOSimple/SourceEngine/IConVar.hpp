@@ -2,7 +2,7 @@
 
 #include "Color.hpp"
 
-namespace SourceEngine
+namespace se
 {
     //-----------------------------------------------------------------------------
     // Forward declarations

@@ -14,7 +14,7 @@ EntityESP::~EntityESP()
 
 void EntityESP::RenderESP(DrawManager& renderer)
 {
-    using namespace SourceEngine;
+    using namespace se;
 
     auto pLocal = C_CSPlayer::GetLocalPlayer();
 
@@ -49,7 +49,7 @@ void EntityESP::RenderESP(DrawManager& renderer)
 
 void EntityESP::RenderName(DrawManager& renderer)
 {
-    using namespace SourceEngine;
+    using namespace se;
 
     auto pLocal = C_CSPlayer::GetLocalPlayer();
 

@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <stdio.h>
 
-namespace SourceEngine
+namespace se
 {
     //-----------------------------------------------------------------------------
     // Base class, containing simple memory management

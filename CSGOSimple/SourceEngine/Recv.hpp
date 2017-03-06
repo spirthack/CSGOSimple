@@ -4,7 +4,7 @@
 
 #include "Definitions.hpp"
 
-namespace SourceEngine
+namespace se
 {
 
     enum class SendPropType

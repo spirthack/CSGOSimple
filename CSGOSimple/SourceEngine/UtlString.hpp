@@ -5,7 +5,7 @@
 
 #include "UtlMemory.hpp"
 
-namespace SourceEngine
+namespace se
 {
     class CUtlBinaryBlock
     {

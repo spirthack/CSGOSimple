@@ -9,21 +9,21 @@
 class Utils
 {
 public:
-    static SourceEngine::Vector GetEntityBone(SourceEngine::IClientEntity* pEntity, SourceEngine::ECSPlayerBones Bone)
+    static se::Vector GetEntityBone(se::IClientEntity* pEntity, se::ECSPlayerBones Bone)
     {
-        SourceEngine::matrix3x4_t boneMatrix[128];
+        se::matrix3x4_t boneMatrix[128];
 
-        if(!pEntity->SetupBones(boneMatrix, 128, 0x00000100, SourceEngine::Interfaces::Engine()->GetLastTimeStamp()))
-            return SourceEngine::Vector();
+        if(!pEntity->SetupBones(boneMatrix, 128, 0x00000100, se::Interfaces::Engine()->GetLastTimeStamp()))
+            return se::Vector();
 
-        SourceEngine::matrix3x4_t hitbox = boneMatrix[Bone];
+        se::matrix3x4_t hitbox = boneMatrix[Bone];
 
-        return SourceEngine::Vector(hitbox[0][3], hitbox[1][3], hitbox[2][3]);
+        return se::Vector(hitbox[0][3], hitbox[1][3], hitbox[2][3]);
     }
 
-    static bool ScreenTransform(const SourceEngine::Vector& point, SourceEngine::Vector& screen)
+    static bool ScreenTransform(const se::Vector& point, se::Vector& screen)
     {
-        const SourceEngine::VMatrix& w2sMatrix = SourceEngine::Interfaces::Engine()->WorldToScreenMatrix();
+        const se::VMatrix& w2sMatrix = se::Interfaces::Engine()->WorldToScreenMatrix();
         screen.x = w2sMatrix.m[0][0] * point.x + w2sMatrix.m[0][1] * point.y + w2sMatrix.m[0][2] * point.z + w2sMatrix.m[0][3];
         screen.y = w2sMatrix.m[1][0] * point.x + w2sMatrix.m[1][1] * point.y + w2sMatrix.m[1][2] * point.z + w2sMatrix.m[1][3];
         screen.z = 0.0f;
@@ -43,11 +43,11 @@ public:
         return false;
     }
 
-    static bool WorldToScreen(const SourceEngine::Vector &origin, SourceEngine::Vector &screen)
+    static bool WorldToScreen(const se::Vector &origin, se::Vector &screen)
     {
         if(!ScreenTransform(origin, screen)) {
             int iScreenWidth, iScreenHeight;
-            SourceEngine::Interfaces::Engine()->GetScreenSize(iScreenWidth, iScreenHeight);
+            se::Interfaces::Engine()->GetScreenSize(iScreenWidth, iScreenHeight);
 
             screen.x = (iScreenWidth / 2.0f) + (screen.x * iScreenWidth) / 2;
             screen.y = (iScreenHeight / 2.0f) - (screen.y * iScreenHeight) / 2;
@@ -85,9 +85,9 @@ public:
         return NULL;
     }
 
-    static bool Clamp(SourceEngine::QAngle &angles)
+    static bool Clamp(se::QAngle &angles)
     {
-        SourceEngine::QAngle a = angles;
+        se::QAngle a = angles;
         Normalize(a);
         ClampAngles(a);
 
@@ -101,7 +101,7 @@ public:
         }
     }
 private:
-    static void Normalize(SourceEngine::QAngle& angle)
+    static void Normalize(se::QAngle& angle)
     {
         while(angle.x > 89.0f) {
             angle.x -= 180.f;
@@ -117,7 +117,7 @@ private:
         }
     }
 
-    static void ClampAngles(SourceEngine::QAngle &angles)
+    static void ClampAngles(se::QAngle &angles)
     {
         if(angles.y > 180.0f)
             angles.y = 180.0f;

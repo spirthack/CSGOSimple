@@ -3,7 +3,7 @@
 #include "IAppSystem.hpp"
 #include "IConVar.hpp"
 
-namespace SourceEngine
+namespace se
 {
     class ConCommandBase;
     class ConCommand;

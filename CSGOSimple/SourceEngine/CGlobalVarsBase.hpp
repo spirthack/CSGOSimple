@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Definitions.hpp"
-namespace SourceEngine
+namespace se
 {
     class CGlobalVarsBase
     {

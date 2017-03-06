@@ -1,6 +1,6 @@
 #pragma once
 
-namespace SourceEngine
+namespace se
 {
     class CBaseHandle;
 

@@ -5,7 +5,7 @@
 #include "Color.hpp"
 #include "IAppSystem.hpp"
 
-namespace SourceEngine
+namespace se
 {
     typedef ULONG HFont;
 

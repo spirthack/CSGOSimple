@@ -99,7 +99,7 @@
 #define   MASK_DEADSOLID                (CONTENTS_SOLID|CONTENTS_PLAYERCLIP|CONTENTS_WINDOW|CONTENTS_GRATE)
 #pragma endregion
 
-namespace SourceEngine
+namespace se
 {
     class IHandleEntity;
     struct Ray_t;

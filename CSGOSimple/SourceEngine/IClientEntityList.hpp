@@ -2,7 +2,7 @@
 
 #include "Definitions.hpp"
 
-namespace SourceEngine
+namespace se
 {
     class IClientNetworkable;
     class IClientEntity;

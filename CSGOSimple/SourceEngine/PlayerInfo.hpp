@@ -2,7 +2,7 @@
 
 #include "Definitions.hpp"
 
-namespace SourceEngine
+namespace se
 {
     typedef struct player_info_s
     {

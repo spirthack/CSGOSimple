@@ -3,7 +3,7 @@
 #include <cmath>
 #include <limits>
 
-namespace SourceEngine
+namespace se
 {
 
     void VectorCopy(const Vector& src, Vector& dst)

@@ -1,11 +1,11 @@
 #pragma once
 
 #include <cstdint>
-#include "ICVar.hpp"
+#include "ICvar.hpp"
 #include "UtlVector.hpp"
 #include "UtlString.hpp"
 
-namespace SourceEngine
+namespace se
 {
 #define FORCEINLINE_CVAR inline
     //-----------------------------------------------------------------------------
@@ -16,6 +16,82 @@ namespace SourceEngine
     class ConCommand;
     class ConCommandBase;
     struct characterset_t;
+
+    class CCommand
+    {
+    public:
+        CCommand();
+        CCommand(int nArgC, const char **ppArgV);
+        bool Tokenize(const char *pCommand, characterset_t *pBreakSet = NULL);
+        void Reset();
+
+        int ArgC() const;
+        const char** ArgV() const;
+        const char*  ArgS() const;					        // All args that occur after the 0th arg, in string form
+        const char*  GetCommandString() const;		  // The entire command in string form, including the 0th arg
+        const char*  operator[](int nIndex) const;	// Gets at arguments
+        const char*  Arg(int nIndex) const;		      // Gets at arguments
+
+                                                      // Helper functions to parse arguments to commands.
+        const char* FindArg(const char *pName) const;
+        int FindArgInt(const char *pName, int nDefaultVal) const;
+
+        static int MaxCommandLength();
+        static characterset_t* DefaultBreakSet();
+
+    private:
+        enum
+        {
+            COMMAND_MAX_ARGC = 64,
+            COMMAND_MAX_LENGTH = 512,
+        };
+
+        int		m_nArgc;
+        int		m_nArgv0Size;
+        char	m_pArgSBuffer[COMMAND_MAX_LENGTH];
+        char	m_pArgvBuffer[COMMAND_MAX_LENGTH];
+        const char*	m_ppArgv[COMMAND_MAX_ARGC];
+    };
+
+    inline int CCommand::MaxCommandLength()
+    {
+        return COMMAND_MAX_LENGTH - 1;
+    }
+
+    inline int CCommand::ArgC() const
+    {
+        return m_nArgc;
+    }
+
+    inline const char **CCommand::ArgV() const
+    {
+        return m_nArgc ? (const char**)m_ppArgv : NULL;
+    }
+
+    inline const char *CCommand::ArgS() const
+    {
+        return m_nArgv0Size ? &m_pArgSBuffer[m_nArgv0Size] : "";
+    }
+
+    inline const char *CCommand::GetCommandString() const
+    {
+        return m_nArgc ? m_pArgSBuffer : "";
+    }
+
+    inline const char *CCommand::Arg(int nIndex) const
+    {
+        // FIXME: Many command handlers appear to not be particularly careful
+        // about checking for valid argc range. For now, we're going to
+        // do the extra check and return an empty string if it's out of range
+        if(nIndex < 0 || nIndex >= m_nArgc)
+            return "";
+        return m_ppArgv[nIndex];
+    }
+
+    inline const char *CCommand::operator[](int nIndex) const
+    {
+        return Arg(nIndex);
+    }
 
     //-----------------------------------------------------------------------------
     // Any executable that wants to use ConVars need to implement one of
@@ -35,7 +111,7 @@ namespace SourceEngine
     typedef void(*FnCommandCallbackV1_t)(void);
     typedef void(*FnCommandCallback_t)(const CCommand &command);
 
-#define COMMAND_COMPLETION_MAXITEMS        64
+#define COMMAND_COMPLETION_MAXITEMS       64
 #define COMMAND_COMPLETION_ITEM_LENGTH    64
 
     //-----------------------------------------------------------------------------
@@ -77,7 +153,7 @@ namespace SourceEngine
         ConCommandBase(const char *pName, const char *pHelpString = 0, int flags = 0);
 
         virtual                     ~ConCommandBase(void);
-        virtual    bool             IsCommand(void) const;
+        virtual bool                IsCommand(void) const;
         virtual bool                IsFlagSet(int flag) const;
         virtual void                AddFlags(int flags);
         virtual void                RemoveFlags(int flags);
@@ -114,6 +190,13 @@ namespace SourceEngine
 
         // ConVars in this executable use this 'global' to access values.
         static IConCommandBaseAccessor* s_pAccessor;
+
+    public:
+        // This list will hold all the registered commands.
+        // It is not from the official SDK. I've added this so that
+        // we can parse all convars we have created if we want to
+        // save them to a file later on, for example.
+        static ConCommandBase* s_pRegisteredCommands;
     };
 
     //-----------------------------------------------------------------------------
@@ -139,7 +222,7 @@ namespace SourceEngine
         virtual bool    CanAutoComplete(void);
         virtual void    Dispatch(const CCommand &command);
 
-    private:
+        //private:
         // NOTE: To maintain backward compat, we have to be very careful:
         // All public virtual methods must appear in the same order always
         // since engine code will be calling into this code, which *does not match*
@@ -209,7 +292,7 @@ namespace SourceEngine
         // Retrieve value
         virtual float                   GetFloat(void) const;
         virtual int                     GetInt(void) const;
-        FORCEINLINE_CVAR Color         GetColor(void) const;
+        FORCEINLINE_CVAR Color          GetColor(void) const;
         FORCEINLINE_CVAR bool           GetBool() const { return !!GetInt(); }
         FORCEINLINE_CVAR char const*    GetString(void) const;
 
@@ -286,7 +369,7 @@ namespace SourceEngine
     //-----------------------------------------------------------------------------
     FORCEINLINE_CVAR float ConVar::GetFloat(void) const
     {
-        DWORD xored = *(DWORD*)&m_pParent->m_Value.m_fValue ^ (DWORD)this;
+        uint32_t xored = *(uint32_t*)&m_pParent->m_Value.m_fValue ^ (uint32_t)this;
         return *(float*)&xored;
     }
 
@@ -296,7 +379,7 @@ namespace SourceEngine
     //-----------------------------------------------------------------------------
     FORCEINLINE_CVAR int ConVar::GetInt(void) const
     {
-        return (int)(m_pParent->m_Value.m_nValue ^ (DWORD)this);
+        return (int)(m_pParent->m_Value.m_nValue ^ (int)this);
     }
 
     //-----------------------------------------------------------------------------
@@ -305,7 +388,8 @@ namespace SourceEngine
     //-----------------------------------------------------------------------------
     FORCEINLINE_CVAR Color ConVar::GetColor(void) const
     {
-        unsigned char *pColorElement = ((unsigned char *)&m_pParent->m_Value.m_nValue);
+        int value = GetInt();
+        unsigned char *pColorElement = ((unsigned char *)&value);
         return Color(pColorElement[0], pColorElement[1], pColorElement[2], pColorElement[3]);
     }
 
@@ -332,4 +416,10 @@ namespace SourceEngine
         char const *str = m_pParent->m_Value.m_pszString;
         return str ? str : "";
     }
+
+    //-----------------------------------------------------------------------------
+    // Called by the framework to register ConCommands with the ICVar
+    //-----------------------------------------------------------------------------
+    void ConVar_Register(int nCVarFlag = 0, IConCommandBaseAccessor *pAccessor = NULL);
+    void ConVar_Unregister();
 }

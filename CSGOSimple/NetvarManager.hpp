@@ -41,7 +41,7 @@ public:
         return GetOffset(szTableName, {std::forward<Args>(args)...});
     }
 private:
-    std::unique_ptr<NetvarTable>  InternalLoadTable(SourceEngine::RecvTable* pRecvTable, uint32_t offset);
+    std::unique_ptr<NetvarTable>  InternalLoadTable(se::RecvTable* pRecvTable, uint32_t offset);
     void                          Dump(std::ostream& output, NetvarTable& table, int level);
     uint32_t                      GetOffset(const std::string& szTableName, const std::initializer_list<std::string>& props);
 

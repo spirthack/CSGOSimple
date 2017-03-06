@@ -2,7 +2,7 @@
 
 #include "Definitions.hpp"
 
-namespace SourceEngine
+namespace se
 {
     typedef float vec_t;
     // 2D Vector

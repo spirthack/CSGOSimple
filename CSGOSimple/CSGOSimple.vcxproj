@@ -171,9 +171,11 @@
     <ClCompile Include="ImGUI\imgui_draw.cpp" />
     <ClCompile Include="NetvarManager.cpp" />
     <ClCompile Include="Options.cpp" />
+    <ClCompile Include="SourceEngine\characterset.cpp" />
     <ClCompile Include="SourceEngine\Convar.cpp" />
     <ClCompile Include="SourceEngine\CRC.cpp" />
     <ClCompile Include="SourceEngine\SDK.cpp" />
+    <ClCompile Include="SourceEngine\UtlBuffer.cpp" />
     <ClCompile Include="SourceEngine\UtlString.cpp" />
     <ClCompile Include="SourceEngine\Vector.cpp" />
     <ClCompile Include="SourceEngine\Vector2D.cpp" />
@@ -193,6 +195,7 @@
     <ClInclude Include="Options.hpp" />
     <ClInclude Include="SourceEngine\CGlobalVarsBase.hpp" />
     <ClInclude Include="SourceEngine\CHandle.hpp" />
+    <ClInclude Include="SourceEngine\characterset.hpp" />
     <ClInclude Include="SourceEngine\CInput.hpp" />
     <ClInclude Include="SourceEngine\ClientClass.hpp" />
     <ClInclude Include="SourceEngine\Color.hpp" />
@@ -219,6 +222,7 @@
     <ClInclude Include="SourceEngine\QAngle.hpp" />
     <ClInclude Include="SourceEngine\Recv.hpp" />
     <ClInclude Include="SourceEngine\SDK.hpp" />
+    <ClInclude Include="SourceEngine\UtlBuffer.hpp" />
     <ClInclude Include="SourceEngine\UtlMemory.hpp" />
     <ClInclude Include="SourceEngine\UtlString.hpp" />
     <ClInclude Include="SourceEngine\UtlVector.hpp" />
