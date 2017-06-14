@@ -55,7 +55,7 @@ namespace se
     CGlobalVarsBase* Interfaces::GlobalVars()
     {
         if(!m_pGlobals) {
-            auto uAddress = Utils::FindSignature(XorStr("client.dll"), XorStr("A1 ? ? ? ? 5F 8B 40 10"));
+            auto uAddress = Utils::FindSignature(XorStr("client.dll"), XorStr("68 ? ? ? ? 68 ? ? ? ? FF 50 08 85 C0"));
             uint32_t g_dwGlobalVarsBase = *(uint32_t*)(uAddress + 0x1);
             m_pGlobals = *(CGlobalVarsBase**)(g_dwGlobalVarsBase);
 
@@ -105,7 +105,7 @@ namespace se
     IClientMode* Interfaces::ClientMode()
     {
         if(!m_pClientMode) {
-            auto uAddress = *(DWORD*)(Utils::FindSignature(XorStr("client.dll"), XorStr("8B 35 ? ? ? ? 85 FF 74 73")) + 2);
+            auto uAddress = *(DWORD*)(Utils::FindSignature(XorStr("client.dll"), XorStr("8B 0D ? ? ? ? 8B 01 5D FF")) + 2);
             m_pClientMode = *(IClientMode**)(uAddress);
         }
         return m_pClientMode;

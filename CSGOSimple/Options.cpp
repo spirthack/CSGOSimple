@@ -4,7 +4,7 @@ namespace Options
 {
     //Here we defined the extern variables declared on Options.hpp
 
-    bool g_bMainWindowOpen = true;
+    bool g_bMainWindowOpen = false;
 
     bool g_bESPEnabled = true;
     bool g_bESPShowBoxes = true;
