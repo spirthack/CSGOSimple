@@ -295,7 +295,7 @@ namespace Hooks
 		if(!Options::g_bAutoAccept || se::Interfaces::Engine()->IsInGame()) return;
         
 		//This is the beep sound that is played when we have found a game
-		if(!strcmp(szFileName, "weapons/hegrenade/beep.wav")) {
+		if(!strcmp(szFileName, "UI/competitive_accept_beep.wav")) {
 			
 			//This is the function that is called when you press the big ACCEPT button
 			IsReady = (IsReadyFn)((DWORD)Utils::FindSignature(XorStr("client.dll"), XorStr("55 8B EC 83 E4 F8 83 EC 08 56 8B 35 ?? ?? ?? ?? 57 8B 8E")));
