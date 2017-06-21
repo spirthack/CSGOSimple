@@ -60,8 +60,8 @@ namespace Hooks
             g_pOldWindowProc = (WNDPROC)SetWindowLongPtr(g_hWindow, GWLP_WNDPROC, (LONG_PTR)Hooked_WndProc);
 
 
-        g_fnOriginalReset = g_pD3DDevice9Hook->Hook(16, Hooked_Reset);                            //Hooks IDirect3DDevice9::EndScene
-        g_fnOriginalEndScene = g_pD3DDevice9Hook->Hook(42, Hooked_EndScene);                      //Hooks IDirect3DDevice9::Reset
+        g_fnOriginalReset = g_pD3DDevice9Hook->Hook(16, Hooked_Reset);                            //Hooks IDirect3DDevice9::Reset
+        g_fnOriginalEndScene = g_pD3DDevice9Hook->Hook(42, Hooked_EndScene);                      //Hooks IDirect3DDevice9::EndScene
 
         g_fnOriginalPlaySound = g_pMatSurfaceHook->Hook(82, (PlaySound_t)Hooked_PlaySound);       //Hooks ISurface::PlaySound
         g_fnOriginalCreateMove = g_pClientModeHook->Hook(24, (CreateMove_t)Hooked_CreateMove);    //Hooks IClientMode::CreateMove
