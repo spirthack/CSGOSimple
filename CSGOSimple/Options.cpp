@@ -6,12 +6,12 @@ namespace Options
 
     bool g_bMainWindowOpen = false;
 
-    bool g_bESPEnabled = true;
-    bool g_bESPShowBoxes = true;
-    bool g_bESPShowNames = true;
-    bool g_bRCSEnabled = true;
-    bool g_bBHopEnabled = true;
-    bool g_bAutoAccept = true;
-    float g_bESPAllyColor[4] = {0.0f, 0.0f, 1.0f, 1.0f}; //RGBA color
-    float g_bESPEnemyColor[4] = {1.0f, 0.0f, 0.0f, 1.0f};
+    bool g_bESPEnabled = false;
+    bool g_bESPShowBoxes = false;
+    bool g_bESPShowNames = false;
+    bool g_bRCSEnabled = false;
+    bool g_bBHopEnabled = false;
+    bool g_bAutoAccept = false;
+    float g_bESPAllyColor[4] = {0.0f, 0.0f, 1.0f, 1.0f}; //RGBA color Team
+    float g_bESPEnemyColor[4] = {1.0f, 0.0f, 0.0f, 1.0f}; //RGBA color Enemy
 }
