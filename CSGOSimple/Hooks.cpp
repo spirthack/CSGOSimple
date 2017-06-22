@@ -60,8 +60,8 @@ namespace Hooks
             g_pOldWindowProc = (WNDPROC)SetWindowLongPtr(g_hWindow, GWLP_WNDPROC, (LONG_PTR)Hooked_WndProc);
 
 
-        g_fnOriginalReset = g_pD3DDevice9Hook->Hook(16, Hooked_Reset);                            //Hooks IDirect3DDevice9::EndScene
-        g_fnOriginalEndScene = g_pD3DDevice9Hook->Hook(42, Hooked_EndScene);                      //Hooks IDirect3DDevice9::Reset
+        g_fnOriginalReset = g_pD3DDevice9Hook->Hook(16, Hooked_Reset);                            //Hooks IDirect3DDevice9::Reset
+        g_fnOriginalEndScene = g_pD3DDevice9Hook->Hook(42, Hooked_EndScene);                      //Hooks IDirect3DDevice9::EndScene
 
         g_fnOriginalPlaySound = g_pMatSurfaceHook->Hook(82, (PlaySound_t)Hooked_PlaySound);       //Hooks ISurface::PlaySound
         g_fnOriginalCreateMove = g_pClientModeHook->Hook(24, (CreateMove_t)Hooked_CreateMove);    //Hooks IClientMode::CreateMove
@@ -295,7 +295,7 @@ namespace Hooks
 		if(!Options::g_bAutoAccept || se::Interfaces::Engine()->IsInGame()) return;
         
 		//This is the beep sound that is played when we have found a game
-		if(!strcmp(szFileName, "weapons/hegrenade/beep.wav")) {
+		if(!strcmp(szFileName, "UI/competitive_accept_beep.wav")) {
 			
 			//This is the function that is called when you press the big ACCEPT button
 			IsReady = (IsReadyFn)((DWORD)Utils::FindSignature(XorStr("client.dll"), XorStr("55 8B EC 83 E4 F8 83 EC 08 56 8B 35 ?? ?? ?? ?? 57 8B 8E")));
