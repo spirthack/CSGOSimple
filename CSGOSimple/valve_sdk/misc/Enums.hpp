@@ -65,7 +65,8 @@ enum ECstrike15UserMessages
     CS_UM_XpUpdate = 65,
     CS_UM_QuestProgress = 66,
     CS_UM_ScoreLeaderboardData = 67,
-    CS_UM_PlayerDecalDigitalSignature = 68
+    CS_UM_PlayerDecalDigitalSignature = 68,
+    MAX_ECSTRIKE15USERMESSAGES
 };
 
 
@@ -132,7 +133,7 @@ enum ItemDefinitionIndex
     GLOVE_LEATHER_WRAP = 5032,
     GLOVE_MOTORCYCLE = 5033,
     GLOVE_SPECIALIST = 5034,
-    WEAPON_MAX
+    MAX_ITEMDEFINITIONINDEX
 };
 
 enum ClassId
@@ -229,6 +230,7 @@ enum ClassId
     ClassId_CInfoLadderDismount,
     ClassId_CInfoOverlayAccessor,
     ClassId_CItem_Healthshot,
+    ClassID_CItemDogTags,
     ClassId_CKnife,
     ClassId_CKnifeGG,
     ClassId_CLightGlow,
@@ -249,6 +251,7 @@ enum ClassId
     ClassId_CPlayerResource,
     ClassId_CPointCamera,
     ClassId_CPointCommentaryNode,
+    ClassId_CPointWorldText,
     ClassId_CPoseController,
     ClassId_CPostProcessController,
     ClassId_CPrecipitation,
@@ -388,7 +391,7 @@ enum ClassId
     ClassId_SmokeTrail,
     ClassId_SporeExplosion,
     ClassId_SporeTrail,
-
+    MAX_CLASSID
 };
 
 enum ECSPlayerBones
@@ -403,7 +406,8 @@ enum ECSPlayerBones
     clavicle_L,
     arm_upper_L,
     arm_lower_L,
-    hand_L
+    hand_L,
+    MAX_ECSPLAYERBONES
 };
 
 enum EntityFlags
@@ -416,14 +420,16 @@ enum EntityFlags
     FL_FROZEN = (1 << 5),
     FL_ATCONTROLS = (1 << 6),
     FL_CLIENT = (1 << 7),
-    FL_FAKECLIENT = (1 << 8)
+    FL_FAKECLIENT = (1 << 8),
+    MAX_ENTITYFLAGS
 };
 
 enum LifeState : unsigned char
 {
     LIFE_ALIVE = 0,// alive
     LIFE_DYING = 1, // playing death animation or still falling off of a ledge waiting to hit ground
-    LIFE_DEAD = 2 // dead. lying still.
+    LIFE_DEAD = 2, // dead. lying still.
+    MAX_LIFESTATE
 };
 
 enum WeaponSound_t
@@ -444,11 +450,10 @@ enum WeaponSound_t
     SPECIAL3,
     TAUNT,
     FAST_RELOAD,
-
     // Add new shoot sound types here
     REVERSE_THE_NEW_SOUND,
-
     NUM_SHOOT_SOUND_TYPES,
+    MAX_WEAPONSOUND
 };
 
 enum MoveType_t
@@ -466,5 +471,6 @@ enum MoveType_t
     MOVETYPE_OBSERVER,
     MOVETYPE_CUSTOM,
     MOVETYPE_LAST = MOVETYPE_CUSTOM,
-    MOVETYPE_MAX_BITS = 4
+    MOVETYPE_MAX_BITS = 4,
+    MAX_MOVETYPE
 };
