@@ -19,7 +19,9 @@ DWORD WINAPI on_dll_attach(LPVOID base)
         return FALSE;
     }
 
+#ifdef _DEBUG
     Utils::AttachConsole();
+#endif
 
     try {
         Utils::ConsolePrint("Initializing... ");
@@ -70,7 +72,10 @@ DWORD WINAPI on_dll_attach(LPVOID base)
 
 BOOL WINAPI on_dll_detach()
 {
+#ifdef _DEBUG
     Utils::DetachConsole();
+#endif
+
     Hooks::Shutdown();
 
     Menu::Get().Shutdown();

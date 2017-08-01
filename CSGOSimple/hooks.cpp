@@ -62,6 +62,7 @@ namespace Hooks
         static auto mat_ambient_light_g = g_CVar->FindVar("mat_ambient_light_g");
         static auto mat_ambient_light_b = g_CVar->FindVar("mat_ambient_light_b");
 
+        viewmodel_fov->m_fnChangeCallbacks.m_Size = 0;
         viewmodel_fov->SetValue(g_Options.viewmodel_fov);
         mat_ambient_light_r->SetValue(g_Options.mat_ambient_light_r);
         mat_ambient_light_g->SetValue(g_Options.mat_ambient_light_g);
@@ -188,6 +189,13 @@ namespace Hooks
         static auto oPlaySound = vguisurf_hook.get_original<PlaySound>(index::PlaySound);
 
         oPlaySound(g_VGuiSurface, name);
+
+        //if(strstr(name, "competitive_accept_beep.wav")) {
+        //    static auto fnAccept =
+        //        (void(*)())Utils::PatternScan(GetModuleHandleA("client.dll"), "55 8B EC 83 E4 F8 83 EC 08 56 8B 35 ? ? ? ? 57 83 BE");
+        //
+        //    fnAccept();
+        //}
     }
     //--------------------------------------------------------------------------------
     void __stdcall hkRenderView(const CViewSetup& view, CViewSetup& a3, int a4, int a5)

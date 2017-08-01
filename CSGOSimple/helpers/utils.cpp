@@ -9,9 +9,9 @@
 #include "../valve_sdk/csgostructs.hpp"
 #include "Math.hpp"
 
-HANDLE _out, _old_out;
-HANDLE _err, _old_err;
-HANDLE _in, _old_in;
+HANDLE _out = NULL, _old_out = NULL;
+HANDLE _err = NULL, _old_err = NULL;
+HANDLE _in = NULL, _old_in = NULL;
 
 namespace Utils
 {
@@ -66,6 +66,9 @@ namespace Utils
      */
     bool ConsolePrint(const char* fmt, ...)
     {
+        if(!_out) 
+            return false;
+
         char buf[1024];
         va_list va;
 
@@ -82,6 +85,9 @@ namespace Utils
      */
     char ConsoleReadKey()
     {
+        if(!_in)
+            return false;
+
         auto key = char{ 0 };
         auto keysread = DWORD{ 0 };
 
