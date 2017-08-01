@@ -65,10 +65,10 @@ Chams::Chams()
 }
 )#";
 
-    materialRegular        = g_MatSystem->FindMaterial("meme_regular", TEXTURE_GROUP_MODEL);
-    materialRegularIgnoreZ = g_MatSystem->FindMaterial("meme_ignorez", TEXTURE_GROUP_MODEL);
-    materialFlatIgnoreZ    = g_MatSystem->FindMaterial("meme_flat_ignorez", TEXTURE_GROUP_MODEL);
-    materialFlat           = g_MatSystem->FindMaterial("meme_flat", TEXTURE_GROUP_MODEL);
+    materialRegular        = g_MatSystem->FindMaterial("simple_regular", TEXTURE_GROUP_MODEL);
+    materialRegularIgnoreZ = g_MatSystem->FindMaterial("simple_ignorez", TEXTURE_GROUP_MODEL);
+    materialFlatIgnoreZ    = g_MatSystem->FindMaterial("simple_flat_ignorez", TEXTURE_GROUP_MODEL);
+    materialFlat           = g_MatSystem->FindMaterial("simple_flat", TEXTURE_GROUP_MODEL);
 }
 
 Chams::~Chams()
