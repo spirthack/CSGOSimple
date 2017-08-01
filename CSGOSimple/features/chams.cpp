@@ -113,11 +113,11 @@ void Chams::OnDrawModelExecute(
     const auto mdl = info.pModel;
 
     bool is_arm    = strstr(mdl->szName, "arms") != nullptr;
-    bool IsPlayer = strstr(mdl->szName, "models/player") != nullptr;
+    bool is_player = strstr(mdl->szName, "models/player") != nullptr;
     bool is_sleeve = strstr(mdl->szName, "sleeve") != nullptr;
-    //bool IsWeapon = strstr(mdl->szName, "weapons/v_") != nullptr;
+    //bool is_weapon = strstr(mdl->szName, "weapons/v_") != nullptr;
 
-    if(IsPlayer && g_Options.chams_player_enabled) {
+    if(is_player && g_Options.chams_player_enabled) {
         // 
         // Draw player Chams.
         // 

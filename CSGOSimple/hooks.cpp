@@ -190,12 +190,23 @@ namespace Hooks
 
         oPlaySound(g_VGuiSurface, name);
 
-        //if(strstr(name, "competitive_accept_beep.wav")) {
-        //    static auto fnAccept =
-        //        (void(*)())Utils::PatternScan(GetModuleHandleA("client.dll"), "55 8B EC 83 E4 F8 83 EC 08 56 8B 35 ? ? ? ? 57 83 BE");
-        //
-        //    fnAccept();
-        //}
+        // Auto Accept
+        if(strstr(name, "competitive_accept_beep.wav")) {
+            static auto fnAccept =
+                (void(*)())Utils::PatternScan(GetModuleHandleA("client.dll"), "55 8B EC 83 E4 F8 83 EC 08 56 8B 35 ? ? ? ? 57 83 BE");
+        
+            fnAccept();
+
+            //This will flash the CSGO window on the taskbar
+            //so we know a game was found (you cant hear the beep sometimes cause it auto-accepts too fast)
+            FLASHWINFO fi;
+            fi.cbSize    = sizeof(FLASHWINFO);
+            fi.hwnd      = InputSys::Get().GetMainWindow();
+            fi.dwFlags   = FLASHW_ALL | FLASHW_TIMERNOFG;
+            fi.uCount    = 0;
+            fi.dwTimeout = 0;
+            FlashWindowEx(&fi);
+        }
     }
     //--------------------------------------------------------------------------------
     void __stdcall hkRenderView(const CViewSetup& view, CViewSetup& a3, int a4, int a5)
