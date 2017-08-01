@@ -32,7 +32,7 @@ DWORD WINAPI on_dll_attach(LPVOID base)
 
         Hooks::Initialize();
 
-        // Register some m_Hotkeys.
+        // Register some hotkeys.
         // - Note:  The function that is called when the hotkey is pressed
         //          is called from the WndProc thread, not this thread.
         // 
