@@ -16,8 +16,8 @@ namespace Hooks
     vfunc_hook vguipanel_hook;
     vfunc_hook vguisurf_hook;
     vfunc_hook mdlrender_hook;
-    vfunc_hook viewrender_hook;
-
+    vfunc_hook clientmode_hook;
+    
     void Initialize()
     {
         hlclient_hook .setup(g_CHLClient);
@@ -25,7 +25,7 @@ namespace Hooks
         vguipanel_hook.setup(g_VGuiPanel);
         vguisurf_hook .setup(g_VGuiSurface);
         mdlrender_hook.setup(g_MdlRender);
-        viewrender_hook.setup(g_ViewRender);
+        clientmode_hook.setup(g_ClientMode);
 
         direct3d_hook.hook_index(index::EndScene, hkEndScene);
         direct3d_hook.hook_index(index::Reset, hkReset);
@@ -39,7 +39,7 @@ namespace Hooks
 
         mdlrender_hook.hook_index(index::DrawModelExecute, hkDrawModelExecute);
 
-        viewrender_hook.hook_index(index::RenderView, hkRenderView);
+        clientmode_hook.hook_index(index::DoPostScreenSpaceEffects, hkDoPostScreenEffects);
 
         Visuals::CreateFonts();
     }
@@ -51,6 +51,7 @@ namespace Hooks
         vguipanel_hook.unhook_all();
         vguisurf_hook.unhook_all();
         mdlrender_hook.unhook_all();
+        clientmode_hook.unhook_all();
 
         Glow::Get().Shutdown();
 
@@ -157,7 +158,7 @@ namespace Hooks
                     return;
 
                 for(auto i = 1; i <= g_EntityList->GetMaxEntities(); ++i) {
-                    auto entity = (C_BaseEntity*)C_BaseEntity::GetEntityByIndex(i);
+                    auto entity = (C_BasePlayer*)C_BaseEntity::GetEntityByIndex(i);
 
                     if(!entity)
                         continue;
@@ -166,7 +167,7 @@ namespace Hooks
                         continue;
 
                     if(i < 65 && g_Options.esp_enabled) {
-                        auto player = (C_BasePlayer*)entity;
+                        auto player = entity;
                         if(!entity->IsDormant() && player->IsAlive() && Visuals::player::begin(player)) {
                             if(g_Options.esp_player_snaplines) Visuals::player::RenderSnapline();
                             if(g_Options.esp_player_boxes)     Visuals::player::RenderBox();
@@ -215,14 +216,14 @@ namespace Hooks
         }
     }
     //--------------------------------------------------------------------------------
-    void __stdcall hkRenderView(const CViewSetup& view, CViewSetup& a3, int a4, int a5)
+    int __stdcall hkDoPostScreenEffects(int a1)
     {
-        static auto ofunc = viewrender_hook.get_original<RenderView>(index::RenderView);
-        
+        auto oDoPostScreenEffects = clientmode_hook.get_original<DoPostScreenEffects>(index::DoPostScreenSpaceEffects);
+
         if(g_LocalPlayer && g_Options.glow_enabled)
             Glow::Get().Run();
 
-        return ofunc(g_ViewRender, view, a3, a4, a5);
+        return oDoPostScreenEffects(g_ClientMode, a1);
     }
     //--------------------------------------------------------------------------------
     void __stdcall hkFrameStageNotify(ClientFrameStage_t stage)
