@@ -158,7 +158,7 @@ namespace Hooks
                     return;
 
                 if(g_Options.esp_enabled) {
-                    for(auto i = 1; i <= g_ClientState->m_nMaxClients; ++i) {
+                    for(auto i = 1; i <= g_EntityList->GetHighestEntityIndex(); ++i) {
                         auto entity = C_BasePlayer::GetPlayerByIndex(i);
 
                         if(!entity)
