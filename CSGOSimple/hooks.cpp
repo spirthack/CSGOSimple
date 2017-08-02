@@ -157,31 +157,33 @@ namespace Hooks
                 if(!g_LocalPlayer)
                     return;
 
-                for(auto i = 1; i <= g_EntityList->GetMaxEntities(); ++i) {
-                    auto entity = (C_BasePlayer*)C_BaseEntity::GetEntityByIndex(i);
+                if(g_Options.esp_enabled) {
+                    for(auto i = 1; i <= g_EntityList->GetMaxEntities(); ++i) {
+                        auto entity = (C_BasePlayer*)C_BaseEntity::GetEntityByIndex(i);
 
-                    if(!entity)
-                        continue;
+                        if(!entity)
+                            continue;
 
-                    if(entity == g_LocalPlayer)
-                        continue;
+                        if(entity == g_LocalPlayer)
+                            continue;
 
-                    if(i < 65 && g_Options.esp_enabled) {
-                        auto player = entity;
-                        if(!entity->IsDormant() && player->IsAlive() && Visuals::player::begin(player)) {
-                            if(g_Options.esp_player_snaplines) Visuals::player::RenderSnapline();
-                            if(g_Options.esp_player_boxes)     Visuals::player::RenderBox();
-                            if(g_Options.esp_player_weapons)   Visuals::player::RenderWeapon();
-                            if(g_Options.esp_player_names)     Visuals::player::RenderName();
-                            if(g_Options.esp_player_health)    Visuals::player::RenderHealth();
+                        if(i < 65) {
+                            auto player = entity;
+                            if(!entity->IsDormant() && player->IsAlive() && Visuals::player::begin(player)) {
+                                if(g_Options.esp_player_snaplines) Visuals::player::RenderSnapline();
+                                if(g_Options.esp_player_boxes)     Visuals::player::RenderBox();
+                                if(g_Options.esp_player_weapons)   Visuals::player::RenderWeapon();
+                                if(g_Options.esp_player_names)     Visuals::player::RenderName();
+                                if(g_Options.esp_player_health)    Visuals::player::RenderHealth();
+                            }
+                        } else if(g_Options.esp_dropped_weapons && entity->IsWeapon()) {
+                            Visuals::Misc::RenderWeapon((C_BaseCombatWeapon*)entity);
+                        } else if(g_Options.esp_defuse_kit && entity->IsDefuseKit()) {
+                            Visuals::Misc::RenderDefuseKit(entity);
+                        } else if(entity->IsPlantedC4()) {
+                            if(g_Options.esp_planted_c4)
+                                Visuals::Misc::RenderPlantedC4(entity);
                         }
-                    } else if(g_Options.esp_dropped_weapons && entity->IsWeapon()) {
-                        Visuals::Misc::RenderWeapon((C_BaseCombatWeapon*)entity);
-                    } else if(g_Options.esp_defuse_kit && entity->IsDefuseKit()) {
-                        Visuals::Misc::RenderDefuseKit(entity);
-                    } else if(entity->IsPlantedC4()) {
-                        if(g_Options.esp_planted_c4)
-                            Visuals::Misc::RenderPlantedC4(entity);
                     }
                 }
 
