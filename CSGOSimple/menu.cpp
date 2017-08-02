@@ -302,6 +302,7 @@ void Menu::Initialize()
 void Menu::Shutdown()
 {
     ImGui_ImplDX9_Shutdown();
+    cl_mouseenable->SetValue(false);
 }
 
 void Menu::OnDeviceLost()
