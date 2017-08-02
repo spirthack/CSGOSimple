@@ -85,7 +85,6 @@ bool inject(HANDLE process, const wchar_t* dll)
         (LPTHREAD_START_ROUTINE)LoadLibraryW, dllpath, 0, nullptr);
 
     if(!thread) {
-        exit_code = GetLastError();
         goto fail;
     }
 
