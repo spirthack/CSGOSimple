@@ -12,15 +12,9 @@ class ClientClass;
 
 namespace Visuals
 {
-
-    struct ESPBox
+    namespace Player
     {
-        int x, y, w, h, gay;
-    };
-
-    namespace player
-    {
-        bool begin(C_BasePlayer* pl);
+        bool Begin(C_BasePlayer* pl);
 
         void RenderBox();
         void RenderName();

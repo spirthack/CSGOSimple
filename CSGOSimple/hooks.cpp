@@ -158,8 +158,8 @@ namespace Hooks
                     return;
 
                 if(g_Options.esp_enabled) {
-                    for(auto i = 1; i <= g_EntityList->GetMaxEntities(); ++i) {
-                        auto entity = (C_BasePlayer*)C_BaseEntity::GetEntityByIndex(i);
+                    for(auto i = 1; i <= g_ClientState->m_nMaxClients; ++i) {
+                        auto entity = C_BasePlayer::GetPlayerByIndex(i);
 
                         if(!entity)
                             continue;
@@ -167,14 +167,16 @@ namespace Hooks
                         if(entity == g_LocalPlayer)
                             continue;
 
-                        if(i < 65) {
-                            auto player = entity;
-                            if(!entity->IsDormant() && player->IsAlive() && Visuals::player::begin(player)) {
-                                if(g_Options.esp_player_snaplines) Visuals::player::RenderSnapline();
-                                if(g_Options.esp_player_boxes)     Visuals::player::RenderBox();
-                                if(g_Options.esp_player_weapons)   Visuals::player::RenderWeapon();
-                                if(g_Options.esp_player_names)     Visuals::player::RenderName();
-                                if(g_Options.esp_player_health)    Visuals::player::RenderHealth();
+                        if(i < 65 && !entity->IsDormant() && entity->IsAlive()) {
+                            // Begin will calculate player screen coordinate, bounding box, etc
+                            // If it returns false it means the player is not inside the screen
+                            // or is an ally (and team check is enabled)
+                            if(Visuals::Player::Begin(entity)) {
+                                if(g_Options.esp_player_snaplines) Visuals::Player::RenderSnapline();
+                                if(g_Options.esp_player_boxes)     Visuals::Player::RenderBox();
+                                if(g_Options.esp_player_weapons)   Visuals::Player::RenderWeapon();
+                                if(g_Options.esp_player_names)     Visuals::Player::RenderName();
+                                if(g_Options.esp_player_health)    Visuals::Player::RenderHealth();
                             }
                         } else if(g_Options.esp_dropped_weapons && entity->IsWeapon()) {
                             Visuals::Misc::RenderWeapon((C_BaseCombatWeapon*)entity);

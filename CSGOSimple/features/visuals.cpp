@@ -92,10 +92,10 @@ bool Visuals::CreateFonts()
 void Visuals::DestroyFonts()
 {
     // Is there a way to destroy vgui fonts?
-    // TODO: GetOffset out
+    // TODO: Find out
 }
 //--------------------------------------------------------------------------------
-bool Visuals::player::begin(C_BasePlayer* pl)
+bool Visuals::Player::Begin(C_BasePlayer* pl)
 {
     esp_ctx.pl = pl;
     esp_ctx.is_enemy = g_LocalPlayer->m_iTeamNum() != pl->m_iTeamNum();
@@ -106,8 +106,8 @@ bool Visuals::player::begin(C_BasePlayer* pl)
     esp_ctx.clr      = esp_ctx.is_enemy ? g_Options.color_esp_enemy : g_Options.color_esp_ally;
     esp_ctx.text_clr = esp_ctx.is_enemy ? g_Options.color_esp_text_enemies : g_Options.color_esp_text_ally;
 
-    auto  head   = pl->GetHitboxPos(HITBOX_HEAD);
-    auto& origin = pl->m_vecOrigin();
+    auto head   = pl->GetHitboxPos(HITBOX_HEAD);
+    auto origin = pl->m_vecOrigin();
 
     head.z += 15;
 
@@ -126,7 +126,7 @@ bool Visuals::player::begin(C_BasePlayer* pl)
     return true;
 }
 //--------------------------------------------------------------------------------
-void Visuals::player::RenderBox()
+void Visuals::Player::RenderBox()
 {
     g_VGuiSurface->DrawSetColor(esp_ctx.clr);
     g_VGuiSurface->DrawOutlinedRect(esp_ctx.bbox.left, esp_ctx.bbox.top, esp_ctx.bbox.right, esp_ctx.bbox.bottom);
@@ -135,7 +135,7 @@ void Visuals::player::RenderBox()
     g_VGuiSurface->DrawOutlinedRect(esp_ctx.bbox.left + 1, esp_ctx.bbox.top + 1, esp_ctx.bbox.right - 1, esp_ctx.bbox.bottom - 1);
 }
 //--------------------------------------------------------------------------------
-void Visuals::player::RenderName()
+void Visuals::Player::RenderName()
 {
     wchar_t buf[128];
 
@@ -152,7 +152,7 @@ void Visuals::player::RenderName()
     }
 }
 //--------------------------------------------------------------------------------
-void Visuals::player::RenderHealth()
+void Visuals::Player::RenderHealth()
 {
     auto  hp = esp_ctx.pl->m_iHealth();
     float box_h = (float)fabs(esp_ctx.bbox.bottom - esp_ctx.bbox.top);
@@ -176,7 +176,7 @@ void Visuals::player::RenderHealth()
     g_VGuiSurface->DrawFilledRect(x+1, y + 1, x + w - 1, y + height - 2);
 }
 //--------------------------------------------------------------------------------
-void Visuals::player::RenderWeapon()
+void Visuals::Player::RenderWeapon()
 {
     wchar_t buf[80];
 
@@ -195,7 +195,7 @@ void Visuals::player::RenderWeapon()
     }
 }
 //--------------------------------------------------------------------------------
-void Visuals::player::RenderSnapline()
+void Visuals::Player::RenderSnapline()
 {
     int screen_w, screen_h;
     g_EngineClient->GetScreenSize(screen_w, screen_h);
