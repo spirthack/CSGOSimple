@@ -60,15 +60,15 @@ namespace Hooks
         static auto viewmodel_fov       = g_CVar->FindVar("viewmodel_fov");
         static auto mat_ambient_light_r = g_CVar->FindVar("mat_ambient_light_r");
         static auto mat_ambient_light_g = g_CVar->FindVar("mat_ambient_light_g");
-		static auto mat_ambient_light_b = g_CVar->FindVar("mat_ambient_light_b");
-		static auto crosshair_cvar = g_CVar->FindVar("crosshair");
+        static auto mat_ambient_light_b = g_CVar->FindVar("mat_ambient_light_b");
+        static auto crosshair_cvar      = g_CVar->FindVar("crosshair");
 
         viewmodel_fov->m_fnChangeCallbacks.m_Size = 0;
         viewmodel_fov->SetValue(g_Options.viewmodel_fov);
         mat_ambient_light_r->SetValue(g_Options.mat_ambient_light_r);
         mat_ambient_light_g->SetValue(g_Options.mat_ambient_light_g);
         mat_ambient_light_b->SetValue(g_Options.mat_ambient_light_b);
-		crosshair_cvar->SetValue(g_Options.esp_crosshair ? 0 : 1);
+        crosshair_cvar->SetValue(!g_Options.esp_crosshair);
 
         Menu::Get().Render();
 
