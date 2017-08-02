@@ -2,7 +2,6 @@
 
 #include "UtlVector.hpp"
 #include "../Interfaces/IClientEntity.hpp"
-#include "BaseHandle.hpp"
 
 class GlowObjectDefinition_t
 {

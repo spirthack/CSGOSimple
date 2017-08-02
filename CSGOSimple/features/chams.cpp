@@ -73,6 +73,10 @@ Chams::Chams()
 
 Chams::~Chams()
 {
+    std::remove("csgo\\materials\\simple_regular.vmt");
+    std::remove("csgo\\materials\\simple_ignorez.vmt");
+    std::remove("csgo\\materials\\simple_flat.vmt");
+    std::remove("csgo\\materials\\simple_flat_ignorez.vmt");
 }
 
 void Chams::OverrideMaterial(bool ignoreZ, bool flat, bool wireframe, const Color& rgba)

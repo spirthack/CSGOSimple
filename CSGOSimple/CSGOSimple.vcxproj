@@ -94,6 +94,7 @@
   <ItemGroup>
     <ClCompile Include="features\bhop.cpp" />
     <ClCompile Include="features\chams.cpp" />
+    <ClCompile Include="features\glow.cpp" />
     <ClCompile Include="features\visuals.cpp" />
     <ClCompile Include="helpers\InputSys.cpp" />
     <ClCompile Include="helpers\math.cpp" />
@@ -123,6 +124,7 @@
   <ItemGroup>
     <ClInclude Include="features\bhop.hpp" />
     <ClInclude Include="features\chams.hpp" />
+    <ClInclude Include="features\glow.hpp" />
     <ClInclude Include="features\visuals.hpp" />
     <ClInclude Include="helpers\InputSys.hpp" />
     <ClInclude Include="helpers\math.hpp" />

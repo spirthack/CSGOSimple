@@ -96,6 +96,9 @@
     <ClCompile Include="helpers\InputSys.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="features\glow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helpers\math.hpp">
@@ -327,6 +330,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="helpers\InputSys.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features\glow.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -7,6 +7,7 @@
 #include "features/bhop.hpp"
 #include "features/Chams.hpp"
 #include "features/Visuals.hpp"
+#include "features/glow.hpp"
 
 namespace Hooks
 {
@@ -50,6 +51,9 @@ namespace Hooks
         vguipanel_hook.unhook_all();
         vguisurf_hook.unhook_all();
         mdlrender_hook.unhook_all();
+
+        Glow::Get().Shutdown();
+
         Visuals::DestroyFonts();
     }
     //--------------------------------------------------------------------------------
@@ -215,74 +219,8 @@ namespace Hooks
     {
         static auto ofunc = viewrender_hook.get_original<RenderView>(index::RenderView);
         
-        if(g_LocalPlayer && g_Options.glow_enabled) {
-            for(auto i = 0; i < g_GlowObjManager->m_GlowObjectDefinitions.Count(); i++) {
-                auto& glowObject = g_GlowObjManager->m_GlowObjectDefinitions[i];
-                auto entity = (C_BaseEntity*)glowObject.m_pEntity;
-
-                if(glowObject.IsUnused())
-                    continue;
-
-                if(!entity || entity->IsDormant())
-                    continue;
-
-                auto class_id = entity->GetClientClass()->m_ClassID;
-                auto color = Color{};
-
-                switch(class_id) {
-                case ClassId_CCSPlayer:
-                {
-                    auto is_enemy = entity->m_iTeamNum() != g_LocalPlayer->m_iTeamNum();
-
-                    if(((C_BasePlayer*)entity)->HasC4() && is_enemy && g_Options.glow_c4_carrier) {
-                        color = g_Options.color_glow_c4_carrier;
-                        break;
-                    }
-
-                    if(!g_Options.glow_players || !((C_BasePlayer*)entity)->IsAlive())
-                        continue;
-
-                    if(!is_enemy && g_Options.glow_enemies_only)
-                        continue;
-
-                    color = is_enemy ? g_Options.color_glow_enemy : g_Options.color_glow_ally;
-
-                    break;
-                }
-                case ClassId_CChicken:
-                    if(!g_Options.glow_chickens)
-                        continue;
-                    entity->m_bShouldGlow() = true;
-                    color = g_Options.color_glow_chickens;
-                    break;
-                case ClassId_CBaseAnimating:
-                    if(!g_Options.glow_defuse_kits)
-                        continue;
-                    color = g_Options.color_glow_defuse;
-                    break;
-                case ClassId_CPlantedC4:
-                    if(!g_Options.glow_planted_c4)
-                        continue;
-                    color = g_Options.color_glow_planted_c4;
-                    break;
-                default:
-                {
-                    if(entity->IsWeapon()) {
-                        if(!g_Options.glow_weapons)
-                            continue;
-                        color = g_Options.color_glow_weapons;
-                    }
-                }
-                }
-
-                glowObject.m_flRed   = color.r() / 255.0f;
-                glowObject.m_flGreen = color.g() / 255.0f;
-                glowObject.m_flBlue  = color.b() / 255.0f;
-                glowObject.m_flAlpha = color.a() / 255.0f;
-                glowObject.m_bRenderWhenOccluded   = true;
-                glowObject.m_bRenderWhenUnoccluded = false;
-            }
-        }
+        if(g_LocalPlayer && g_Options.glow_enabled)
+            Glow::Get().Run();
 
         return ofunc(g_ViewRender, view, a3, a4, a5);
     }
