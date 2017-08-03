@@ -70,7 +70,7 @@ Chams::Chams()
     materialFlatIgnoreZ    = g_MatSystem->FindMaterial("simple_flat_ignorez", TEXTURE_GROUP_MODEL);
     materialFlat           = g_MatSystem->FindMaterial("simple_flat", TEXTURE_GROUP_MODEL);
 }
-
+	
 Chams::~Chams()
 {
     std::remove("csgo\\materials\\simple_regular.vmt");
@@ -79,7 +79,7 @@ Chams::~Chams()
     std::remove("csgo\\materials\\simple_flat_ignorez.vmt");
 }
 
-void Chams::OverrideMaterial(bool ignoreZ, bool flat, bool wireframe, const Color& rgba)
+void Chams::OverrideMaterial(bool ignoreZ, bool flat, bool wireframe, bool glass, const Color& rgba)
 {
     IMaterial* material = nullptr;
 
@@ -88,16 +88,23 @@ void Chams::OverrideMaterial(bool ignoreZ, bool flat, bool wireframe, const Colo
             material = materialFlatIgnoreZ;
         else
             material = materialFlat;
-    } else {
+	} else {
         if(ignoreZ)
             material = materialRegularIgnoreZ;
         else
             material = materialRegular;
     }
 
+
+	if(glass) {
+		material = materialFlat;
+		material->AlphaModulate(0.45f);
+	} else {
+		material->AlphaModulate(
+			rgba.a() / 255.0f);
+	}
+
     material->SetMaterialVarFlag(MATERIAL_VAR_WIREFRAME, wireframe);
-    material->AlphaModulate(
-        rgba.a() / 255.0f);
     material->ColorModulate(
         rgba.r() / 255.0f,
         rgba.g() / 255.0f,
@@ -140,18 +147,21 @@ void Chams::OnDrawModelExecute(
                     true,
                     g_Options.chams_player_flat,
                     g_Options.chams_player_wireframe,
+					false,
                     clr_back);
                 fnDME(g_MdlRender, ctx, state, info, matrix);
                 OverrideMaterial(
                     false,
                     g_Options.chams_player_flat,
                     g_Options.chams_player_wireframe,
+					false,
                     clr_front);
             } else {
                 OverrideMaterial(
                     false,
                     g_Options.chams_player_flat,
                     g_Options.chams_player_wireframe,
+					g_Options.chams_player_glass,
                     clr_front);
             }
         }
@@ -182,18 +192,21 @@ void Chams::OnDrawModelExecute(
                     true,
                     g_Options.chams_arms_flat,
                     g_Options.chams_arms_wireframe,
+					false,
                     g_Options.color_chams_arms_occluded);
                 fnDME(g_MdlRender, ctx, state, info, matrix);
                 OverrideMaterial(
                     false,
                     g_Options.chams_arms_flat,
                     g_Options.chams_arms_wireframe,
+					false,
                     g_Options.color_chams_arms_visible);
             } else {
                 OverrideMaterial(
                     false,
                     g_Options.chams_arms_flat,
                     g_Options.chams_arms_wireframe,
+					g_Options.chams_arms_glass,
                     g_Options.color_chams_arms_visible);
             }
         }
