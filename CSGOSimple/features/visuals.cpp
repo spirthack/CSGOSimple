@@ -14,8 +14,8 @@ struct
 {
     C_BasePlayer* pl;
     bool    is_enemy;
+	bool    is_visible;
     Color   clr;
-    Color   text_clr;
     Vector  head;
     Vector  feet;
     RECT    bbox;
@@ -82,9 +82,9 @@ bool Visuals::CreateFonts()
     defuse_font          = g_VGuiSurface->CreateFont_();
     dropped_weapons_font = g_VGuiSurface->CreateFont_();
 
-    g_VGuiSurface->SetFontGlyphSet(esp_font, "Tahoma", 11, 700, 0, 0, FONTFLAG_DROPSHADOW);
-    g_VGuiSurface->SetFontGlyphSet(defuse_font, "Tahoma", 15, 700, 0, 0, FONTFLAG_DROPSHADOW);
-    g_VGuiSurface->SetFontGlyphSet(dropped_weapons_font, "Tahoma", 10, 700, 0, 0, FONTFLAG_DROPSHADOW);
+    g_VGuiSurface->SetFontGlyphSet(esp_font, "Arial", 11, 700, 0, 0, FONTFLAG_DROPSHADOW);
+    g_VGuiSurface->SetFontGlyphSet(defuse_font, "Arial", 15, 700, 0, 0, FONTFLAG_DROPSHADOW);
+    g_VGuiSurface->SetFontGlyphSet(dropped_weapons_font, "Arial", 10, 700, 0, 0, FONTFLAG_DROPSHADOW);
 
     return true;
 }
@@ -99,12 +99,12 @@ bool Visuals::player::begin(C_BasePlayer* pl)
 {
     esp_ctx.pl = pl;
     esp_ctx.is_enemy = g_LocalPlayer->m_iTeamNum() != pl->m_iTeamNum();
+	esp_ctx.is_visible = g_LocalPlayer->CanSeePlayer(pl, HITBOX_CHEST);
 
     if(!esp_ctx.is_enemy && g_Options.esp_enemies_only)
         return false;
 
-    esp_ctx.clr      = esp_ctx.is_enemy ? g_Options.color_esp_enemy : g_Options.color_esp_ally;
-    esp_ctx.text_clr = esp_ctx.is_enemy ? g_Options.color_esp_text_enemies : g_Options.color_esp_text_ally;
+	esp_ctx.clr = esp_ctx.is_enemy ? (esp_ctx.is_visible ? g_Options.color_esp_enemy_visible : g_Options.color_esp_enemy_occluded): (esp_ctx.is_visible ? g_Options.color_esp_ally_visible : g_Options.color_esp_ally_occluded);
 
     auto  head   = pl->GetHitboxPos(HITBOX_HEAD);
     auto& origin = pl->m_vecOrigin();
@@ -146,7 +146,7 @@ void Visuals::player::RenderName()
         g_VGuiSurface->GetTextSize(esp_font, buf, tw, th);
 
         g_VGuiSurface->DrawSetTextFont(esp_font);
-        g_VGuiSurface->DrawSetTextColor(esp_ctx.text_clr);
+        g_VGuiSurface->DrawSetTextColor(esp_ctx.clr);
         g_VGuiSurface->DrawSetTextPos(esp_ctx.feet.x - tw / 2, esp_ctx.head.y - th);
         g_VGuiSurface->DrawPrintText(buf, wcslen(buf));
     }
@@ -189,7 +189,7 @@ void Visuals::player::RenderWeapon()
         g_VGuiSurface->GetTextSize(esp_font, buf, tw, th);
 
         g_VGuiSurface->DrawSetTextFont(esp_font);
-        g_VGuiSurface->DrawSetTextColor(esp_ctx.text_clr);
+        g_VGuiSurface->DrawSetTextColor(esp_ctx.clr);
         g_VGuiSurface->DrawSetTextPos(esp_ctx.feet.x - tw / 2, esp_ctx.feet.y);
         g_VGuiSurface->DrawPrintText(buf, wcslen(buf));
     }
@@ -291,7 +291,7 @@ void Visuals::Misc::RenderDefuseKit(C_BaseEntity* ent)
     g_VGuiSurface->GetTextSize(esp_font, buf, tw, th);
 
     g_VGuiSurface->DrawSetTextFont(esp_font);
-    g_VGuiSurface->DrawSetTextColor(esp_ctx.text_clr);
+    g_VGuiSurface->DrawSetTextColor(esp_ctx.clr);
     g_VGuiSurface->DrawSetTextPos((bbox.left + w * 0.5f) - tw * 0.5f, bbox.bottom + 1);
     g_VGuiSurface->DrawPrintText(buf, wcslen(buf));
 }
@@ -316,7 +316,7 @@ void Visuals::Misc::RenderPlantedC4(C_BaseEntity* ent)
     g_VGuiSurface->GetTextSize(esp_font, buf, tw, th);
 
     g_VGuiSurface->DrawSetTextFont(esp_font);
-    g_VGuiSurface->DrawSetTextColor(esp_ctx.text_clr);
+    g_VGuiSurface->DrawSetTextColor(esp_ctx.clr);
     g_VGuiSurface->DrawSetTextPos((bbox.left + w * 0.5f) - tw * 0.5f, bbox.bottom + 1);
     g_VGuiSurface->DrawPrintText(buf, wcslen(buf));
 }
