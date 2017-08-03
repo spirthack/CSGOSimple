@@ -53,6 +53,8 @@ DWORD WINAPI on_dll_attach(LPVOID base)
 
         while(!g_Unload) 
             Sleep(1000);
+        
+        g_CVar->FindVar("crosshair")->SetValue(true);
 
         FreeLibraryAndExitThread(static_cast<HMODULE>(base), 1);
 
