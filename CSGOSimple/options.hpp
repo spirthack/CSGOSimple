@@ -63,14 +63,14 @@ public:
     // 
     // COLORS
     // 
-    OPTION(Color, color_esp_ally,         Color(0,   128, 255));
-    OPTION(Color, color_esp_enemy,        Color(255, 0,   0));
-    OPTION(Color, color_esp_text_ally,    Color(0,   128, 255));
-    OPTION(Color, color_esp_text_enemies, Color(255, 0,   0));
-    OPTION(Color, color_esp_crosshair,    Color(255, 255, 255));
-    OPTION(Color, color_esp_weapons,      Color(128, 0,   128));
-    OPTION(Color, color_esp_defuse,       Color(0,   128, 255));
-    OPTION(Color, color_esp_c4,           Color(255, 255, 0));
+    OPTION(Color, color_esp_ally_visible,            Color(0,   128, 255));
+    OPTION(Color, color_esp_enemy_visible,           Color(255, 0,   0));
+    OPTION(Color, color_esp_ally_occluded,           Color(0,   128, 255));
+    OPTION(Color, color_esp_enemy_occluded,          Color(255, 0,   0));
+    OPTION(Color, color_esp_crosshair,               Color(255, 255, 255));
+    OPTION(Color, color_esp_weapons,                 Color(128, 0,   128));
+    OPTION(Color, color_esp_defuse,                  Color(0,   128, 255));
+    OPTION(Color, color_esp_c4,                      Color(255, 255, 0));
 
     OPTION(Color, color_glow_ally,                   Color(0,   128, 255));
     OPTION(Color, color_glow_enemy,                  Color(255, 0,   0));

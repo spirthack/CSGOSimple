@@ -137,10 +137,10 @@ void RenderEspTab()
 
             ImGui::PushItemWidth(100);
             ImGui::ColorEditMode(ImGuiColorEditMode_HEX);
-            ImGuiEx::ColorEdit3("Allies", &g_Options.color_esp_ally);
-            ImGuiEx::ColorEdit3("Enemies", &g_Options.color_esp_enemy);
-            ImGuiEx::ColorEdit3("Text Allies", &g_Options.color_esp_text_ally);
-            ImGuiEx::ColorEdit3("Text Enemies", &g_Options.color_esp_text_enemies);
+            ImGuiEx::ColorEdit3("Allies Visible", &g_Options.color_esp_ally_visible);
+			ImGuiEx::ColorEdit3("Enemies Visible", &g_Options.color_esp_enemy_visible);
+			ImGuiEx::ColorEdit3("Allies Occluded", &g_Options.color_esp_ally_occluded);
+			ImGuiEx::ColorEdit3("Enemies Occluded", &g_Options.color_esp_enemy_occluded);
             ImGuiEx::ColorEdit3("Crosshair", &g_Options.color_esp_crosshair);
             ImGuiEx::ColorEdit3("Dropped Weapons", &g_Options.color_esp_weapons);
             ImGuiEx::ColorEdit3("Defuse Kit", &g_Options.color_esp_defuse);
