@@ -42,11 +42,13 @@ public:
     OPTION(bool, chams_player_enemies_only, false);
     OPTION(bool, chams_player_wireframe,    true);
     OPTION(bool, chams_player_flat,         true);
-    OPTION(bool, chams_player_ignorez,      true);
+	OPTION(bool, chams_player_ignorez,      true);
+	OPTION(bool, chams_player_glass,        false);
     OPTION(bool, chams_arms_enabled,        true);
-    OPTION(bool, chams_arms_wireframe,      true);
+    OPTION(bool, chams_arms_wireframe,      false);
     OPTION(bool, chams_arms_flat,           false);
-    OPTION(bool, chams_arms_ignorez,        false);
+	OPTION(bool, chams_arms_ignorez,        false);
+	OPTION(bool, chams_arms_glass,          true);
 
     //
     // MISC

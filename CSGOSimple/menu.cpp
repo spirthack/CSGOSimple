@@ -186,7 +186,7 @@ void RenderEspTab()
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ style.WindowPadding.x, style.ItemSpacing.y });
             ImGui::Columns(3, NULL, false);
             ImGui::SetColumnOffset(1, group_w / 3.0f);
-            ImGui::SetColumnOffset(2, 2 * group_w / 3.0f);
+            ImGui::SetColumnOffset(2, 2 * group_w / 2.9f);
             ImGui::SetColumnOffset(3, group_w);
 
             ImGui::BeginGroupBox("Players");
@@ -195,7 +195,8 @@ void RenderEspTab()
                 ImGui::Checkbox("Team Check", &g_Options.chams_player_enemies_only);
                 ImGui::Checkbox("Wireframe", &g_Options.chams_player_wireframe);
                 ImGui::Checkbox("Flat", &g_Options.chams_player_flat);
-                ImGui::Checkbox("Ignore-Z", &g_Options.chams_player_ignorez);
+				ImGui::Checkbox("Ignore-Z", &g_Options.chams_player_ignorez); ImGui::SameLine();
+				ImGui::Checkbox("Glass", &g_Options.chams_player_glass);
                 ImGui::ColorEditMode(ImGuiColorEditMode_HEX);
                 ImGui::PushItemWidth(110);
                 ImGuiEx::ColorEdit4("Ally (Visible)", &g_Options.color_chams_player_ally_visible);
@@ -214,6 +215,7 @@ void RenderEspTab()
                 ImGui::Checkbox("Wireframe", &g_Options.chams_arms_wireframe);
                 ImGui::Checkbox("Flat", &g_Options.chams_arms_flat);
                 ImGui::Checkbox("Ignore-Z", &g_Options.chams_arms_ignorez);
+				ImGui::Checkbox("Glass", &g_Options.chams_arms_glass);
                 ImGui::ColorEditMode(ImGuiColorEditMode_HEX);
                 ImGui::PushItemWidth(110);
                 ImGuiEx::ColorEdit4("Color (Visible)", &g_Options.color_chams_arms_visible);
