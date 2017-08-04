@@ -51,9 +51,9 @@ DWORD WINAPI on_dll_attach(LPVOID base)
 
         Utils::ConsolePrint("Finished.\n");
 
-        while(!g_Unload) 
+        while(!g_Unload)
             Sleep(1000);
-        
+
         g_CVar->FindVar("crosshair")->SetValue(true);
 
         FreeLibraryAndExitThread(static_cast<HMODULE>(base), 1);
@@ -91,15 +91,15 @@ BOOL WINAPI DllMain(
 )
 {
     switch(fdwReason) {
-    case DLL_PROCESS_ATTACH:
-        DisableThreadLibraryCalls(hinstDll);
-        CreateThread(nullptr, 0, on_dll_attach, hinstDll, 0, nullptr);
-        return TRUE;
-    case DLL_PROCESS_DETACH:
-        if(lpvReserved == nullptr)
-            return on_dll_detach();
-        return TRUE;
-    default:
-        return TRUE;
+        case DLL_PROCESS_ATTACH:
+            DisableThreadLibraryCalls(hinstDll);
+            CreateThread(nullptr, 0, on_dll_attach, hinstDll, 0, nullptr);
+            return TRUE;
+        case DLL_PROCESS_DETACH:
+            if(lpvReserved == nullptr)
+                return on_dll_detach();
+            return TRUE;
+        default:
+            return TRUE;
     }
 }

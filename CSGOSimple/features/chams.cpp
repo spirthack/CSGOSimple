@@ -65,12 +65,12 @@ Chams::Chams()
 }
 )#";
 
-    materialRegular        = g_MatSystem->FindMaterial("simple_regular", TEXTURE_GROUP_MODEL);
+    materialRegular = g_MatSystem->FindMaterial("simple_regular", TEXTURE_GROUP_MODEL);
     materialRegularIgnoreZ = g_MatSystem->FindMaterial("simple_ignorez", TEXTURE_GROUP_MODEL);
-    materialFlatIgnoreZ    = g_MatSystem->FindMaterial("simple_flat_ignorez", TEXTURE_GROUP_MODEL);
-    materialFlat           = g_MatSystem->FindMaterial("simple_flat", TEXTURE_GROUP_MODEL);
+    materialFlatIgnoreZ = g_MatSystem->FindMaterial("simple_flat_ignorez", TEXTURE_GROUP_MODEL);
+    materialFlat = g_MatSystem->FindMaterial("simple_flat", TEXTURE_GROUP_MODEL);
 }
-	
+
 Chams::~Chams()
 {
     std::remove("csgo\\materials\\simple_regular.vmt");
@@ -88,7 +88,7 @@ void Chams::OverrideMaterial(bool ignoreZ, bool flat, bool wireframe, bool glass
             material = materialFlatIgnoreZ;
         else
             material = materialFlat;
-	} else {
+    } else {
         if(ignoreZ)
             material = materialRegularIgnoreZ;
         else
@@ -96,13 +96,13 @@ void Chams::OverrideMaterial(bool ignoreZ, bool flat, bool wireframe, bool glass
     }
 
 
-	if(glass) {
-		material = materialFlat;
-		material->AlphaModulate(0.45f);
-	} else {
-		material->AlphaModulate(
-			rgba.a() / 255.0f);
-	}
+    if(glass) {
+        material = materialFlat;
+        material->AlphaModulate(0.45f);
+    } else {
+        material->AlphaModulate(
+            rgba.a() / 255.0f);
+    }
 
     material->SetMaterialVarFlag(MATERIAL_VAR_WIREFRAME, wireframe);
     material->ColorModulate(
@@ -123,10 +123,10 @@ void Chams::OnDrawModelExecute(
 
     const auto mdl = info.pModel;
 
-    bool is_arm    = strstr(mdl->szName, "arms") != nullptr;
+    bool is_arm = strstr(mdl->szName, "arms")             != nullptr;
     bool is_player = strstr(mdl->szName, "models/player") != nullptr;
-    bool is_sleeve = strstr(mdl->szName, "sleeve") != nullptr;
-    //bool is_weapon = strstr(mdl->szName, "weapons/v_") != nullptr;
+    bool is_sleeve = strstr(mdl->szName, "sleeve")        != nullptr;
+    //bool is_weapon = strstr(mdl->szName, "weapons/v_")  != nullptr;
 
     if(is_player && g_Options.chams_player_enabled) {
         // 
@@ -147,26 +147,25 @@ void Chams::OnDrawModelExecute(
                     true,
                     g_Options.chams_player_flat,
                     g_Options.chams_player_wireframe,
-					false,
+                    false,
                     clr_back);
                 fnDME(g_MdlRender, ctx, state, info, matrix);
                 OverrideMaterial(
                     false,
                     g_Options.chams_player_flat,
                     g_Options.chams_player_wireframe,
-					false,
+                    false,
                     clr_front);
             } else {
                 OverrideMaterial(
                     false,
                     g_Options.chams_player_flat,
                     g_Options.chams_player_wireframe,
-					g_Options.chams_player_glass,
+                    g_Options.chams_player_glass,
                     clr_front);
             }
         }
-    } 
-    else if(is_sleeve && g_Options.chams_arms_enabled) {
+    } else if(is_sleeve && g_Options.chams_arms_enabled) {
         auto material = g_MatSystem->FindMaterial(mdl->szName, TEXTURE_GROUP_MODEL);
         if(!material)
             return;
@@ -175,8 +174,7 @@ void Chams::OnDrawModelExecute(
         // 
         material->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, true);
         g_MdlRender->ForcedMaterialOverride(material);
-    } 
-    else if(is_arm) {
+    } else if(is_arm) {
         auto material = g_MatSystem->FindMaterial(mdl->szName, TEXTURE_GROUP_MODEL);
         if(!material)
             return;
@@ -192,21 +190,21 @@ void Chams::OnDrawModelExecute(
                     true,
                     g_Options.chams_arms_flat,
                     g_Options.chams_arms_wireframe,
-					false,
+                    false,
                     g_Options.color_chams_arms_occluded);
                 fnDME(g_MdlRender, ctx, state, info, matrix);
                 OverrideMaterial(
                     false,
                     g_Options.chams_arms_flat,
                     g_Options.chams_arms_wireframe,
-					false,
+                    false,
                     g_Options.color_chams_arms_visible);
             } else {
                 OverrideMaterial(
                     false,
                     g_Options.chams_arms_flat,
                     g_Options.chams_arms_wireframe,
-					g_Options.chams_arms_glass,
+                    g_Options.chams_arms_glass,
                     g_Options.color_chams_arms_visible);
             }
         }
