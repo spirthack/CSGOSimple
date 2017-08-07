@@ -1,4 +1,4 @@
-#include "NetvarSys.hpp"
+#include "netvars.hpp"
 
 #include <fstream>
 #include <utility>

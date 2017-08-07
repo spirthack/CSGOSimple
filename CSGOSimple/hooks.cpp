@@ -1,12 +1,12 @@
-#include "Hooks.hpp"
+#include "hooks.hpp"
 
-#include "Menu.hpp"
-#include "Options.hpp"
-#include "helpers/InputSys.hpp"
-#include "helpers/Utils.hpp"
+#include "menu.hpp"
+#include "options.hpp"
+#include "helpers/input.hpp"
+#include "helpers/utils.hpp"
 #include "features/bhop.hpp"
-#include "features/Chams.hpp"
-#include "features/Visuals.hpp"
+#include "features/chams.hpp"
+#include "features/visuals.hpp"
 #include "features/glow.hpp"
 
 namespace Hooks

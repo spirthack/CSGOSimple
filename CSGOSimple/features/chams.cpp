@@ -1,10 +1,10 @@
-#include "Chams.hpp"
+#include "chams.hpp"
 #include <fstream>
 
 #include "../valve_sdk/csgostructs.hpp"
-#include "../Options.hpp"
-#include "../Hooks.hpp"
-#include "../helpers/InputSys.hpp"
+#include "../options.hpp"
+#include "../hooks.hpp"
+#include "../helpers/input.hpp"
 
 Chams::Chams()
 {

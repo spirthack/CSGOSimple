@@ -8,7 +8,7 @@
 #include <memory>
 #include <stdexcept>
 
-#include "../Singleton.hpp"
+#include "../singleton.hpp"
 
 enum class KeyState
 {

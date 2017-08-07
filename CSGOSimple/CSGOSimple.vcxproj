@@ -96,7 +96,7 @@
     <ClCompile Include="features\chams.cpp" />
     <ClCompile Include="features\glow.cpp" />
     <ClCompile Include="features\visuals.cpp" />
-    <ClCompile Include="helpers\InputSys.cpp" />
+    <ClCompile Include="helpers\input.cpp" />
     <ClCompile Include="helpers\math.cpp" />
     <ClCompile Include="helpers\utils.cpp" />
     <ClCompile Include="helpers\vfunc_hook.cpp" />
@@ -119,14 +119,14 @@
     <ClCompile Include="valve_sdk\misc\Convar.cpp" />
     <ClCompile Include="valve_sdk\misc\UtlBuffer.cpp" />
     <ClCompile Include="valve_sdk\misc\UtlString.cpp" />
-    <ClCompile Include="valve_sdk\NetvarSys.cpp" />
+    <ClCompile Include="valve_sdk\netvars.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="features\bhop.hpp" />
     <ClInclude Include="features\chams.hpp" />
     <ClInclude Include="features\glow.hpp" />
     <ClInclude Include="features\visuals.hpp" />
-    <ClInclude Include="helpers\InputSys.hpp" />
+    <ClInclude Include="helpers\input.hpp" />
     <ClInclude Include="helpers\math.hpp" />
     <ClInclude Include="helpers\utils.hpp" />
     <ClInclude Include="helpers\vfunc_hook.hpp" />
@@ -199,7 +199,7 @@
     <ClInclude Include="valve_sdk\misc\UtlString.hpp" />
     <ClInclude Include="valve_sdk\misc\UtlVector.hpp" />
     <ClInclude Include="valve_sdk\misc\vfunc.hpp" />
-    <ClInclude Include="valve_sdk\NetvarSys.hpp" />
+    <ClInclude Include="valve_sdk\netvars.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

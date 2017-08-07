@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Singleton.hpp"
+#include "../singleton.hpp"
 
 class IMatRenderContext;
 struct DrawModelState_t;

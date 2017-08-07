@@ -63,12 +63,6 @@
     <ClCompile Include="valve_sdk\csgostructs.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="helpers\InputSys.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="valve_sdk\NetvarSys.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
     <ClCompile Include="valve_sdk\sdk.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
@@ -115,6 +109,12 @@
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
     <ClCompile Include="valve_sdk\misc\Color.cpp">
+      <Filter>Source Files\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="valve_sdk\netvars.cpp">
+      <Filter>Source Files\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="helpers\input.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
   </ItemGroup>
@@ -302,9 +302,6 @@
     <ClInclude Include="hooks.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="helpers\InputSys.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="helpers\math.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -350,8 +347,11 @@
     <ClInclude Include="valve_sdk\csgostructs.hpp">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="valve_sdk\NetvarSys.hpp">
+    <ClInclude Include="valve_sdk\netvars.hpp">
       <Filter>Header Files\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers\input.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

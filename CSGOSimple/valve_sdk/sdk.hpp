@@ -41,7 +41,7 @@
 #include "Misc/CUserCmd.hpp"
 #include "Misc/glow_outline_effect.hpp"
 
-#include "NetvarSys.hpp"
+#include "netvars.hpp"
 
 struct IDirect3DDevice9;
 

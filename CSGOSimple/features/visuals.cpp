@@ -1,10 +1,9 @@
-
-#include "Visuals.hpp"
+#include "visuals.hpp"
 
 #include "../options.hpp"
 #include "../valve_sdk/csgostructs.hpp"
-#include "../helpers/Math.hpp"
-#include "../helpers/Utils.hpp"
+#include "../helpers/math.hpp"
+#include "../helpers/utils.hpp"
 
 vgui::HFont esp_font;
 vgui::HFont defuse_font;

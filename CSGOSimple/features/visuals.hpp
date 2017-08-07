@@ -1,8 +1,5 @@
 #pragma once
 
-#include "../valve_sdk/Math/Vector.hpp"
-#include "../valve_sdk/Interfaces/IVEngineClient.hpp"
-
 class C_BasePlayer;
 class C_BaseEntity;
 class C_BaseCombatWeapon;

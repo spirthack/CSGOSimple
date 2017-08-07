@@ -2,14 +2,14 @@
 #include <Windows.h>
 
 #include "valve_sdk/sdk.hpp"
-#include "Helpers/Utils.hpp"
-#include "Helpers/InputSys.hpp"
+#include "helpers/utils.hpp"
+#include "helpers/input.hpp"
 
-#include "Hooks.hpp"
-#include "Menu.hpp"
-#include "Options.hpp"
+#include "hooks.hpp"
+#include "menu.hpp"
+#include "options.hpp"
 
-DWORD WINAPI on_dll_attach(LPVOID base)
+DWORD WINAPI OnDllAttach(LPVOID base)
 {
     // 
     // Wait at most 10s for the main game modules to be loaded.
@@ -72,7 +72,7 @@ DWORD WINAPI on_dll_attach(LPVOID base)
     //return TRUE;
 }
 
-BOOL WINAPI on_dll_detach()
+BOOL WINAPI OnDllDetach()
 {
 #ifdef _DEBUG
     Utils::DetachConsole();
@@ -93,11 +93,11 @@ BOOL WINAPI DllMain(
     switch(fdwReason) {
         case DLL_PROCESS_ATTACH:
             DisableThreadLibraryCalls(hinstDll);
-            CreateThread(nullptr, 0, on_dll_attach, hinstDll, 0, nullptr);
+            CreateThread(nullptr, 0, OnDllAttach, hinstDll, 0, nullptr);
             return TRUE;
         case DLL_PROCESS_DETACH:
             if(lpvReserved == nullptr)
-                return on_dll_detach();
+                return OnDllDetach();
             return TRUE;
         default:
             return TRUE;

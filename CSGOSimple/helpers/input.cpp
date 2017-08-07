@@ -1,9 +1,9 @@
-#include "InputSys.hpp"
+#include "input.hpp"
 
 #include "../valve_sdk/sdk.hpp"
 #include "../imgui/imgui.h"
 #include "../imgui/directx9/imgui_impl_dx9.h"
-#include "../Menu.hpp"
+#include "../menu.hpp"
 
 LRESULT ImGui_ImplDX9_WndProcHandler(HWND, UINT msg, WPARAM wParam, LPARAM lParam)
 {
