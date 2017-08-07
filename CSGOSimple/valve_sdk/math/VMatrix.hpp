@@ -64,6 +64,11 @@ public:
         }
     }
 
+    Vector GetXAxis()  const { return at(0); }
+    Vector GetYAxis()  const { return at(1); }
+    Vector GetZAxis()  const { return at(2); }
+    Vector GetOrigin() const { return at(3); }
+
     Vector at(int i) const { return Vector{ m_flMatVal[0][i], m_flMatVal[1][i], m_flMatVal[2][i] }; }
 
     float *operator[](int i) { return m_flMatVal[i]; }
