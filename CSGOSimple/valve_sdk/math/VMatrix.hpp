@@ -64,7 +64,7 @@ public:
         }
     }
 
-    Vector& at(int i) const { return *(Vector*)&m_flMatVal[i]; }
+    Vector at(int i) const { return Vector{ m_flMatVal[0][i], m_flMatVal[1][i], m_flMatVal[2][i] }; }
 
     float *operator[](int i) { return m_flMatVal[i]; }
     const float *operator[](int i) const { return m_flMatVal[i]; }
