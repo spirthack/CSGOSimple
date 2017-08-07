@@ -177,6 +177,7 @@ namespace Hooks
                                 if(g_Options.esp_player_weapons)   Visuals::Player::RenderWeapon();
                                 if(g_Options.esp_player_names)     Visuals::Player::RenderName();
                                 if(g_Options.esp_player_health)    Visuals::Player::RenderHealth();
+                                if(g_Options.esp_player_armour)    Visuals::Player::RenderArmour();
                             }
                         } else if(g_Options.esp_dropped_weapons && entity->IsWeapon()) {
                             Visuals::Misc::RenderWeapon((C_BaseCombatWeapon*)entity);

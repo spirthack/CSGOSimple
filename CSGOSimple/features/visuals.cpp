@@ -178,6 +178,27 @@ void Visuals::Player::RenderHealth()
     g_VGuiSurface->DrawFilledRect(x + 1, y + 1, x + w - 1, y + height - 2);
 }
 //--------------------------------------------------------------------------------
+void Visuals::Player::RenderArmour()
+{
+    auto  armour = esp_ctx.pl->m_ArmorValue();
+    float box_h = (float)fabs(esp_ctx.bbox.bottom - esp_ctx.bbox.top);
+    //float off = (box_h / 6.f) + 5;
+    float off = 4;
+
+    auto height = (((box_h * armour) / 100));
+
+    int x = esp_ctx.bbox.right + off;
+    int y = esp_ctx.bbox.top;
+    int w = 4;
+    int h = box_h;
+
+    g_VGuiSurface->DrawSetColor(Color::Black);
+    g_VGuiSurface->DrawFilledRect(x, y, x + w, y + h);
+
+    g_VGuiSurface->DrawSetColor(Color(0, 50, 255, 255));
+    g_VGuiSurface->DrawFilledRect(x + 1, y + 1, x + w - 1, y + height - 2);
+}
+//--------------------------------------------------------------------------------
 void Visuals::Player::RenderWeapon()
 {
     wchar_t buf[80];
