@@ -16,6 +16,7 @@ public:
     OPTION(bool, esp_player_boxes, false);
     OPTION(bool, esp_player_names, false);
     OPTION(bool, esp_player_health, false);
+    OPTION(bool, esp_player_armour, false);
     OPTION(bool, esp_player_weapons, false);
     OPTION(bool, esp_player_snaplines, false);
     OPTION(bool, esp_crosshair, false);

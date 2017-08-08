@@ -124,6 +124,7 @@ void RenderEspTab()
             ImGui::Checkbox("Boxes", &g_Options.esp_player_boxes);
             ImGui::Checkbox("Names", &g_Options.esp_player_names);
             ImGui::Checkbox("Health", &g_Options.esp_player_health);
+            ImGui::Checkbox("Armour", &g_Options.esp_player_armour);
             ImGui::Checkbox("Weapon", &g_Options.esp_player_weapons);
             ImGui::Checkbox("Snaplines", &g_Options.esp_player_snaplines);
 

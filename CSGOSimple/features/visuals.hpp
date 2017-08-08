@@ -16,6 +16,7 @@ namespace Visuals
         void RenderBox();
         void RenderName();
         void RenderHealth();
+        void RenderArmour();
         void RenderWeapon();
         void RenderSnapline();
     }
