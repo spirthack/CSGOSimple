@@ -203,7 +203,7 @@ namespace Hooks
         oPlaySound(g_VGuiSurface, name);
 
         // Auto Accept
-        if(strstr(name, "competitive_accept_beep.wav")) {
+        if(strstr(name, "UI/competitive_accept_beep.wav")) {
             static auto fnAccept =
                 (void(*)())Utils::PatternScan(GetModuleHandleA("client.dll"), "55 8B EC 83 E4 F8 83 EC 08 56 8B 35 ? ? ? ? 57 83 BE");
         
