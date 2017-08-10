@@ -99,7 +99,7 @@ enum ItemDefinitionIndex
     WEAPON_MP7 = 29,
     WEAPON_MP9 = 30,
     WEAPON_NOVA = 31,
-    WEAPON_P250 = 32
+    WEAPON_P250 = 32,
     WEAPON_SCAR20 = 33,
     WEAPON_SG556 = 34,
     WEAPON_SSG08 = 35,
