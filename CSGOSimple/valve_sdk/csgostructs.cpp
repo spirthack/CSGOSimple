@@ -112,17 +112,17 @@ bool C_BaseCombatWeapon::IsReloading()
 
 float C_BaseCombatWeapon::GetInaccuracy()
 {
-    return CallVFunction<float(__thiscall*)(void*)>(this, 484)(this);
+    return CallVFunction<float(__thiscall*)(void*)>(this, 483)(this);
 }
 
 float C_BaseCombatWeapon::GetSpread()
 {
-    return CallVFunction<float(__thiscall*)(void*)>(this, 485)(this);
+    return CallVFunction<float(__thiscall*)(void*)>(this, 484)(this);
 }
 
 void C_BaseCombatWeapon::UpdateAccuracyPenalty()
 {
-    CallVFunction<void(__thiscall*)(void*)>(this, 486)(this);
+    CallVFunction<void(__thiscall*)(void*)>(this, 485)(this);
 }
 
 CUserCmd*& C_BasePlayer::m_pCurrentCommand()
