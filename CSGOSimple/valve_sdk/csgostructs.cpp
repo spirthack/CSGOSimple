@@ -32,7 +32,7 @@ CCSWeaponInfo* C_BaseCombatWeapon::GetCSWeaponData()
 {
     static auto fnGetWpnData
         = reinterpret_cast<CCSWeaponInfo*(__thiscall*)(void*)>(
-            Utils::PatternScan(GetModuleHandleW(L"client.dll"), "55 8B EC 81 EC ? ? ? ? B8 ? ? ? ? 57")
+            Utils::PatternScan(GetModuleHandleW(L"client.dll"), "55 8B EC 81 EC ? ? ? ? 53 8B D9 56 57 8D 8B")
             );
     return fnGetWpnData(this);
 }
@@ -127,7 +127,7 @@ void C_BaseCombatWeapon::UpdateAccuracyPenalty()
 
 CUserCmd*& C_BasePlayer::m_pCurrentCommand()
 {
-    static auto currentCommand = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client.dll"), "89 9F ? ? ? ? E8 ? ? ? ? 85 DB") + 2);
+    static auto currentCommand = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client.dll"), "89 BE ? ? ? ? E8 ? ? ? ? 85 FF") + 2);
     return *(CUserCmd**)((uintptr_t)this + currentCommand);
 }
 

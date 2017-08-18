@@ -24,9 +24,10 @@ DWORD WINAPI OnDllAttach(LPVOID base)
 #endif
 
     try {
-        Utils::ConsolePrint("Initializing... ");
+        Utils::ConsolePrint("Initializing...\n");
 
         Interfaces::Initialize();
+        Interfaces::Dump();
 
         NetvarSys::Get().Initialize();
         InputSys::Get().Initialize();

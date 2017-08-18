@@ -100,7 +100,7 @@ namespace Interfaces
         // Ugly macros ugh
         #define STRINGIFY_IMPL(s) #s
         #define STRINGIFY(s)      STRINGIFY_IMPL(s)
-        #define PRINT_INTERFACE(name) Utils::ConsolePrint("%-20s: %p", STRINGIFY(name), name)
+        #define PRINT_INTERFACE(name) Utils::ConsolePrint("%-20s: %p\n", STRINGIFY(name), name)
 
         PRINT_INTERFACE(g_CHLClient   );
         PRINT_INTERFACE(g_EntityList  );
