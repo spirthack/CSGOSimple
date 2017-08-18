@@ -23,12 +23,19 @@ public:
 class CClockDriftMgr
 {
 public:
-    float m_ClockOffsets[17];   //0x0000
+    float m_ClockOffsets[16];   //0x0000
     uint32_t m_iCurClockOffset; //0x0044
     uint32_t m_nServerTick;     //0x0048
     uint32_t m_nClientTick;     //0x004C
 }; //Size: 0x0050
 
+// This struct is most likely wrong
+// Only fields that I know to be valid are:
+// - m_NetChannel
+// - m_nCurrentSequence
+// - m_nDeltaTick
+// - m_nMaxClients
+// - viewangles
 class CClientState
 {
 public:
@@ -56,24 +63,16 @@ public:
     char m_szLevelName[260];        //0x0188
     char m_szLevelNameShort[40];    //0x028C
     char m_szGroupName[40];         //0x02B4
-    char pad_02DC[52];              //0x02DC
+    char pad_02DC[56];              //0x02DC
     uint32_t m_nMaxClients;         //0x0310
-    char pad_0314[18820];           //0x0314
-    float m_flLastServerTickTime;   //0x4C98
-    bool insimulation;              //0x4C9C
-    char pad_4C9D[3];               //0x4C9D
-    uint32_t oldtickcount;          //0x4CA0
-    float m_tickRemainder;          //0x4CA4
-    float m_frameTime;              //0x4CA8
-    uint32_t lastoutgoingcommand;   //0x4CAC
-    uint32_t chokedcommands;        //0x4CB0
-    uint32_t last_command_ack;      //0x4CB4
-    uint32_t command_ack;           //0x4CB8
-    uint32_t m_nSoundSequence;      //0x4CBC
-    char pad_4CC0[80];              //0x4CC0
+    char pad_0314[18940];           //0x0314
     Vector viewangles;              //0x4D10
 }; //Size: 0x4D1C
 
 #pragma pack(pop)
 
-static_assert(FIELD_OFFSET(CClientState, viewangles) == 0x4D10, "Wrong struct offset");
+static_assert(FIELD_OFFSET(CClientState, m_NetChannel)       == 0x009C, "Wrong struct offset");
+static_assert(FIELD_OFFSET(CClientState, m_nCurrentSequence) == 0x011C, "Wrong struct offset");
+static_assert(FIELD_OFFSET(CClientState, m_nDeltaTick)       == 0x0174, "Wrong struct offset");
+static_assert(FIELD_OFFSET(CClientState, m_nMaxClients)      == 0x0310, "Wrong struct offset");
+static_assert(FIELD_OFFSET(CClientState, viewangles)         == 0x4D10, "Wrong struct offset");
