@@ -52,7 +52,6 @@ RECT GetBBox(C_BaseEntity* ent)
         Math::VectorTransform(points[i], trans, pointsTransformed[i]);
     }
 
-    Vector pos = ent->m_vecOrigin();
     Vector screen_points[8] = {};
 
     for(int i = 0; i < 8; i++) {
@@ -163,8 +162,8 @@ void Visuals::Player::RenderHealth()
 
     auto height = (((box_h * hp) / 100));
 
-    int red = int(255 - (hp * 2.55f));
     int green = int(hp * 2.55f);
+    int red = 255 - green;
 
     int x = esp_ctx.bbox.left - off;
     int y = esp_ctx.bbox.top;
