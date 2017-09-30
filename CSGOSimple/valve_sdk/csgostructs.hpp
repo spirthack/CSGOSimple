@@ -231,6 +231,7 @@ public:
     NETVAR(bool,                             m_bHasHelmet,           "DT_CSPlayer", "m_bHasHelmet");
     NETVAR(bool,                             m_bIsScoped,            "DT_CSPlayer", "m_bIsScoped");;
     NETVAR(float,                            m_flLowerBodyYawTarget, "DT_CSPlayer", "m_flLowerBodyYawTarget");
+    NETVAR(float,			     m_flFlashDuration,      "DT_CSPlayer", "m_flFlashDuration");
     NETVAR(int32_t,                          m_iHealth,              "DT_BasePlayer", "m_iHealth");
     NETVAR(int32_t,                          m_lifeState,            "DT_BasePlayer", "m_lifeState");
     NETVAR(int32_t,                          m_fFlags,               "DT_BasePlayer", "m_fFlags");
