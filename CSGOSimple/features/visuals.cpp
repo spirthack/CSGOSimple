@@ -206,7 +206,7 @@ void Visuals::Player::RenderWeapon()
 
     if(!weapon) return;
 
-    if(MultiByteToWideChar(CP_UTF8, 0, weapon->GetCSWeaponData()->szClassName + 7, -1, buf, 80) > 0) {
+    if(MultiByteToWideChar(CP_UTF8, 0, weapon->GetCSWeaponData()->szWeaponName + 7, -1, buf, 80) > 0) {
         int tw, th;
         g_VGuiSurface->GetTextSize(esp_font, buf, tw, th);
 

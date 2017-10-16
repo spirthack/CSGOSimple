@@ -57,24 +57,21 @@ bool C_BaseCombatWeapon::CanFire()
 
 bool C_BaseCombatWeapon::IsGrenade()
 {
-    return GetCSWeaponData()->m_WeaponType == WEAPONTYPE_GRENADE;
+    return GetCSWeaponData()->WeaponType == WEAPONTYPE_GRENADE;
 }
 
 bool C_BaseCombatWeapon::IsKnife()
 {
-    return GetCSWeaponData()->m_WeaponType == WEAPONTYPE_KNIFE;
+    return GetCSWeaponData()->WeaponType == WEAPONTYPE_KNIFE;
 }
 
 bool C_BaseCombatWeapon::IsRifle()
 {
-    switch (GetCSWeaponData()->m_WeaponType)
+    switch (GetCSWeaponData()->WeaponType)
     {
     case WEAPONTYPE_RIFLE:
-        return true;
-    case WEAPONTYPE_SUBMACHINEGUN:
-        return true;
     case WEAPONTYPE_SHOTGUN:
-        return true;
+    case WEAPONTYPE_SUBMACHINEGUN:
     case WEAPONTYPE_MACHINEGUN:
         return true;
     default:
@@ -84,24 +81,12 @@ bool C_BaseCombatWeapon::IsRifle()
 
 bool C_BaseCombatWeapon::IsPistol()
 {
-    switch (GetCSWeaponData()->m_WeaponType)
-    {
-    case WEAPONTYPE_PISTOL:
-        return true;
-    default:
-        return false;
-    }
+    return GetCSWeaponData()->WeaponType == WEAPONTYPE_PISTOL;
 }
 
 bool C_BaseCombatWeapon::IsSniper()
 {
-    switch (GetCSWeaponData()->m_WeaponType)
-    {
-    case WEAPONTYPE_SNIPER_RIFLE:
-        return true;
-    default:
-        return false;
-    }
+    return GetCSWeaponData()->WeaponType == WEAPONTYPE_SNIPER_RIFLE;
 }
 
 bool C_BaseCombatWeapon::IsReloading()
