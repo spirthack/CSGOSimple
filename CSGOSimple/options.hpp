@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "valve_sdk/Misc/Color.hpp"
+#include "valve_sdk/misc/Color.hpp"
 
 #define OPTION(type, var, val) type var = val
 

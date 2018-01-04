@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Misc/IHandleEntity.hpp"
+#include "../misc/IHandleEntity.hpp"
 
 class IClientNetworkable;
 class IClientEntity;

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Math/QAngle.hpp"
-#include "../Math/VMatrix.hpp"
+#include "../math/QAngle.hpp"
+#include "../math/VMatrix.hpp"
 
 enum PreviewImageRetVal_t
 {

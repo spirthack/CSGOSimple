@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Math/QAngle.hpp"
-#include "../Misc/Studio.hpp"
+#include "../math/QAngle.hpp"
+#include "../misc/Studio.hpp"
 #include "IEngineTrace.hpp" //Has some structs we need here
 
 class CPhysCollide;

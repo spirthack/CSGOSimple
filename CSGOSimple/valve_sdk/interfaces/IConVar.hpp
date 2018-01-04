@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Misc/Color.hpp"
+#include "../misc/Color.hpp"
 
 //-----------------------------------------------------------------------------
 // Forward declarations

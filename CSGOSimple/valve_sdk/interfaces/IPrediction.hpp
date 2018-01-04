@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Math/QAngle.hpp"
-#include "../Misc/CUserCmd.hpp"
+#include "../math/QAngle.hpp"
+#include "../misc/CUserCmd.hpp"
 #include "IMoveHelper.hpp"
 
 class CMoveData

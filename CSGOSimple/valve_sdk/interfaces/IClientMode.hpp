@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Math/VMatrix.hpp"
+#include "../math/VMatrix.hpp"
 
 class IPanel;
 class C_BaseEntity;

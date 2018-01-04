@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Misc/CUserCmd.hpp"
+#include "../misc/CUserCmd.hpp"
 
 #define MULTIPLAYER_BACKUP 150
 

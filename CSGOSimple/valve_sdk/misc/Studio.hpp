@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Math/Vector.hpp"
+#include "../math/Vector.hpp"
 
 typedef float Quaternion[4];
 typedef float RadianEuler[3];

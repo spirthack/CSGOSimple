@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IAppSystem.hpp"
-#include "../Math/Vector2D.hpp"
+#include "../math/Vector2D.hpp"
 
 namespace vgui
 {

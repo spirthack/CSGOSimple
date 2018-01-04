@@ -1,7 +1,7 @@
 #pragma once
 
 #include "UtlVector.hpp"
-#include "../Interfaces/IClientEntity.hpp"
+#include "../interfaces/IClientEntity.hpp"
 
 class GlowObjectDefinition_t
 {

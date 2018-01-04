@@ -9,8 +9,8 @@
 #pragma once
 
 #if !defined(IMGUI_DISABLE_INCLUDE_IMCONFIG_H) || defined(IMGUI_INCLUDE_IMCONFIG_H)
-#include "../valve_sdk/Misc/Color.hpp"
-#include "../valve_sdk/Math/Vector.hpp"
+#include "../valve_sdk/misc/Color.hpp"
+#include "../valve_sdk/math/Vector.hpp"
 #include "imconfig.h"       // User-editable configuration file
 #endif
 #include <float.h>          // FLT_MAX

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IAppSystem.hpp"
-#include "../Misc/Studio.hpp"
+#include "../misc/Studio.hpp"
 
 class studiohdr_t;
 struct studiohwdata_t;

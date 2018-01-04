@@ -9,8 +9,8 @@
 #pragma once
 
 #include <stdarg.h>
-#include "../Math/Vector.hpp"
-#include "../Math/Vector2D.hpp"
+#include "../math/Vector.hpp"
+#include "../math/Vector2D.hpp"
 #include "UtlMemory.hpp"
 
 #pragma warning(disable:4127) //conditional operation is constant
@@ -238,7 +238,7 @@ private:
                 assert("Invalid size in CByteswap::LowLevelByteSwap" && 0);
         }
 #else
-        for(int i = 0; i < sizeof(T); i++) {
+        for(unsigned i = 0; i < sizeof(T); i++) {
             ((unsigned char*)&temp)[i] = ((unsigned char*)input)[sizeof(T) - (i + 1)];
         }
 #endif

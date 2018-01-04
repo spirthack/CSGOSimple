@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Math/Vector.hpp"
-#include "../Math/QAngle.hpp"
+#include "../math/Vector.hpp"
+#include "../math/QAngle.hpp"
 
 typedef unsigned short ClientShadowHandle_t;
 typedef unsigned short ClientRenderHandle_t;

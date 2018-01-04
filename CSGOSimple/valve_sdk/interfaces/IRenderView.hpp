@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../Math/QAngle.hpp"
-#include "../Math/Vector2D.hpp"
-#include "../Math/Vector4D.hpp"
-#include "../Math/VMatrix.hpp"
+#include "../math/QAngle.hpp"
+#include "../math/Vector2D.hpp"
+#include "../math/Vector4D.hpp"
+#include "../math/VMatrix.hpp"
 
 //-----------------------------------------------------------------------------
 // Forward declarations

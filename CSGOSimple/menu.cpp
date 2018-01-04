@@ -1,4 +1,4 @@
-#include "Menu.hpp"
+#include "menu.hpp"
 #define NOMINMAX
 #include <Windows.h>
 #include <chrono>
@@ -17,7 +17,7 @@
 // These are the tabs on the sidebar
 // 
 // =========================================================
-static char* sidebar_tabs[] = {
+static const char* sidebar_tabs[] = {
     "ESP",
     "AIM",
     "MISC",
@@ -53,13 +53,13 @@ namespace ImGuiEx
 }
 
 template<size_t N>
-void render_tabs(char* (&names)[N], int& activetab, float w, float h, bool sameline)
+void render_tabs(const char* (&names)[N], int& activetab, float w, float h, bool sameline)
 {
     bool values[N] = { false };
 
     values[activetab] = true;
 
-    for(auto i = 0; i < N; ++i) {
+    for(auto i = 0u; i < N; ++i) {
         if(ImGui::ToggleButton(names[i], &values[i], ImVec2{ w, h })) {
             activetab = i;
         }
@@ -98,7 +98,7 @@ int get_fps()
 
 void RenderEspTab()
 {
-    static char* esp_tab_names[] = { "ESP", "GLOW", "CHAMS" };
+    static const char* esp_tab_names[] = { "ESP", "GLOW", "CHAMS" };
     static int   active_esp_tab = 0;
 
     bool placeholder_true = true;

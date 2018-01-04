@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Math/Vector.hpp"
-#include "../Misc/UtlVector.hpp"
+#include "../math/Vector.hpp"
+#include "../misc/UtlVector.hpp"
 
 struct SndInfo_t;
 class IRecipientFilter;
