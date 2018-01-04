@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Math/Vector4D.hpp"
+#include "../math/Vector4D.hpp"
 
 #pragma region MASKS
 
@@ -444,7 +444,7 @@ private:
         startsolid = other.startsolid;
     }
 
-    CGameTrace& CGameTrace::operator=(const CGameTrace& other)
+    CGameTrace& operator=(const CGameTrace& other)
     {
         startpos = other.startpos;
         endpos = other.endpos;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Misc/IHandleEntity.hpp"
+#include "../misc/IHandleEntity.hpp"
 #include "ICollideable.hpp"
 
 //class ICollideable;

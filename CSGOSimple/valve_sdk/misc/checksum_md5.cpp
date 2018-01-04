@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 static void MD5Transform(unsigned int buf[4], unsigned int const in[16])
 {
-    register unsigned int a, b, c, d;
+    unsigned int a, b, c, d;
 
     a = buf[0];
     b = buf[1];
@@ -214,7 +214,7 @@ void MD5Final(unsigned char digest[MD5_DIGEST_LENGTH], MD5Context_t *ctx)
     MD5Transform(ctx->buf, (unsigned int *)ctx->in);
     //byteReverse((unsigned char *) ctx->buf, 4);
     memcpy(digest, ctx->buf, MD5_DIGEST_LENGTH);
-    memset(ctx, 0, sizeof(ctx));        /* In case it's sensitive */
+    memset(ctx, 0, sizeof(*ctx));        /* In case it's sensitive */
 }
 
 //-----------------------------------------------------------------------------

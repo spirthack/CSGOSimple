@@ -1,6 +1,6 @@
 #include "sdk.hpp"
 
-#include "../Helpers/Utils.hpp"
+#include "../helpers/utils.hpp"
 
 IVEngineClient*       g_EngineClient   = nullptr;
 IBaseClientDLL*       g_CHLClient      = nullptr;

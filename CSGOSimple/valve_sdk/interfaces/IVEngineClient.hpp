@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Math/Vector.hpp"
-#include "../Math/QAngle.hpp"
-#include "../Math/VMatrix.hpp"
+#include "../math/Vector.hpp"
+#include "../math/QAngle.hpp"
+#include "../math/VMatrix.hpp"
 
 #define SIGNONSTATE_NONE		0	// no state yet, about to connect
 #define SIGNONSTATE_CHALLENGE	1	// client challenging server, all OOB packets
@@ -194,7 +194,7 @@ public:
     virtual bool                  IsAutoSaveDangerousInProgress(void) = 0;
     virtual unsigned int          OnStorageDeviceAttached(int iController) = 0;
     virtual void                  OnStorageDeviceDetached(int iController) = 0;
-    virtual char* const           GetSaveDirName(void) = 0;
+    virtual const char*           GetSaveDirName(void) = 0;
     virtual void                  WriteScreenshot(const char *pFilename) = 0;
     virtual void                  ResetDemoInterpolation(void) = 0;
     virtual int                   GetActiveSplitScreenPlayerSlot() = 0;

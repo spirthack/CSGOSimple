@@ -1,4 +1,4 @@
-#include "Utils.hpp"
+#include "utils.hpp"
 
 #define NOMINMAX
 #include <Windows.h>
@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "../valve_sdk/csgostructs.hpp"
-#include "Math.hpp"
+#include "math.hpp"
 
 HANDLE _out = NULL, _old_out = NULL;
 HANDLE _err = NULL, _old_err = NULL;

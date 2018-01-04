@@ -1,5 +1,5 @@
 #pragma once
-#include "../Singleton.hpp"
+#include "../singleton.hpp"
 
 class Glow
     : public Singleton<Glow>

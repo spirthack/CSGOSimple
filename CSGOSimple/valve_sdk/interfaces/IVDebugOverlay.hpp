@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Math/Vector.hpp"
-#include "../Math/QAngle.hpp"
-#include "../Math/VMatrix.hpp"
+#include "../math/Vector.hpp"
+#include "../math/QAngle.hpp"
+#include "../math/VMatrix.hpp"
 
 class OverlayText_t;
 

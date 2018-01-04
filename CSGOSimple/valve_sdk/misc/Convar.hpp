@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include "../Interfaces/ICvar.hpp"
+#include "../interfaces/ICvar.hpp"
 #include "UtlVector.hpp"
 #include "UtlString.hpp"
 

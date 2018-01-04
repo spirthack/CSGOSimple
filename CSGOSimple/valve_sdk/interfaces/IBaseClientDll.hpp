@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Misc/GlobalVars.hpp"
-#include "../Misc/ClientClass.hpp"
+#include "../misc/GlobalVars.hpp"
+#include "../misc/ClientClass.hpp"
 
 enum ClientFrameStage_t
 {
