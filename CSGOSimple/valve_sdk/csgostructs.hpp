@@ -3,13 +3,13 @@
 #include "sdk.hpp"
 
 #define NETVAR(type, name, table, netvar)                           \
-    type& name##() const {                                          \
+    type& name() const {                                          \
         static int _##name = NetvarSys::Get().GetOffset(table, netvar);     \
         return *(type*)((uintptr_t)this + _##name);                 \
     }
 
 #define PNETVAR(type, name, table, netvar)                           \
-    type* name##() const {                                          \
+    type* name() const {                                          \
         static int _##name = NetvarSys::Get().GetOffset(table, netvar);     \
         return (type*)((uintptr_t)this + _##name);                 \
     }
