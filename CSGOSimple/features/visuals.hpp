@@ -6,6 +6,7 @@ class C_BaseCombatWeapon;
 class C_PlantedC4;
 class Color;
 class ClientClass;
+class CUserCmd;
 
 namespace Visuals
 {
@@ -27,6 +28,7 @@ namespace Visuals
         void RenderWeapon(C_BaseCombatWeapon* ent);
         void RenderDefuseKit(C_BaseEntity* ent);
         void RenderPlantedC4(C_BaseEntity* ent);
+		void ThirdPerson();
     }
 
     bool CreateFonts();

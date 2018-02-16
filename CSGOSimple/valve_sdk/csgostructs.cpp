@@ -238,3 +238,9 @@ bool C_BasePlayer::CanSeePlayer(C_BasePlayer* player, const Vector& pos)
 
     return tr.hit_entity == player || tr.fraction > 0.97f;
 }
+
+QAngle* C_BasePlayer::GetVAngles()
+{
+	static auto deadflag = NetvarSys::Get().GetOffset("DT_BasePlayer", "deadflag");
+	return (QAngle*)((uintptr_t)this + deadflag + 0x4);
+}

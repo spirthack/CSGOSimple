@@ -14,6 +14,8 @@ namespace index
     constexpr auto FrameStageNotify         = 36;
     constexpr auto DrawModelExecute         = 21;
     constexpr auto DoPostScreenSpaceEffects = 44;
+	constexpr auto SvCheatsGetBool          = 13;
+	constexpr auto OverrideView             = 18;
 }
 
 namespace Hooks
@@ -37,6 +39,8 @@ namespace Hooks
     using DrawModelExecute    = void(__thiscall*)(IVModelRender*, IMatRenderContext*, const DrawModelState_t&, const ModelRenderInfo_t&, matrix3x4_t*);
     using FireEvent           = bool(__thiscall*)(IGameEventManager2*, IGameEvent* pEvent);
     using DoPostScreenEffects = int(__thiscall*)(IClientMode*, int);
+	using OverrideView = void(__thiscall*)(IClientMode*, CViewSetup*);
+
 
     long __stdcall hkEndScene(IDirect3DDevice9* device);
     long __stdcall hkReset(IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* pPresentationParameters);
@@ -46,5 +50,7 @@ namespace Hooks
     void __stdcall hkPlaySound(const char* name);
     void __stdcall hkDrawModelExecute(IMatRenderContext* ctx, const DrawModelState_t& state, const ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBoneToWorld);
     void __stdcall hkFrameStageNotify(ClientFrameStage_t stage);
+	void __stdcall hkOverrideView(CViewSetup * vsView);
     int  __stdcall hkDoPostScreenEffects(int a1);
+	bool __fastcall hkSvCheatsGetBool(PVOID pConVar, void* edx);
 }

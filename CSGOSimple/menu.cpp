@@ -253,6 +253,8 @@ void RenderMiscTab()
         ImGui::SetColumnOffset(3, group_w);
 
         ImGui::Checkbox("Bunny hop", &g_Options.misc_bhop);
+		ImGui::Checkbox("Third Person", &g_Options.misc_thirdperson);
+		ImGui::SliderFloat("ThirdPerson Distance", &g_Options.misc_thirdperson_dist, 0.f, 150.f);
         ImGui::Checkbox("No hands", &g_Options.misc_no_hands);
         ImGui::PushItemWidth(-1.0f);
         ImGui::SliderInt("viewmodel_fov:", &g_Options.viewmodel_fov, 68, 120);

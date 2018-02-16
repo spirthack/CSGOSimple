@@ -310,6 +310,7 @@ public:
     Vector        GetBonePos(int bone);
     bool          CanSeePlayer(C_BasePlayer* player, int hitbox);
     bool          CanSeePlayer(C_BasePlayer* player, const Vector& pos);
+	QAngle       *GetVAngles();
 };
 
 class C_BaseViewModel : public C_BaseEntity

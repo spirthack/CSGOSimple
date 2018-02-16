@@ -1,4 +1,5 @@
 #include "hooks.hpp"
+#include <intrin.h>  
 
 #include "menu.hpp"
 #include "options.hpp"
@@ -8,6 +9,7 @@
 #include "features/chams.hpp"
 #include "features/visuals.hpp"
 #include "features/glow.hpp"
+#pragma intrinsic(_ReturnAddress)  
 
 namespace Hooks
 {
@@ -17,6 +19,7 @@ namespace Hooks
     vfunc_hook vguisurf_hook;
     vfunc_hook mdlrender_hook;
     vfunc_hook clientmode_hook;
+	vfunc_hook sv_cheats;
     
     void Initialize()
     {
@@ -26,6 +29,8 @@ namespace Hooks
         vguisurf_hook .setup(g_VGuiSurface);
         mdlrender_hook.setup(g_MdlRender);
         clientmode_hook.setup(g_ClientMode);
+		ConVar* sv_cheats_con = g_CVar->FindVar("sv_cheats");
+		sv_cheats.setup(sv_cheats_con);
 
         direct3d_hook.hook_index(index::EndScene, hkEndScene);
         direct3d_hook.hook_index(index::Reset, hkReset);
@@ -40,6 +45,9 @@ namespace Hooks
         mdlrender_hook.hook_index(index::DrawModelExecute, hkDrawModelExecute);
 
         clientmode_hook.hook_index(index::DoPostScreenSpaceEffects, hkDoPostScreenEffects);
+		clientmode_hook.hook_index(index::OverrideView, hkOverrideView);
+
+		sv_cheats.hook_index(index::SvCheatsGetBool, hkSvCheatsGetBool);
 
         Visuals::CreateFonts();
     }
@@ -112,9 +120,9 @@ namespace Hooks
         if(!cmd || !cmd->command_number)
             return;
 
-        if(g_Options.misc_bhop) {
-            BunnyHop::OnCreateMove(cmd);
-        }
+		if (g_Options.misc_bhop) {
+			BunnyHop::OnCreateMove(cmd);
+		}
 
         verified->m_cmd = *cmd;
         verified->m_crc = cmd->GetChecksum();
@@ -237,6 +245,17 @@ namespace Hooks
 
         ofunc(g_CHLClient, stage);
     }
+	//--------------------------------------------------------------------------------
+	void __stdcall hkOverrideView(CViewSetup* vsView)
+	{
+		static auto ofunc = clientmode_hook.get_original<OverrideView>(index::OverrideView);
+
+		if (g_EngineClient->IsInGame() && vsView) {
+			Visuals::Misc::ThirdPerson();
+		}
+
+		ofunc(g_ClientMode, vsView);
+	}
     //--------------------------------------------------------------------------------
     void __stdcall hkDrawModelExecute(IMatRenderContext* ctx, const DrawModelState_t& state, const ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBoneToWorld)
     {
@@ -248,4 +267,17 @@ namespace Hooks
 
         g_MdlRender->ForcedMaterialOverride(nullptr);
     }
+
+	auto dwCAM_Think = Utils::PatternScan(GetModuleHandleW(L"client.dll"), "85 C0 75 30 38 86");
+	typedef bool(__thiscall *svc_get_bool_t)(PVOID);
+	bool __fastcall hkSvCheatsGetBool(PVOID pConVar, void* edx)
+	{
+		static auto ofunc = sv_cheats.get_original<svc_get_bool_t>(13);
+		if (!ofunc)
+			return false;
+
+		if (reinterpret_cast<DWORD>(_ReturnAddress()) == reinterpret_cast<DWORD>(dwCAM_Think))
+			return true;
+		return ofunc(pConVar);
+	}
 }
