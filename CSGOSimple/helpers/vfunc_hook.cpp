@@ -29,13 +29,14 @@ bool vfunc_hook::setup(void* base /*= nullptr*/)
     if(vftbl_len == 0)
         return false;
 
-    new_vftbl = new std::uintptr_t[vftbl_len]();
+    new_vftbl = new std::uintptr_t[vftbl_len + 1]();
 
-    std::memcpy(new_vftbl, old_vftbl, vftbl_len * sizeof(std::uintptr_t));
+	std::memcpy(&new_vftbl[1], old_vftbl, vftbl_len * sizeof(std::uintptr_t));
 
     try {
         auto guard = detail::protect_guard{ class_base, sizeof(std::uintptr_t), PAGE_READWRITE };
-        *(std::uintptr_t**)class_base = new_vftbl;
+		new_vftbl[0] = old_vftbl[-1];
+		*(std::uintptr_t**)class_base = &new_vftbl[1];
     } catch(...) {
         delete[] new_vftbl;
         return false;
