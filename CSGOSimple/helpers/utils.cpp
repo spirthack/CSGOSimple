@@ -9,12 +9,35 @@
 #include "../valve_sdk/csgostructs.hpp"
 #include "Math.hpp"
 
+
 HANDLE _out = NULL, _old_out = NULL;
 HANDLE _err = NULL, _old_err = NULL;
 HANDLE _in = NULL, _old_in = NULL;
 
-namespace Utils
-{
+namespace Utils {
+	unsigned int FindInDataMap(datamap_t *pMap, const char *name) {
+		while (pMap) {
+			for (int i = 0; i<pMap->dataNumFields; i++) {
+				if (pMap->dataDesc[i].fieldName == NULL)
+					continue;
+
+				if (strcmp(name, pMap->dataDesc[i].fieldName) == 0)
+					return pMap->dataDesc[i].fieldOffset[TD_OFFSET_NORMAL];
+
+				if (pMap->dataDesc[i].fieldType == FIELD_EMBEDDED) {
+					if (pMap->dataDesc[i].td) {
+						unsigned int offset;
+
+						if ((offset = FindInDataMap(pMap->dataDesc[i].td, name)) != 0)
+							return offset;
+					}
+				}
+			}
+			pMap = pMap->baseMap;
+		}
+
+		return 0;
+	}
     /*
      * @brief Create console
      *

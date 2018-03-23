@@ -16,6 +16,7 @@
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
+[Rr]elease(debug)/
 [Rr]eleases/
 x64/
 x86/
@@ -151,7 +152,7 @@ publish/
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
-# Note: Comment the next line if you want to checkin your web deploy settings,
+# TODO: Comment the next line if you want to checkin your web deploy settings
 # but database connection strings (with potential passwords) will be unencrypted
 *.pubxml
 *.publishproj

@@ -5,15 +5,16 @@
 #include <string>
 #include <initializer_list>
 #include "../valve_sdk/sdk.hpp"
+#include "../datamap.hpp"
 
-namespace Utils
-{
+namespace Utils {
+	unsigned int FindInDataMap(datamap_t * pMap, const char * name);
     /*
      * @brief Create console
      *
      * Create and attach a console window to the current process
      */
-    void AttachConsole();
+	void AttachConsole();
 
     /*
      * @brief Detach console

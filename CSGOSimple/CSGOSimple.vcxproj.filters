@@ -353,5 +353,11 @@
     <ClInclude Include="helpers\input.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IRefCounted.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="datamap.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

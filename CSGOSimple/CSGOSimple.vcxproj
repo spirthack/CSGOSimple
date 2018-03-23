@@ -122,6 +122,7 @@
     <ClCompile Include="valve_sdk\netvars.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="datamap.hpp" />
     <ClInclude Include="features\bhop.hpp" />
     <ClInclude Include="features\chams.hpp" />
     <ClInclude Include="features\glow.hpp" />
@@ -138,6 +139,7 @@
     <ClInclude Include="imgui\stb_rect_pack.h" />
     <ClInclude Include="imgui\stb_textedit.h" />
     <ClInclude Include="imgui\stb_truetype.h" />
+    <ClInclude Include="IRefCounted.h" />
     <ClInclude Include="menu.hpp" />
     <ClInclude Include="options.hpp" />
     <ClInclude Include="singleton.hpp" />
