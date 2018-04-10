@@ -1,3 +1,8 @@
+## Trying to maintain this, cuz looks like MarkHC no longer working on this.
+
+
+# Original:
+
 # CSGOSimple
 A simple base for internal Counter-Strike: Global Offensive cheats.
 
