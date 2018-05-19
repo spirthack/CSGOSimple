@@ -41,7 +41,7 @@
 //   1.8  (2016-04-02) better keyboard handling when mouse button is down
 //   1.7  (2015-09-13) change y range handling in case baseline is non-0
 //   1.6  (2015-04-15) allow STB_TEXTEDIT_memmove
-//   1.5  (2014-09-10) add support for secondary m_iKeyMap for OS X
+//   1.5  (2014-09-10) add support for secondary keys for OS X
 //   1.4  (2014-08-17) fix signed/unsigned warnings
 //   1.3  (2014-06-19) fix mouse clicking to round to nearest char boundary
 //   1.2  (2014-05-27) fix some RAD types that had crept into the new code
@@ -86,7 +86,7 @@
 //      STB_TEXTEDIT_UNDOSTATECOUNT       the number of undo states to allow
 //      STB_TEXTEDIT_UNDOCHARCOUNT        the number of characters to store in the undo buffer
 //
-//   If you don't define these, they are Set to permissive types and
+//   If you don't define these, they are set to permissive types and
 //   moderate sizes. The undo system does no memory allocations, so
 //   it grows STB_TexteditState by the worst-case storage which is (in bytes):
 //
@@ -155,7 +155,7 @@
 //    STB_TEXTEDIT_K_REDO        keyboard input to perform redo
 //
 // Optional:
-//    STB_TEXTEDIT_K_INSERT              keyboard input to Toggle insert mode
+//    STB_TEXTEDIT_K_INSERT              keyboard input to toggle insert mode
 //    STB_TEXTEDIT_IS_SPACE(ch)          true if character is whitespace (e.g. 'isspace'),
 //                                          required for default WORDLEFT/WORDRIGHT handlers
 //    STB_TEXTEDIT_MOVEWORDLEFT(obj,i)   custom handler for WORDLEFT, returns index to move cursor to
@@ -181,7 +181,7 @@
 // my Windows implementations add an additional CONTROL bit, and an additional KEYDOWN
 // bit. Then all of the STB_TEXTEDIT_K_ values bitwise-or in the KEYDOWN bit,
 // and I pass both WM_KEYDOWN and WM_CHAR events to the "key" function in the
-// API below. The control m_iKeyMap will only match WM_KEYDOWN events because of the
+// API below. The control keys will only match WM_KEYDOWN events because of the
 // keydown bit I add, and STB_TEXTEDIT_KEYTOTEXT only tests for the KEYDOWN
 // bit so it only decodes WM_CHAR events.
 //
@@ -209,7 +209,7 @@
 //    state.
 //
 //      initialize_state:
-//          Set the textedit state to a known good default state when initially
+//          set the textedit state to a known good default state when initially
 //          constructing the textedit.
 //
 //      click:
@@ -234,9 +234,9 @@
 //          call this for keyboard inputs sent to the textfield. you can use it
 //          for "key down" events or for "translated" key events. if you need to
 //          do both (as in Win32), or distinguish Unicode characters from control
-//          inputs, Set a high bit to distinguish the two; then you can define the
+//          inputs, set a high bit to distinguish the two; then you can define the
 //          various definitions like STB_TEXTEDIT_K_LEFT have the is-key-event bit
-//          Set, and make STB_TEXTEDIT_KEYTOCHAR check that the is-key-event bit is
+//          set, and make STB_TEXTEDIT_KEYTOCHAR check that the is-key-event bit is
 //          clear.
 //     
 //   When rendering, you can read the cursor position and selection state from
@@ -399,7 +399,7 @@ static int stb_text_locate_coord(STB_TEXTEDIT_STRING *str, float x, float y)
    r.ymin = r.ymax = 0;
    r.num_chars = 0;
 
-   // search rows to GetOffset one that straddles 'y'
+   // search rows to find one that straddles 'y'
    while (i < n) {
       STB_TEXTEDIT_LAYOUTROW(&r, str, i);
       if (r.num_chars <= 0)
@@ -485,9 +485,9 @@ typedef struct
    int prev_first;  // first char of previous row
 } StbFindState;
 
-// GetOffset the x/y location of a character, and remember info about the previous row in
-// case we Get a move-up event (for page up, we'll have to rescan)
-static void stb_textedit_find_charpos(StbFindState *GetOffset, STB_TEXTEDIT_STRING *str, int n, int single_line)
+// find the x/y location of a character, and remember info about the previous row in
+// case we get a move-up event (for page up, we'll have to rescan)
+static void stb_textedit_find_charpos(StbFindState *find, STB_TEXTEDIT_STRING *str, int n, int single_line)
 {
    StbTexteditRow r;
    int prev_start = 0;
@@ -495,33 +495,33 @@ static void stb_textedit_find_charpos(StbFindState *GetOffset, STB_TEXTEDIT_STRI
    int i=0, first;
 
    if (n == z) {
-      // if it's at the end, then GetOffset the last line -- simpler than trying to
+      // if it's at the end, then find the last line -- simpler than trying to
       // explicitly handle this case in the regular code
       if (single_line) {
          STB_TEXTEDIT_LAYOUTROW(&r, str, 0);
-         GetOffset->y = 0;
-         GetOffset->first_char = 0;
-         GetOffset->length = z;
-         GetOffset->height = r.ymax - r.ymin;
-         GetOffset->x = r.x1;
+         find->y = 0;
+         find->first_char = 0;
+         find->length = z;
+         find->height = r.ymax - r.ymin;
+         find->x = r.x1;
       } else {
-         GetOffset->y = 0;
-         GetOffset->x = 0;
-         GetOffset->height = 1;
+         find->y = 0;
+         find->x = 0;
+         find->height = 1;
          while (i < z) {
             STB_TEXTEDIT_LAYOUTROW(&r, str, i);
             prev_start = i;
             i += r.num_chars;
          }
-         GetOffset->first_char = i;
-         GetOffset->length = 0;
-         GetOffset->prev_first = prev_start;
+         find->first_char = i;
+         find->length = 0;
+         find->prev_first = prev_start;
       }
       return;
    }
 
-   // search rows to GetOffset the one that straddles character n
-   GetOffset->y = 0;
+   // search rows to find the one that straddles character n
+   find->y = 0;
 
    for(;;) {
       STB_TEXTEDIT_LAYOUTROW(&r, str, i);
@@ -529,19 +529,19 @@ static void stb_textedit_find_charpos(StbFindState *GetOffset, STB_TEXTEDIT_STRI
          break;
       prev_start = i;
       i += r.num_chars;
-      GetOffset->y += r.baseline_y_delta;
+      find->y += r.baseline_y_delta;
    }
 
-   GetOffset->first_char = first = i;
-   GetOffset->length = r.num_chars;
-   GetOffset->height = r.ymax - r.ymin;
-   GetOffset->prev_first = prev_start;
+   find->first_char = first = i;
+   find->length = r.num_chars;
+   find->height = r.ymax - r.ymin;
+   find->prev_first = prev_start;
 
-   // now scan to GetOffset xpos
-   GetOffset->x = r.x0;
+   // now scan to find xpos
+   find->x = r.x0;
    i = 0;
    for (i=0; first+i < n; ++i)
-      GetOffset->x += STB_TEXTEDIT_GETWIDTH(str, first, i);
+      find->x += STB_TEXTEDIT_GETWIDTH(str, first, i);
 }
 
 #define STB_TEXT_HAS_SELECTION(s)   ((s)->select_start != (s)->select_end)
@@ -677,9 +677,8 @@ static int stb_textedit_cut(STB_TEXTEDIT_STRING *str, STB_TexteditState *state)
 }
 
 // API paste: replace existing selection with passed-in text
-static int stb_textedit_paste(STB_TEXTEDIT_STRING *str, STB_TexteditState *state, STB_TEXTEDIT_CHARTYPE const *ctext, int len)
+static int stb_textedit_paste(STB_TEXTEDIT_STRING *str, STB_TexteditState *state, STB_TEXTEDIT_CHARTYPE const *text, int len)
 {
-   STB_TEXTEDIT_CHARTYPE *text = (STB_TEXTEDIT_CHARTYPE *) ctext;
    // if there's a selection, the paste should delete it
    stb_textedit_clamp(str, state);
    stb_textedit_delete_selection(str,state);
@@ -828,7 +827,7 @@ retry:
 
       case STB_TEXTEDIT_K_DOWN:
       case STB_TEXTEDIT_K_DOWN | STB_TEXTEDIT_K_SHIFT: {
-         StbFindState GetOffset;
+         StbFindState find;
          StbTexteditRow row;
          int i, sel = (key & STB_TEXTEDIT_K_SHIFT) != 0;
 
@@ -845,13 +844,13 @@ retry:
 
          // compute current position of cursor point
          stb_textedit_clamp(str, state);
-         stb_textedit_find_charpos(&GetOffset, str, state->cursor, state->single_line);
+         stb_textedit_find_charpos(&find, str, state->cursor, state->single_line);
 
-         // now GetOffset character position down a row
-         if (GetOffset.length) {
-            float goal_x = state->has_preferred_x ? state->preferred_x : GetOffset.x;
+         // now find character position down a row
+         if (find.length) {
+            float goal_x = state->has_preferred_x ? state->preferred_x : find.x;
             float x;
-            int start = GetOffset.first_char + GetOffset.length;
+            int start = find.first_char + find.length;
             state->cursor = start;
             STB_TEXTEDIT_LAYOUTROW(&row, str, state->cursor);
             x = row.x0;
@@ -879,7 +878,7 @@ retry:
          
       case STB_TEXTEDIT_K_UP:
       case STB_TEXTEDIT_K_UP | STB_TEXTEDIT_K_SHIFT: {
-         StbFindState GetOffset;
+         StbFindState find;
          StbTexteditRow row;
          int i, sel = (key & STB_TEXTEDIT_K_SHIFT) != 0;
 
@@ -896,18 +895,18 @@ retry:
 
          // compute current position of cursor point
          stb_textedit_clamp(str, state);
-         stb_textedit_find_charpos(&GetOffset, str, state->cursor, state->single_line);
+         stb_textedit_find_charpos(&find, str, state->cursor, state->single_line);
 
          // can only go up if there's a previous row
-         if (GetOffset.prev_first != GetOffset.first_char) {
-            // now GetOffset character position up a row
-            float goal_x = state->has_preferred_x ? state->preferred_x : GetOffset.x;
+         if (find.prev_first != find.first_char) {
+            // now find character position up a row
+            float goal_x = state->has_preferred_x ? state->preferred_x : find.x;
             float x;
-            state->cursor = GetOffset.prev_first;
+            state->cursor = find.prev_first;
             STB_TEXTEDIT_LAYOUTROW(&row, str, state->cursor);
             x = row.x0;
             for (i=0; i < row.num_chars; ++i) {
-               float dx = STB_TEXTEDIT_GETWIDTH(str, GetOffset.prev_first, i);
+               float dx = STB_TEXTEDIT_GETWIDTH(str, find.prev_first, i);
                #ifdef STB_TEXTEDIT_GETWIDTH_NEWLINE
                if (dx == STB_TEXTEDIT_GETWIDTH_NEWLINE)
                   break;
@@ -1078,7 +1077,7 @@ static void stb_textedit_discard_undo(StbUndoState *state)
          STB_TEXTEDIT_memmove(state->undo_char, state->undo_char + n, (size_t) ((size_t)state->undo_char_point*sizeof(STB_TEXTEDIT_CHARTYPE)));
          for (i=0; i < state->undo_point; ++i)
             if (state->undo_rec[i].char_storage >= 0)
-               state->undo_rec[i].char_storage = state->undo_rec[i].char_storage - (short) n; // vsnet05 // @OPTIMIZE: Get rid of char_storage and infer it
+               state->undo_rec[i].char_storage = state->undo_rec[i].char_storage - (short) n; // vsnet05 // @OPTIMIZE: get rid of char_storage and infer it
       }
       --state->undo_point;
       STB_TEXTEDIT_memmove(state->undo_rec, state->undo_rec+1, (size_t) ((size_t)state->undo_point*sizeof(state->undo_rec[0])));
@@ -1171,7 +1170,7 @@ static void stb_text_undo(STB_TEXTEDIT_STRING *str, STB_TexteditState *state)
 
    if (u.delete_length) {
       // if the undo record says to delete characters, then the redo record will
-      // need to re-insert the characters that Get deleted, so we need to store
+      // need to re-insert the characters that get deleted, so we need to store
       // them.
 
       // there are three cases:
@@ -1314,7 +1313,7 @@ static void stb_textedit_clear_state(STB_TexteditState *state, int is_single_lin
    state->insert_mode = 0;
 }
 
-// API Initialize
+// API initialize
 static void stb_textedit_initialize_state(STB_TexteditState *state, int is_single_line)
 {
    stb_textedit_clear_state(state, is_single_line);

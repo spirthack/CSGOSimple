@@ -1,10 +1,21 @@
 // ImGui Win32 + DirectX9 binding
-// In this binding, ImTextureID is used to store a 'LPDIRECT3DTEXTURE9' texture identifier. Read the FAQ about ImTextureID in imgui.cpp.
+
+// Implemented features:
+//  [X] User texture binding. Use 'LPDIRECT3DTEXTURE9' as ImTextureID. Read the FAQ about ImTextureID in imgui.cpp.
 
 // You can copy and use unmodified imgui_impl_* files in your project. See main.cpp for an example of using this.
 // If you use this binding you'll need to call 4 functions: ImGui_ImplXXXX_Init(), ImGui_ImplXXXX_NewFrame(), ImGui::Render() and ImGui_ImplXXXX_Shutdown().
 // If you are new to ImGui, see examples/README.txt and documentation at the top of imgui.cpp.
 // https://github.com/ocornut/imgui
+
+// CHANGELOG 
+// (minor and older changes stripped away, please see git history for details)
+//  2018-03-20: Misc: Setup io.BackendFlags ImGuiBackendFlags_HasMouseCursors and ImGuiBackendFlags_HasSetMousePos flags + honor ImGuiConfigFlags_NoMouseCursorChange flag.
+//  2018-02-20: Inputs: Added support for mouse cursors (ImGui::GetMouseCursor() value and WM_SETCURSOR message handling).
+//  2018-02-16: Misc: Obsoleted the io.RenderDrawListsFn callback and exposed ImGui_ImplDX9_RenderDrawData() in the .h file so you can call it yourself.
+//  2018-02-06: Misc: Removed call to ImGui::Shutdown() which is not available from 1.60 WIP, user needs to call CreateContext/DestroyContext themselves.
+//  2018-02-06: Inputs: Honoring the io.WantSetMousePos by repositioning the mouse (when using navigation and ImGuiConfigFlags_NavEnableSetMousePos is set).
+//  2018-02-06: Inputs: Added mapping for ImGuiKey_Space.
 
 #include "../imgui.h"
 #include "imgui_impl_dx9.h"
@@ -14,10 +25,13 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
-// Data
+// Win32 data
 static HWND                     g_hWnd = 0;
 static INT64                    g_Time = 0;
 static INT64                    g_TicksPerSecond = 0;
+static ImGuiMouseCursor         g_LastMouseCursor = ImGuiMouseCursor_COUNT;
+
+// DirectX data
 static LPDIRECT3DDEVICE9        g_pd3dDevice = NULL;
 static LPDIRECT3DVERTEXBUFFER9  g_pVB = NULL;
 static LPDIRECT3DINDEXBUFFER9   g_pIB = NULL;
@@ -32,10 +46,9 @@ struct CUSTOMVERTEX
 };
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1)
 
-// This is the main rendering function that you have to implement and provide to ImGui (via setting up 'RenderDrawListsFn' in the ImGuiIO structure)
-// If text or lines are blurry when integrating ImGui in your engine:
-// - in your Render function, try translating your projection matrix by (0.5f,0.5f) or (0.375f,0.375f)
-void ImGui_ImplDX9_RenderDrawLists(ImDrawData* draw_data)
+// Render function.
+// (this used to be set in io.RenderDrawListsFn and called by ImGui::Render(), but you can now call this directly from your main loop)
+void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
 {
     // Avoid rendering when minimized
     ImGuiIO& io = ImGui::GetIO();
@@ -103,7 +116,7 @@ void ImGui_ImplDX9_RenderDrawLists(ImDrawData* draw_data)
     vp.MaxZ = 1.0f;
     g_pd3dDevice->SetViewport(&vp);
 
-    // Setup Render state: fixed-pipeline, alpha-blending, no face culling, no depth testing
+    // Setup render state: fixed-pipeline, alpha-blending, no face culling, no depth testing
     g_pd3dDevice->SetPixelShader(NULL);
     g_pd3dDevice->SetVertexShader(NULL);
     g_pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -115,7 +128,6 @@ void ImGui_ImplDX9_RenderDrawLists(ImDrawData* draw_data)
     g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
     g_pd3dDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, true);
-	g_pd3dDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xFFFFFFFF); // without this Menu wasnt displayed while ingame without netgraph/cl_showfps (atleast for me xd)
     g_pd3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
     g_pd3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     g_pd3dDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
@@ -172,6 +184,118 @@ void ImGui_ImplDX9_RenderDrawLists(ImDrawData* draw_data)
     d3d9_state_block->Release();
 }
 
+static bool ImGui_ImplWin32_UpdateMouseCursor()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange)
+        return false;
+
+	static HCURSOR lastcursor = NULL;
+
+    ImGuiMouseCursor imgui_cursor = io.MouseDrawCursor ? ImGuiMouseCursor_None : ImGui::GetMouseCursor();
+    if (imgui_cursor == ImGuiMouseCursor_None)
+    {
+        // Hide OS mouse cursor if imgui is drawing it or if it wants no cursor
+		lastcursor = ::GetCursor();
+        ::SetCursor(NULL);
+    }
+    else
+    {
+		::SetCursor(lastcursor);
+		/*
+        // Hardware cursor type
+        LPTSTR win32_cursor = IDC_ARROW;
+        switch (imgui_cursor)
+        {
+        case ImGuiMouseCursor_Arrow:        win32_cursor = IDC_ARROW; break;
+        case ImGuiMouseCursor_TextInput:    win32_cursor = IDC_IBEAM; break;
+        case ImGuiMouseCursor_ResizeAll:    win32_cursor = IDC_SIZEALL; break;
+        case ImGuiMouseCursor_ResizeEW:     win32_cursor = IDC_SIZEWE; break;
+        case ImGuiMouseCursor_ResizeNS:     win32_cursor = IDC_SIZENS; break;
+        case ImGuiMouseCursor_ResizeNESW:   win32_cursor = IDC_SIZENESW; break;
+        case ImGuiMouseCursor_ResizeNWSE:   win32_cursor = IDC_SIZENWSE; break;
+        }
+        ::SetCursor(::LoadCursor(NULL, win32_cursor));*/
+    }
+    return true;
+}
+
+// Allow compilation with old Windows SDK. MinGW doesn't have default _WIN32_WINNT/WINVER versions.
+#ifndef WM_MOUSEHWHEEL
+#define WM_MOUSEHWHEEL 0x020E
+#endif
+
+// Process Win32 mouse/keyboard inputs. 
+// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+// - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
+// - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
+// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+// PS: In this Win32 handler, we use the capture API (GetCapture/SetCapture/ReleaseCapture) to be able to read mouse coordinations when dragging mouse outside of our window bounds.
+// PS: We treat DBLCLK messages as regular mouse down messages, so this code will work on windows classes that have the CS_DBLCLKS flag set. Our own example app code doesn't set this flag.
+IMGUI_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    if (ImGui::GetCurrentContext() == NULL)
+        return 0;
+
+	ImGuiIO& io = ImGui::GetIO();
+	switch (msg)
+	{
+	case WM_LBUTTONDOWN: case WM_LBUTTONDBLCLK:
+	case WM_RBUTTONDOWN: case WM_RBUTTONDBLCLK:
+	case WM_MBUTTONDOWN: case WM_MBUTTONDBLCLK:
+	case WM_XBUTTONDOWN: case WM_XBUTTONDBLCLK:
+	{
+		int button = 0;
+		if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONDBLCLK) button = 0;
+		if (msg == WM_RBUTTONDOWN || msg == WM_RBUTTONDBLCLK) button = 1;
+		if (msg == WM_MBUTTONDOWN || msg == WM_MBUTTONDBLCLK) button = 2;
+		if (msg == WM_XBUTTONDOWN || msg == WM_XBUTTONDBLCLK) button = (HIWORD(wParam) == XBUTTON1) ? 3 : 4;
+		if (!ImGui::IsAnyMouseDown() && ::GetCapture() == NULL)
+			::SetCapture(hwnd);
+		io.MouseDown[button] = true;
+		return 1;
+	}
+	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONUP:
+	case WM_XBUTTONUP:
+	{
+		int button = 0;
+		if (msg == WM_LBUTTONUP) button = 0;
+		if (msg == WM_RBUTTONUP) button = 1;
+		if (msg == WM_MBUTTONUP) button = 2;
+		if (msg == WM_XBUTTONUP) button = (HIWORD(wParam) == XBUTTON1) ? 3 : 4;
+		io.MouseDown[button] = false;
+		if (!ImGui::IsAnyMouseDown() && ::GetCapture() == hwnd)
+			::ReleaseCapture();
+		return 1;
+	}
+	case WM_MOUSEWHEEL:
+		io.MouseWheel += GET_WHEEL_DELTA_WPARAM(wParam) > 0 ? +1.0f : -1.0f;
+		return 1;
+	case WM_MOUSEMOVE:
+		io.MousePos.x = (signed short)(lParam);
+		io.MousePos.y = (signed short)(lParam >> 16);
+		return 1;
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+		if (wParam < 256)
+			io.KeysDown[wParam] = 1;
+		return 1;
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		if (wParam < 256)
+			io.KeysDown[wParam] = 0;
+		return 1;
+	case WM_CHAR:
+		// You can also use ToAscii()+GetKeyboardState() to retrieve characters.
+		if (wParam > 0 && wParam < 0x10000)
+			io.AddInputCharacter((unsigned short)wParam);
+		return 1;
+	}
+	return 0;
+}
+
 bool    ImGui_ImplDX9_Init(void* hwnd, IDirect3DDevice9* device)
 {
     g_hWnd = (HWND)hwnd;
@@ -182,8 +306,13 @@ bool    ImGui_ImplDX9_Init(void* hwnd, IDirect3DDevice9* device)
     if (!QueryPerformanceCounter((LARGE_INTEGER *)&g_Time))
         return false;
 
+    // Setup back-end capabilities flags
     ImGuiIO& io = ImGui::GetIO();
-    io.KeyMap[ImGuiKey_Tab] = VK_TAB;                       // Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array that we will update during the application lifetime.
+    io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;   // We can honor GetMouseCursor() values (optional)
+    io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;    // We can honor io.WantSetMousePos requests (optional, rarely used)
+
+    // Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array that we will update during the application lifetime.
+    io.KeyMap[ImGuiKey_Tab] = VK_TAB;
     io.KeyMap[ImGuiKey_LeftArrow] = VK_LEFT;
     io.KeyMap[ImGuiKey_RightArrow] = VK_RIGHT;
     io.KeyMap[ImGuiKey_UpArrow] = VK_UP;
@@ -192,8 +321,10 @@ bool    ImGui_ImplDX9_Init(void* hwnd, IDirect3DDevice9* device)
     io.KeyMap[ImGuiKey_PageDown] = VK_NEXT;
     io.KeyMap[ImGuiKey_Home] = VK_HOME;
     io.KeyMap[ImGuiKey_End] = VK_END;
+    io.KeyMap[ImGuiKey_Insert] = VK_INSERT;
     io.KeyMap[ImGuiKey_Delete] = VK_DELETE;
     io.KeyMap[ImGuiKey_Backspace] = VK_BACK;
+    io.KeyMap[ImGuiKey_Space] = VK_SPACE;
     io.KeyMap[ImGuiKey_Enter] = VK_RETURN;
     io.KeyMap[ImGuiKey_Escape] = VK_ESCAPE;
     io.KeyMap[ImGuiKey_A] = 'A';
@@ -203,7 +334,6 @@ bool    ImGui_ImplDX9_Init(void* hwnd, IDirect3DDevice9* device)
     io.KeyMap[ImGuiKey_Y] = 'Y';
     io.KeyMap[ImGuiKey_Z] = 'Z';
 
-    io.RenderDrawListsFn = ImGui_ImplDX9_RenderDrawLists;   // Alternatively you can Set this to NULL and call ImGui::GetDrawData() after ImGui::Render() to Get the same ImDrawData pointer.
     io.ImeWindowHandle = g_hWnd;
 
     return true;
@@ -212,42 +342,41 @@ bool    ImGui_ImplDX9_Init(void* hwnd, IDirect3DDevice9* device)
 void ImGui_ImplDX9_Shutdown()
 {
     ImGui_ImplDX9_InvalidateDeviceObjects();
-    ImGui::Shutdown();
     g_pd3dDevice = NULL;
     g_hWnd = 0;
 }
 
 static bool ImGui_ImplDX9_CreateFontsTexture()
 {
-  // Build texture atlas
-  ImGuiIO& io = ImGui::GetIO();
-  unsigned char* pixels;
-  int width, height, bytes_per_pixel;
-  io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixel);
+    // Build texture atlas
+    ImGuiIO& io = ImGui::GetIO();
+    unsigned char* pixels;
+    int width, height, bytes_per_pixel;
+    io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixel);
 
-  // Upload texture to graphics system
-  g_FontTexture = NULL;
-  if(g_pd3dDevice->CreateTexture(width, height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &g_FontTexture, NULL) < 0)
-    return false;
-  D3DLOCKED_RECT tex_locked_rect;
-  if(g_FontTexture->LockRect(0, &tex_locked_rect, NULL, 0) != D3D_OK)
-    return false;
-  for(int y = 0; y < height; y++)
-    memcpy((unsigned char *)tex_locked_rect.pBits + tex_locked_rect.Pitch * y, pixels + (width * bytes_per_pixel) * y, (width * bytes_per_pixel));
-  g_FontTexture->UnlockRect(0);
+    // Upload texture to graphics system
+    g_FontTexture = NULL;
+    if (g_pd3dDevice->CreateTexture(width, height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &g_FontTexture, NULL) < 0)
+        return false;
+    D3DLOCKED_RECT tex_locked_rect;
+    if (g_FontTexture->LockRect(0, &tex_locked_rect, NULL, 0) != D3D_OK)
+        return false;
+    for (int y = 0; y < height; y++)
+        memcpy((unsigned char *)tex_locked_rect.pBits + tex_locked_rect.Pitch * y, pixels + (width * bytes_per_pixel) * y, (width * bytes_per_pixel));
+    g_FontTexture->UnlockRect(0);
 
-  // Store our identifier
-  io.Fonts->TexID = (void *)g_FontTexture;
+    // Store our identifier
+    io.Fonts->TexID = (void *)g_FontTexture;
 
-  return true;
+    return true;
 }
 
 bool ImGui_ImplDX9_CreateDeviceObjects()
 {
     if (!g_pd3dDevice)
         return false;
-    if(!ImGui_ImplDX9_CreateFontsTexture())
-      return false;
+    if (!ImGui_ImplDX9_CreateFontsTexture())
+        return false;
     return true;
 }
 
@@ -265,12 +394,14 @@ void ImGui_ImplDX9_InvalidateDeviceObjects()
         g_pIB->Release();
         g_pIB = NULL;
     }
-    if (LPDIRECT3DTEXTURE9 tex = (LPDIRECT3DTEXTURE9)ImGui::GetIO().Fonts->TexID)
-    {
-        tex->Release();
-        ImGui::GetIO().Fonts->TexID = 0;
-    }
+
+    // At this point note that we set ImGui::GetIO().Fonts->TexID to be == g_FontTexture, so clear both.
+    ImGuiIO& io = ImGui::GetIO();
+    IM_ASSERT(g_FontTexture == io.Fonts->TexID);
+    if (g_FontTexture)
+        g_FontTexture->Release();
     g_FontTexture = NULL;
+    io.Fonts->TexID = NULL;
 }
 
 void ImGui_ImplDX9_NewFrame()
@@ -301,10 +432,22 @@ void ImGui_ImplDX9_NewFrame()
     // io.MouseDown : filled by WM_*BUTTON* events
     // io.MouseWheel : filled by WM_MOUSEWHEEL events
 
-    // Hide OS mouse cursor if ImGui is drawing it
-    if (io.MouseDrawCursor)
-        SetCursor(NULL);
+    // Set OS mouse position if requested (only used when ImGuiConfigFlags_NavEnableSetMousePos is enabled by user)
+    if (io.WantSetMousePos)
+    {
+        POINT pos = { (int)io.MousePos.x, (int)io.MousePos.y };
+        ClientToScreen(g_hWnd, &pos);
+        SetCursorPos(pos.x, pos.y);
+    }
 
-    // Start the frame
+    // Update OS mouse cursor with the cursor requested by imgui
+    ImGuiMouseCursor mouse_cursor = io.MouseDrawCursor ? ImGuiMouseCursor_None : ImGui::GetMouseCursor();
+    if (g_LastMouseCursor != mouse_cursor)
+    {
+        g_LastMouseCursor = mouse_cursor;
+        ImGui_ImplWin32_UpdateMouseCursor();
+    }
+
+    // Start the frame. This call will update the io.WantCaptureMouse, io.WantCaptureKeyboard flag that you can use to dispatch inputs (or not) to your application.
     ImGui::NewFrame();
 }
