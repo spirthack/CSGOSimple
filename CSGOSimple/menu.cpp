@@ -7,6 +7,7 @@
 #include "helpers/input.hpp"
 #include "options.hpp"
 #include "ui.hpp"
+#include "droid.hpp"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui/imgui_internal.h"
@@ -325,6 +326,8 @@ void Menu::Render()
     if(!_visible)
         return;
 
+	
+
     ImGui_ImplDX9_NewFrame();
 
     ImGui::GetIO().MouseDrawCursor = _visible;
@@ -349,6 +352,8 @@ void Menu::Render()
         {
             ImGui::BeginGroupBox("##sidebar", sidebar_size);
             {
+				//ImGui::GetCurrentWindow()->Flags &= ~ImGuiWindowFlags_ShowBorders;
+
                 render_tabs(sidebar_tabs, active_sidebar_tab, get_sidebar_item_width(), get_sidebar_item_height(), false);
             }
             ImGui::EndGroupBox();
@@ -383,6 +388,7 @@ void Menu::Render()
     //ImGui::PopStyle();
 
     ImGui::Render();
+	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Menu::Show()
@@ -405,7 +411,9 @@ void Menu::Toggle()
 
 void Menu::CreateStyle()
 {
-    _style.Alpha                  = 1.0f;                                // Global alpha applies to everything in ImGui
+	ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Droid_compressed_data, Droid_compressed_size, 14.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
+#ifdef MarkHC
+	_style.Alpha                  = 1.0f;                                // Global alpha applies to everything in ImGui
     _style.WindowPadding          = ImVec2(10, 10);                      // Padding within a window
     _style.WindowMinSize          = ImVec2(100, 100);                    // Minimum window size
     _style.WindowRounding         = 0.0f;                                // Radius of window corners rounding. Set to 0.0f to have rectangular windows
@@ -428,6 +436,9 @@ void Menu::CreateStyle()
     _style.AntiAliasedLines       = true;                                // Enable anti-aliasing on lines/borders. Disable if you are really short on CPU/GPU.
     //_style.AntiAliasedShapes      = true;                                // Enable anti-aliasing on filled shapes (rounded rectangles, circles, etc.)
     _style.CurveTessellationTol   = 1.25f;                               // Tessellation tolerance. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.
+
+	_style.WindowBorderSize = 1.2f;
+
 
     _style.Colors[ImGuiCol_Text]                 = ImVec4(0.90f, 0.90f, 0.90f, 1.00f);
     _style.Colors[ImGuiCol_TextDisabled]         = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
@@ -473,6 +484,21 @@ void Menu::CreateStyle()
     _style.Colors[ImGuiCol_PlotHistogram]        = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
     _style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
     _style.Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+#else
+	ImGui::StyleColorsDark();
+	ImGui::SetColorEditOptions(ImGuiColorEditFlags_HEX);
+	_style.FrameRounding = 0.f;
+	_style.WindowRounding = 0.f;
+	_style.ChildRounding = 0.f;
+	_style.Colors[ImGuiCol_Button] = ImVec4(0.260f, 0.590f, 0.980f, 0.670f);
+	_style.Colors[ImGuiCol_Header] = ImVec4(0.260f, 0.590f, 0.980f, 0.670f);
+	_style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.260f, 0.590f, 0.980f, 1.000f);
+	//_style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.000f, 0.545f, 1.000f, 1.000f);
+	//_style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.060f, 0.416f, 0.980f, 1.000f);
+	_style.Colors[ImGuiCol_FrameBg] = ImVec4(0.20f, 0.25f, 0.30f, 1.0f);
+	_style.Colors[ImGuiCol_WindowBg] = ImVec4(0.000f, 0.009f, 0.120f, 0.940f);
+	_style.Colors[ImGuiCol_PopupBg] = ImVec4(0.076f, 0.143f, 0.209f, 1.000f);
+#endif
 	ImGui::GetStyle() = _style;
 }
 

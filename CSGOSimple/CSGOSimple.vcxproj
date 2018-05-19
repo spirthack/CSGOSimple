@@ -124,6 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="datamap.hpp" />
+    <ClInclude Include="droid.hpp" />
     <ClInclude Include="features\bhop.hpp" />
     <ClInclude Include="features\chams.hpp" />
     <ClInclude Include="features\glow.hpp" />

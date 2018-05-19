@@ -365,5 +365,8 @@
     <ClInclude Include="ui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="droid.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <stdexcept>
+#include <d3d9.h>
 
 #include "../singleton.hpp"
 
