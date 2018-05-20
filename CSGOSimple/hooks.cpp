@@ -83,7 +83,14 @@ namespace Hooks
         mat_ambient_light_b->SetValue(g_Options.mat_ambient_light_b);
         crosshair_cvar->SetValue(!g_Options.esp_crosshair);
 
-        Menu::Get().Render();
+		DWORD dwOld_D3DRS_COLORWRITEENABLE;
+
+		device->GetRenderState(D3DRS_COLORWRITEENABLE, &dwOld_D3DRS_COLORWRITEENABLE);
+		device->SetRenderState(D3DRS_COLORWRITEENABLE, 0xffffffff);
+
+		Menu::Get().Render();
+
+		device->SetRenderState(D3DRS_COLORWRITEENABLE, dwOld_D3DRS_COLORWRITEENABLE);
 
         if(InputSys::Get().IsKeyDown(VK_TAB))
             Utils::RankRevealAll();
