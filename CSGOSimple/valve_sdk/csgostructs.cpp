@@ -31,7 +31,7 @@ bool C_BaseEntity::IsDefuseKit()
 
 CCSWeaponInfo* C_BaseCombatWeapon::GetCSWeaponData()
 {
-	return CallVFunction<CCSWeaponInfo*(__thiscall*)(void*)>(this, 447)(this);
+	return CallVFunction<CCSWeaponInfo*(__thiscall*)(void*)>(this, 445)(this);
 	/*
 	static auto fnGetWpnData
 	= reinterpret_cast<CCSWeaponInfo*(__thiscall*)(void*)>(
@@ -133,17 +133,17 @@ bool C_BaseCombatWeapon::IsReloading()
 
 float C_BaseCombatWeapon::GetInaccuracy()
 {
-	return CallVFunction<float(__thiscall*)(void*)>(this, 470)(this);
+	return CallVFunction<float(__thiscall*)(void*)>(this, 468)(this);
 }
 
 float C_BaseCombatWeapon::GetSpread()
 {
-	return CallVFunction<float(__thiscall*)(void*)>(this, 439)(this);
+	return CallVFunction<float(__thiscall*)(void*)>(this, 437)(this);
 }
 
 void C_BaseCombatWeapon::UpdateAccuracyPenalty()
 {
-	CallVFunction<void(__thiscall*)(void*)>(this, 471)(this);
+	CallVFunction<void(__thiscall*)(void*)>(this, 469)(this);
 }
 
 CUtlVector<IRefCounted*>& C_BaseCombatWeapon::m_CustomMaterials()
