@@ -1,6 +1,10 @@
 # CSGOSimple
 CSGOSimple is an internal cheat base. This fork was created after MarkHC stops working on this project
 
+## Repositories:
+  Gitlab: https://gitlab.com/spirt/csgosimple
+  Github: https://github.com/anarh1st47/csgosimple
+
 # features ahead MarkHC/CSGOSimple:
   ImGui updated to latest version, you always can update it manually later
   Latest structs/interfaces updated after CSGO update
