@@ -2,13 +2,37 @@
 
 namespace Math
 {
-    void NormalizeAngles(QAngle& angles)
-    {
-        for(auto i = 0; i < 3; i++) {
-            while(angles[i] < -180.0f) angles[i] += 360.0f;
-            while(angles[i] >  180.0f) angles[i] -= 360.0f;
-        }
-    }
+	//--------------------------------------------------------------------------------
+	float VectorDistance(const Vector& v1, const Vector& v2)
+	{
+		return FASTSQRT(pow(v1.x - v2.x, 2) + pow(v1.y - v2.y, 2) + pow(v1.z - v2.z, 2));
+	}
+	//--------------------------------------------------------------------------------
+	QAngle CalcAngle(const Vector& src, const Vector& dst)
+	{
+		QAngle vAngle;
+		Vector delta((src.x - dst.x), (src.y - dst.y), (src.z - dst.z));
+		double hyp = sqrt(delta.x*delta.x + delta.y*delta.y);
+
+		vAngle.pitch = float(atanf(float(delta.z / hyp)) * 57.295779513082f);
+		vAngle.yaw = float(atanf(float(delta.y / delta.x)) * 57.295779513082f);
+		vAngle.roll = 0.0f;
+
+		if (delta.x >= 0.0)
+			vAngle.yaw += 180.0f;
+
+		return vAngle;
+	}
+	//--------------------------------------------------------------------------------
+	float GetFOV(const QAngle& viewAngle, const QAngle& aimAngle)
+	{
+		Vector ang, aim;
+
+		AngleVectors(viewAngle, aim);
+		AngleVectors(aimAngle, ang);
+
+		return RAD2DEG(acos(aim.Dot(ang) / aim.LengthSqr()));
+	}
     //--------------------------------------------------------------------------------
     void ClampAngles(QAngle& angles)
     {

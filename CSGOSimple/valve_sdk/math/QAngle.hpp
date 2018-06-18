@@ -135,6 +135,21 @@ public:
             roll > -tolerance && roll < tolerance);
     }
 
+	float Normalize() const
+	{
+		QAngle res = *this;
+		float l = res.Length();
+		if (l != 0.0f)
+		{
+			res /= l;
+		}
+		else
+		{
+			res[0] = res[1] = res[2] = 0.0f;
+		}
+		return l;
+	}
+
     float pitch;
     float yaw;
     float roll;
