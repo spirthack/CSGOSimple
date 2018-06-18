@@ -6,6 +6,8 @@
 
 #define RAD2DEG(x) DirectX::XMConvertToDegrees(x)
 #define DEG2RAD(x) DirectX::XMConvertToRadians(x)
+#define M_PI 3.14159265358979323846
+#define PI_F	((float)(M_PI)) 
 
 namespace Math
 {

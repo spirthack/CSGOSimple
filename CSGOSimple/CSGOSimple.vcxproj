@@ -107,7 +107,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="options.cpp" />
-    <ClCompile Include="UI.cpp" />
+    <ClCompile Include="render.cpp" />
+    <ClCompile Include="ui.cpp" />
     <ClCompile Include="valve_sdk\csgostructs.cpp" />
     <ClCompile Include="valve_sdk\sdk.cpp" />
     <ClCompile Include="valve_sdk\math\Vector2D.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="IRefCounted.h" />
     <ClInclude Include="menu.hpp" />
     <ClInclude Include="options.hpp" />
+    <ClInclude Include="render.hpp" />
     <ClInclude Include="singleton.hpp" />
     <ClInclude Include="ui.hpp" />
     <ClInclude Include="valve_sdk\csgostructs.hpp" />

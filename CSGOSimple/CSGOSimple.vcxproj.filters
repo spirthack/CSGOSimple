@@ -102,9 +102,6 @@
     <ClCompile Include="features\glow.cpp">
       <Filter>Source Files\features</Filter>
     </ClCompile>
-    <ClCompile Include="features\visuals.cpp">
-      <Filter>Source Files\features</Filter>
-    </ClCompile>
     <ClCompile Include="valve_sdk\misc\Convar.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
@@ -117,8 +114,14 @@
     <ClCompile Include="helpers\input.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="UI.cpp">
+    <ClCompile Include="render.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="features\visuals.cpp">
+      <Filter>Source Files\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -356,9 +359,6 @@
     <ClInclude Include="helpers\input.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IRefCounted.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="datamap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -366,6 +366,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="droid.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IRefCounted.h">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="render.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

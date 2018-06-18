@@ -298,10 +298,6 @@ void Menu::Initialize()
 
     cl_mouseenable = g_CVar->FindVar("cl_mouseenable");
 
-	ImGui::CreateContext();
-
-    ImGui_ImplDX9_Init(InputSys::Get().GetMainWindow(), g_D3DDevice9);
-
     CreateStyle();
 }
 
@@ -325,10 +321,6 @@ void Menu::Render()
 {
     if(!_visible)
         return;
-
-	
-
-    ImGui_ImplDX9_NewFrame();
 
     ImGui::GetIO().MouseDrawCursor = _visible;
 
@@ -384,11 +376,6 @@ void Menu::Render()
         }
         ImGui::End();
     }
-
-    //ImGui::PopStyle();
-
-    ImGui::Render();
-	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Menu::Show()
@@ -411,7 +398,6 @@ void Menu::Toggle()
 
 void Menu::CreateStyle()
 {
-	ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Droid_compressed_data, Droid_compressed_size, 14.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
 #ifdef MarkHC
 	_style.Alpha                  = 1.0f;                                // Global alpha applies to everything in ImGui
     _style.WindowPadding          = ImVec2(10, 10);                      // Padding within a window

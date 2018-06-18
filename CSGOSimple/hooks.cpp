@@ -1,6 +1,7 @@
 #include "hooks.hpp"
 #include <intrin.h>  
 
+#include "render.hpp"
 #include "menu.hpp"
 #include "options.hpp"
 #include "helpers/input.hpp"
@@ -48,8 +49,6 @@ namespace Hooks
 		clientmode_hook.hook_index(index::OverrideView, hkOverrideView);
 
 		sv_cheats.hook_index(index::SvCheatsGetBool, hkSvCheatsGetBool);
-
-        Visuals::CreateFonts();
     }
     //--------------------------------------------------------------------------------
     void Shutdown()
@@ -62,8 +61,6 @@ namespace Hooks
         clientmode_hook.unhook_all();
 
         Glow::Get().Shutdown();
-
-        Visuals::DestroyFonts();
     }
     //--------------------------------------------------------------------------------
     long __stdcall hkEndScene(IDirect3DDevice9* device)
@@ -88,7 +85,15 @@ namespace Hooks
 		device->GetRenderState(D3DRS_COLORWRITEENABLE, &dwOld_D3DRS_COLORWRITEENABLE);
 		device->SetRenderState(D3DRS_COLORWRITEENABLE, 0xffffffff);
 
+		ImGui_ImplDX9_NewFrame();
+		Render::Get().BeginScene();
+		Visuals::Get().Render();
+		Render::Get().EndScene();
+
 		Menu::Get().Render();
+
+		ImGui::Render();
+		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
 		device->SetRenderState(D3DRS_COLORWRITEENABLE, dwOld_D3DRS_COLORWRITEENABLE);
 
@@ -102,14 +107,12 @@ namespace Hooks
     {
         auto oReset = direct3d_hook.get_original<Reset>(index::Reset);
 
-        Visuals::DestroyFonts();
         Menu::Get().OnDeviceLost();
 
         auto hr = oReset(device, pPresentationParameters);
 
         if(hr >= 0) {
             Menu::Get().OnDeviceReset();
-            Visuals::CreateFonts();
         }
 
         return hr;
@@ -172,41 +175,7 @@ namespace Hooks
                 if(!g_LocalPlayer)
                     return;
 
-                if(g_Options.esp_enabled) {
-                    for(auto i = 1; i <= g_EntityList->GetHighestEntityIndex(); ++i) {
-                        auto entity = C_BasePlayer::GetPlayerByIndex(i);
-
-                        if(!entity)
-                            continue;
-
-                        if(entity == g_LocalPlayer)
-                            continue;
-
-                        if(i < 65 && !entity->IsDormant() && entity->IsAlive()) {
-                            // Begin will calculate player screen coordinate, bounding box, etc
-                            // If it returns false it means the player is not inside the screen
-                            // or is an ally (and team check is enabled)
-                            if(Visuals::Player::Begin(entity)) {
-                                if(g_Options.esp_player_snaplines) Visuals::Player::RenderSnapline();
-                                if(g_Options.esp_player_boxes)     Visuals::Player::RenderBox();
-                                if(g_Options.esp_player_weapons)   Visuals::Player::RenderWeapon();
-                                if(g_Options.esp_player_names)     Visuals::Player::RenderName();
-                                if(g_Options.esp_player_health)    Visuals::Player::RenderHealth();
-                                if(g_Options.esp_player_armour)    Visuals::Player::RenderArmour();
-                            }
-                        } else if(g_Options.esp_dropped_weapons && entity->IsWeapon()) {
-                            Visuals::Misc::RenderWeapon((C_BaseCombatWeapon*)entity);
-                        } else if(g_Options.esp_defuse_kit && entity->IsDefuseKit()) {
-                            Visuals::Misc::RenderDefuseKit(entity);
-                        } else if(entity->IsPlantedC4()) {
-                            if(g_Options.esp_planted_c4)
-                                Visuals::Misc::RenderPlantedC4(entity);
-                        }
-                    }
-                }
-
-                if(g_Options.esp_crosshair)
-                    Visuals::Misc::RenderCrosshair();
+				Visuals::Get().OnPaintTraverse();
             }
         }
     }
@@ -258,7 +227,7 @@ namespace Hooks
 		static auto ofunc = clientmode_hook.get_original<OverrideView>(index::OverrideView);
 
 		if (g_EngineClient->IsInGame() && vsView) {
-			Visuals::Misc::ThirdPerson();
+			Visuals::Get().ThirdPerson();
 		}
 
 		ofunc(g_ClientMode, vsView);

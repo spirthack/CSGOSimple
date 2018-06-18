@@ -8,6 +8,7 @@
 #include "hooks.hpp"
 #include "menu.hpp"
 #include "options.hpp"
+#include "render.hpp"
 
 DWORD WINAPI OnDllAttach(LPVOID base)
 {
@@ -31,6 +32,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
 
         NetvarSys::Get().Initialize();
         InputSys::Get().Initialize();
+		Render::Get().Initialize();
         Menu::Get().Initialize();
 
         Hooks::Initialize();
