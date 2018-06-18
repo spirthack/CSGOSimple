@@ -1,6 +1,7 @@
 #include "hooks.hpp"
 #include <intrin.h>  
 
+#include "render.hpp"
 #include "menu.hpp"
 #include "options.hpp"
 #include "helpers/input.hpp"
@@ -84,7 +85,15 @@ namespace Hooks
 		device->GetRenderState(D3DRS_COLORWRITEENABLE, &dwOld_D3DRS_COLORWRITEENABLE);
 		device->SetRenderState(D3DRS_COLORWRITEENABLE, 0xffffffff);
 
+		ImGui_ImplDX9_NewFrame();
+		Render::Get().BeginScene();
+		Visuals::Get().Render();
+		Render::Get().EndScene();
+
 		Menu::Get().Render();
+
+		ImGui::Render();
+		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
 		device->SetRenderState(D3DRS_COLORWRITEENABLE, dwOld_D3DRS_COLORWRITEENABLE);
 
@@ -124,7 +133,6 @@ namespace Hooks
 		if (g_Options.misc_bhop) {
 			BunnyHop::OnCreateMove(cmd);
 		}
-
 
 		verified->m_cmd = *cmd;
 		verified->m_crc = cmd->GetChecksum();

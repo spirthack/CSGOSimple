@@ -308,7 +308,7 @@ void Visuals::RenderPlantedC4(C_BaseEntity* ent)
 	renderList_tmp.Add(new Line_t(bbox.left, bbox.top, bbox.left, bbox.bottom, g_Options.color_esp_c4));
 	renderList_tmp.Add(new Line_t(bbox.right, bbox.top, bbox.right, bbox.bottom, g_Options.color_esp_c4));
 
-	float bombTimer = ent->m_flC4Blow() - g_GlobalVars->curtime;
+	int bombTimer = std::ceil(ent->m_flC4Blow() - g_GlobalVars->curtime);
 	std::string timer = std::to_string(bombTimer);
 
 	auto name = (bombTimer < 0.f) ? "Bomb" : timer;
