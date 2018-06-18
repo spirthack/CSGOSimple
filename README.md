@@ -9,6 +9,7 @@ CSGOSimple is an internal cheat base. This fork was created after MarkHC stops w
     ImGui updated to latest version, you always can update it manually later
     Latest structs/interfaces updated after CSGO update
     Fixed some bugs, like vfunc hooker
+    ImGui Renderer
 
 
 ![Menu Screenshot after ImGui update](https://i.imgur.com/pYgCja5.png)
