@@ -319,10 +319,10 @@ void Menu::OnDeviceReset()
 
 void Menu::Render()
 {
+	ImGui::GetIO().MouseDrawCursor = _visible;
+
     if(!_visible)
         return;
-
-    ImGui::GetIO().MouseDrawCursor = _visible;
 
     const auto sidebar_size = get_sidebar_size();
     static int active_sidebar_tab = 0;

@@ -8,8 +8,6 @@
 // If you are new to ImGui, see examples/README.txt and documentation at the top of imgui.cpp.
 // https://github.com/ocornut/imgui
 
-#include <d3d9.h>
-
 struct IDirect3DDevice9;
 
 IMGUI_API bool        ImGui_ImplDX9_Init(void* hwnd, IDirect3DDevice9* device);
@@ -24,6 +22,6 @@ IMGUI_API bool        ImGui_ImplDX9_CreateDeviceObjects();
 // Handler for Win32 messages, update mouse/keyboard data.
 // You may or not need this for your implementation, but it can serve as reference for handling inputs.
 // Commented out to avoid dragging dependencies on <windows.h> types. You can copy the extern declaration in your code.
-#include <Windows.h>
+/*
 IMGUI_API LRESULT   ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
+*/
