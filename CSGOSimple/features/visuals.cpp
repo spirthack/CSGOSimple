@@ -118,8 +118,9 @@ void Visuals::OnPaintTraverse() {
 }
 //--------------------------------------------------------------------------------
 void Visuals::Render() {
+	EnterCriticalSection(&cs);
 	renderList.Render();
-	
+	LeaveCriticalSection(&cs);
 }
 //--------------------------------------------------------------------------------
 bool Visuals::Player::Begin(C_BasePlayer* pl)
