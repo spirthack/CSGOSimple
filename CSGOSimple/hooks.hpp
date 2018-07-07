@@ -9,9 +9,9 @@ namespace index
     constexpr auto EndScene                 = 42;
     constexpr auto Reset                    = 16;
     constexpr auto PaintTraverse            = 41;
-    constexpr auto CreateMove               = 21;
+    constexpr auto CreateMove               = 22;
     constexpr auto PlaySound                = 82;
-    constexpr auto FrameStageNotify         = 36;
+    constexpr auto FrameStageNotify         = 37;
     constexpr auto DrawModelExecute         = 21;
     constexpr auto DoPostScreenSpaceEffects = 44;
 	constexpr auto SvCheatsGetBool          = 13;
