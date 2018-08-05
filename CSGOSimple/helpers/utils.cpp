@@ -269,7 +269,7 @@ namespace Utils {
     {
         using ServerRankRevealAll = char(__cdecl*)(int*);
 
-        static auto fnServerRankRevealAll = PatternScan(GetModuleHandleW(L"client_panorama.dll"), "55 8B EC 8B 0D ? ? ? ? 68");
+        static auto fnServerRankRevealAll = PatternScan(GetModuleHandleW(L"client_panorama.dll"), "55 8B EC 8B 0D ? ? ? ? 85 C9 75 ? A1 ? ? ? ? 68 ? ? ? ? 8B 08 8B 01 FF 50 ? 85 C0 74 ? 8B C8 E8 ? ? ? ? 8B C8 EB ? 33 C9 89 0D ? ? ? ? 8B 45 ? FF 70 ? E8 ? ? ? ? B0 ? 5D");
 
         int v[3] = { 0,0,0 };
 
