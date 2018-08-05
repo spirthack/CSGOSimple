@@ -1,7 +1,7 @@
 # CSGOSimple
 CSGOSimple is an internal cheat base. This fork was created after MarkHC stops working on this project
 
-##VMT hooker looks like detected!
+## VMT hooker looks like detected!
 
 ## Repositories:
     Gitlab: https://gitlab.com/spirt/csgosimple
