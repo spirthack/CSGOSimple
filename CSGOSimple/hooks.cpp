@@ -18,6 +18,7 @@ namespace Hooks
 	vfunc_hook direct3d_hook;
 	vfunc_hook vguipanel_hook;
 	vfunc_hook vguisurf_hook;
+	vfunc_hook sound_hook;
 	vfunc_hook mdlrender_hook;
 	vfunc_hook clientmode_hook;
 	vfunc_hook sv_cheats;
@@ -28,6 +29,7 @@ namespace Hooks
 		direct3d_hook.setup(g_D3DDevice9);
 		vguipanel_hook.setup(g_VGuiPanel);
 		vguisurf_hook.setup(g_VGuiSurface);
+		sound_hook.setup(g_EngineSound);
 		mdlrender_hook.setup(g_MdlRender);
 		clientmode_hook.setup(g_ClientMode);
 		ConVar* sv_cheats_con = g_CVar->FindVar("sv_cheats");
@@ -41,7 +43,9 @@ namespace Hooks
 
 		vguipanel_hook.hook_index(index::PaintTraverse, hkPaintTraverse);
 
-		vguisurf_hook.hook_index(index::PlaySound, hkPlaySound);
+		sound_hook.hook_index(index::EmitSound1, hkEmitSound1);
+		//vguisurf_hook.hook_index(index::PlaySound, hkPlaySound);
+		vguisurf_hook.hook_index(index::LockCursor, hkLockCursor);
 
 		mdlrender_hook.hook_index(index::DrawModelExecute, hkDrawModelExecute);
 
@@ -63,7 +67,7 @@ namespace Hooks
 		Glow::Get().Shutdown();
 	}
 	//--------------------------------------------------------------------------------
-	long __stdcall hkEndScene(IDirect3DDevice9* device)
+	long __stdcall hkEndScene(IDirect3DDevice9* pDevice)
 	{
 		auto oEndScene = direct3d_hook.get_original<EndScene>(index::EndScene);
 
@@ -80,27 +84,36 @@ namespace Hooks
 		mat_ambient_light_b->SetValue(g_Options.mat_ambient_light_b);
 		crosshair_cvar->SetValue(!g_Options.esp_crosshair);
 
-		DWORD dwOld_D3DRS_COLORWRITEENABLE;
+		DWORD colorwrite, srgbwrite;
+		pDevice->GetRenderState(D3DRS_COLORWRITEENABLE, &colorwrite);
+		pDevice->GetRenderState(D3DRS_SRGBWRITEENABLE, &srgbwrite);
 
-		device->GetRenderState(D3DRS_COLORWRITEENABLE, &dwOld_D3DRS_COLORWRITEENABLE);
-		device->SetRenderState(D3DRS_COLORWRITEENABLE, 0xffffffff);
+		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xffffffff);
+		//removes the source engine color correction
+		pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, false);
+
+		pDevice->SetSamplerState(NULL, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+		pDevice->SetSamplerState(NULL, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+		pDevice->SetSamplerState(NULL, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP);
+		pDevice->SetSamplerState(NULL, D3DSAMP_SRGBTEXTURE, NULL);
 
 		ImGui_ImplDX9_NewFrame();
-		Render::Get().BeginScene();
-		Visuals::Get().Render();
-		Render::Get().EndScene();
+
+		auto esp_drawlist = Render::Get().RenderScene();
 
 		Menu::Get().Render();
 
-		ImGui::Render();
-		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
-		device->SetRenderState(D3DRS_COLORWRITEENABLE, dwOld_D3DRS_COLORWRITEENABLE);
+		ImGui::Render();
+		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData(), esp_drawlist);
+
+		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, colorwrite);
+		pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, srgbwrite);
 
 		if (InputSys::Get().IsKeyDown(VK_TAB))
 			Utils::RankRevealAll();
 
-		return oEndScene(device);
+		return oEndScene(pDevice);
 	}
 	//--------------------------------------------------------------------------------
 	long __stdcall hkReset(IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* pPresentationParameters)
@@ -176,12 +189,40 @@ namespace Hooks
 				if (!g_LocalPlayer)
 					return;
 
-				Visuals::Get().OnPaintTraverse();
+				Render::Get().BeginScene();
+				//Visuals::Get().OnPaintTraverse();
 			}
 		}
 	}
 	//--------------------------------------------------------------------------------
-	void __stdcall hkPlaySound(const char* name)
+	void __stdcall hkEmitSound1(IRecipientFilter& filter, int iEntIndex, int iChannel, const char* pSoundEntry, unsigned int nSoundEntryHash, const char *pSample, float flVolume, int nSeed, float flAttenuation, int iFlags, int iPitch, const Vector* pOrigin, const Vector* pDirection, void* pUtlVecOrigins, bool bUpdatePositions, float soundtime, int speakerentity, int unk) {
+		static auto ofunc = sound_hook.get_original<EmitSound1>(index::EmitSound1);
+
+
+		if (!strcmp(pSoundEntry, "UIPanorama.popup_accept_match_beep")) {
+			static auto fnAccept = reinterpret_cast<bool(__stdcall*)(const char*)>(Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12"));
+
+			if (fnAccept) {
+
+				fnAccept("");
+
+				//This will flash the CSGO window on the taskbar
+				//so we know a game was found (you cant hear the beep sometimes cause it auto-accepts too fast)
+				FLASHWINFO fi;
+				fi.cbSize = sizeof(FLASHWINFO);
+				fi.hwnd = InputSys::Get().GetMainWindow();
+				fi.dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG;
+				fi.uCount = 0;
+				fi.dwTimeout = 0;
+				FlashWindowEx(&fi);
+			}
+		}
+
+		ofunc(g_EngineSound, filter, iEntIndex, iChannel, pSoundEntry, nSoundEntryHash, pSample, flVolume, nSeed, flAttenuation, iFlags, iPitch, pOrigin, pDirection, pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity, unk);
+
+	}
+	//--------------------------------------------------------------------------------
+	void __stdcall hkPlaySound(const char* name) // not used
 	{
 		static auto oPlaySound = vguisurf_hook.get_original<PlaySound>(index::PlaySound);
 
@@ -190,7 +231,7 @@ namespace Hooks
 		// Auto Accept
 		if (strstr(name, "UI/competitive_accept_beep.wav")) {
 			static auto fnAccept =
-				(void(*)())Utils::PatternScan(GetModuleHandleA("client.dll"), "55 8B EC 83 E4 F8 83 EC 08 56 8B 35 ? ? ? ? 57 83 BE");
+				(void(*)())Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 F8 83 EC 08 56 8B 35 ? ? ? ? 57 83 BE");
 
 			fnAccept();
 
@@ -234,6 +275,18 @@ namespace Hooks
 		ofunc(g_ClientMode, vsView);
 	}
 	//--------------------------------------------------------------------------------
+	void __stdcall hkLockCursor()
+	{
+		static auto ofunc = vguisurf_hook.get_original<LockCursor_t>(index::LockCursor);
+
+		if (Menu::Get().IsVisible()) {
+			g_VGuiSurface->UnlockCursor();
+			return;
+		}
+		ofunc(g_VGuiSurface);
+
+	}
+	//--------------------------------------------------------------------------------
 	void __stdcall hkDrawModelExecute(IMatRenderContext* ctx, const DrawModelState_t& state, const ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBoneToWorld)
 	{
 		static auto ofunc = mdlrender_hook.get_original<DrawModelExecute>(index::DrawModelExecute);
@@ -245,7 +298,7 @@ namespace Hooks
 		g_MdlRender->ForcedMaterialOverride(nullptr);
 	}
 
-	auto dwCAM_Think = Utils::PatternScan(GetModuleHandleW(L"client.dll"), "85 C0 75 30 38 86");
+	auto dwCAM_Think = Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "85 C0 75 30 38 86");
 	typedef bool(__thiscall *svc_get_bool_t)(PVOID);
 	bool __fastcall hkSvCheatsGetBool(PVOID pConVar, void* edx)
 	{

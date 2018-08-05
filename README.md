@@ -1,6 +1,8 @@
 # CSGOSimple
 CSGOSimple is an internal cheat base. This fork was created after MarkHC stops working on this project
 
+##VMT hooker looks like detected!
+
 ## Repositories:
     Gitlab: https://gitlab.com/spirt/csgosimple
     Github: https://github.com/anarh1st47/csgosimple
@@ -9,7 +11,8 @@ CSGOSimple is an internal cheat base. This fork was created after MarkHC stops w
     ImGui updated to latest version, you always can update it manually later
     Latest structs/interfaces updated after CSGO update
     Fixed some bugs, like vfunc hooker
-    ImGui Renderer
+    ImGui Renderer(improved)
+    Panorama support
 
 
 ![Menu Screenshot after ImGui update](https://i.imgur.com/pYgCja5.png)

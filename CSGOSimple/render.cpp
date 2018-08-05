@@ -1,136 +1,141 @@
-#include <sstream>
 #include "render.hpp"
-#include "droid.hpp"
 
+#include <mutex>
+
+#include "features/visuals.hpp"
 #include "valve_sdk/csgostructs.hpp"
 #include "helpers/input.hpp"
+#include "menu.hpp"
+#include "options.hpp"
+#include "droid.hpp"
+#include "helpers/math.hpp"
 
 ImFont* g_pDefaultFont;
+ImFont* g_pC4Font;
+ImFont* g_pIconFont;
+
+
+//CRITICAL_SECTION render_cs;
+
+Render::Render()
+{
+	//InitializeCriticalSection(&render_cs);
+
+}
+
+ImDrawListSharedData _data;
+
+std::mutex render_mutex;
 
 void Render::Initialize()
 {
 	ImGui::CreateContext();
 
 	ImGui_ImplDX9_Init(InputSys::Get().GetMainWindow(), g_D3DDevice9);
-	g_pDefaultFont = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Droid_compressed_data, Droid_compressed_size, 14.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
+
+	_data = ImDrawListSharedData();
+
+	draw_list = new ImDrawList(&_data);
+	draw_list_act = new ImDrawList(&_data);
+	draw_list_rendering = new ImDrawList(&_data);
+
+	GetFonts();
+}
+
+void Render::GetFonts() {
+	ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Droid_compressed_data, Droid_compressed_size, 14.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
+	g_pDefaultFont = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Droid_compressed_data, Droid_compressed_size, 18.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
+	g_pC4Font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Droid_compressed_data, Droid_compressed_size, 32.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
+
+	g_pIconFont = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Droid_compressed_data, Droid_compressed_size, 18.f);
+}
+
+void Render::ClearDrawList() {
+	render_mutex.lock();
+	draw_list_act->Clear();
+	render_mutex.unlock();
 }
 
 void Render::BeginScene()
 {
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
-	ImGui::Begin("BackBuffer", 0, ImVec2(0, 0), 0.0f, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
+	draw_list->Clear();
+	draw_list->PushClipRectFullScreen();
 
-	ImGui::SetWindowPos(ImVec2(0, 0), ImGuiSetCond_Always);
-	ImGui::SetWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y), ImGuiSetCond_Always);
+	if (g_Options.esp_enabled)
+		Visuals::Get().AddToDrawList();
+
+	render_mutex.lock();
+	*draw_list_act = *draw_list;
+	render_mutex.unlock();
 }
 
-void Render::EndScene()
-{
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
-	window->DrawList->PushClipRectFullScreen();
+ImDrawList* Render::RenderScene() {
 
-	ImGui::End();
-	ImGui::PopStyleColor();
-}
-
-float Render::RenderText(const std::string& text, const ImVec2& pos, float size, uint32_t color, bool center, ImFont* pFont)
-{
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
-
-	float a = (color >> 24) & 0xff;
-	float r = (color >> 16) & 0xff;
-	float g = (color >> 8) & 0xff;
-	float b = (color) & 0xff;
-
-	std::stringstream steam(text);
-	std::string line;
-
-	float y = 0.0f;
-	int i = 0;
-
-	while (std::getline(steam, line))
-	{
-		ImVec2 textSize = pFont->CalcTextSizeA(size, FLT_MAX, 0.0f, line.c_str());
-
-		if (center)
-		{
-			window->DrawList->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) + 1, (pos.y + textSize.y * i) + 1), ImGui::GetColorU32(ImVec4(0, 0, 0, a / 255)), line.c_str());
-			window->DrawList->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) - 1, (pos.y + textSize.y * i) - 1), ImGui::GetColorU32(ImVec4(0, 0, 0, a / 255)), line.c_str());
-			window->DrawList->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) + 1, (pos.y + textSize.y * i) - 1), ImGui::GetColorU32(ImVec4(0, 0, 0, a / 255)), line.c_str());
-			window->DrawList->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) - 1, (pos.y + textSize.y * i) + 1), ImGui::GetColorU32(ImVec4(0, 0, 0, a / 255)), line.c_str());
-
-			window->DrawList->AddText(pFont, size, ImVec2(pos.x - textSize.x / 2.0f, pos.y + textSize.y * i), ImGui::GetColorU32(ImVec4(r / 255, g / 255, b / 255, a / 255)), line.c_str());
-		}
-		else
-		{
-			window->DrawList->AddText(pFont, size, ImVec2((pos.x) + 1, (pos.y + textSize.y * i) + 1), ImGui::GetColorU32(ImVec4(0, 0, 0, a / 255)), line.c_str());
-			window->DrawList->AddText(pFont, size, ImVec2((pos.x) - 1, (pos.y + textSize.y * i) - 1), ImGui::GetColorU32(ImVec4(0, 0, 0, a / 255)), line.c_str());
-			window->DrawList->AddText(pFont, size, ImVec2((pos.x) + 1, (pos.y + textSize.y * i) - 1), ImGui::GetColorU32(ImVec4(0, 0, 0, a / 255)), line.c_str());
-			window->DrawList->AddText(pFont, size, ImVec2((pos.x) - 1, (pos.y + textSize.y * i) + 1), ImGui::GetColorU32(ImVec4(0, 0, 0, a / 255)), line.c_str());
-
-			window->DrawList->AddText(pFont, size, ImVec2(pos.x, pos.y + textSize.y * i), ImGui::GetColorU32(ImVec4(r / 255, g / 255, b / 255, a / 255)), line.c_str());
-		}
-
-		y = pos.y + textSize.y * (i + 1);
-		i++;
+	if (render_mutex.try_lock()) {
+		*draw_list_rendering = *draw_list_act;
+		render_mutex.unlock();
 	}
 
-	return y;
-}
-void Render::RenderLine(const ImVec2& from, const ImVec2& to, uint32_t color, float thickness)
-{
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
+	return draw_list_rendering;
+	/*
+	if (!draw_list_rendering->VtxBuffer.empty()) {
+	draw_data.Valid = true;
+	draw_data.CmdLists = &draw_list_rendering;
+	draw_data.CmdListsCount = 1;
+	draw_data.TotalVtxCount = draw_list_rendering->VtxBuffer.Size;
+	draw_data.TotalIdxCount = draw_list_rendering->IdxBuffer.Size;
+	}
 
-	float a = (color >> 24) & 0xff;
-	float r = (color >> 16) & 0xff;
-	float g = (color >> 8) & 0xff;
-	float b = (color) & 0xff;
 
-	window->DrawList->AddLine(from, to, ImGui::GetColorU32(ImVec4(r / 255, g / 255, b / 255, a / 255)), thickness);
-}
 
-void Render::RenderCircle(const ImVec2& position, float radius, uint32_t color, float thickness)
-{
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
-
-	float a = (color >> 24) & 0xff;
-	float r = (color >> 16) & 0xff;
-	float g = (color >> 8) & 0xff;
-	float b = (color) & 0xff;
-
-	window->DrawList->AddCircle(position, radius, ImGui::GetColorU32(ImVec4(r / 255, g / 255, b / 255, a / 255)), 12, thickness);
+	if (draw_data.Valid)
+	ImGui_ImplDX9_RenderDrawData(&draw_data);*/
 }
 
-void Render::RenderCircleFilled(const ImVec2& position, float radius, uint32_t color)
+
+float Render::RenderText(const std::string& text, const ImVec2& pos, float size, Color color, bool center, ImFont* pFont)
 {
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
+	ImVec2 textSize = pFont->CalcTextSizeA(size, FLT_MAX, 0.0f, text.c_str());
 
-	float a = (color >> 24) & 0xff;
-	float r = (color >> 16) & 0xff;
-	float g = (color >> 8) & 0xff;
-	float b = (color) & 0xff;
+	draw_list->PushTextureID(pFont->ContainerAtlas->TexID);
 
-	window->DrawList->AddCircleFilled(position, radius, ImGui::GetColorU32(ImVec4(r / 255, g / 255, b / 255, a / 255)), 12);
+	if (center)
+	{
+		draw_list->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) + 1, (pos.y) + 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
+		draw_list->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) - 1, (pos.y) - 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
+		draw_list->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) + 1, (pos.y) - 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
+		draw_list->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) - 1, (pos.y) + 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
+
+		draw_list->AddText(pFont, size, ImVec2(pos.x - textSize.x / 2.0f, pos.y), GetU32(color), text.c_str());
+	}
+	else
+	{
+		draw_list->AddText(pFont, size, ImVec2((pos.x) + 1, (pos.y) + 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
+		draw_list->AddText(pFont, size, ImVec2((pos.x) - 1, (pos.y) - 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
+		draw_list->AddText(pFont, size, ImVec2((pos.x) + 1, (pos.y) - 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
+		draw_list->AddText(pFont, size, ImVec2((pos.x) - 1, (pos.y) + 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
+
+		draw_list->AddText(pFont, size, ImVec2(pos.x, pos.y), GetU32(color), text.c_str());
+	}
+
+	draw_list->PopTextureID();
+
+	return pos.y + textSize.y;
 }
 
-void Render::RenderBox(const ImVec2 & from, const ImVec2 & to, uint32_t color, float thickness, float rounding)
+void Render::RenderCircle3D(Vector position, float points, float radius, Color color)
 {
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
+	float step = (float)M_PI * 2.0f / points;
 
-	float a = (color >> 24) & 0xff;
-	float r = (color >> 16) & 0xff;
-	float g = (color >> 8) & 0xff;
-	float b = (color) & 0xff;
-	window->DrawList->AddRect(from, to, ImGui::GetColorU32(ImVec4(r / 255, g / 255, b / 255, a / 255)), rounding, 15, thickness);
-}
+	for (float a = 0; a < (M_PI * 2.0f); a += step)
+	{
+		Vector start(radius * cosf(a) + position.x, radius * sinf(a) + position.y, position.z);
+		Vector end(radius * cosf(a + step) + position.x, radius * sinf(a + step) + position.y, position.z);
 
-void Render::RenderBoxFilled(const ImVec2 & from, const ImVec2 & to, uint32_t color, float thickness, float rounding)
-{
-	ImGuiWindow* window = ImGui::GetCurrentWindow();
+		Vector start2d, end2d;
+		if (g_DebugOverlay->ScreenPosition(start, start2d) || g_DebugOverlay->ScreenPosition(end, end2d))
+			return;
 
-	float a = (color >> 24) & 0xff;
-	float r = (color >> 16) & 0xff;
-	float g = (color >> 8) & 0xff;
-	float b = (color) & 0xff;
-	window->DrawList->AddRectFilled(from, to, ImGui::GetColorU32(ImVec4(r / 255, g / 255, b / 255, a / 255)), rounding, 15);
+		RenderLine(start2d.x, start2d.y, end2d.x, end2d.y, color);
+	}
 }
