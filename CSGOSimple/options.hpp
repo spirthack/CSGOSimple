@@ -57,6 +57,7 @@ public:
     OPTION(bool, misc_bhop, false);
     OPTION(bool, misc_no_hands, false);
 	OPTION(bool, misc_thirdperson, false);
+	OPTION(bool, misc_showranks, false);
 	OPTION(float, misc_thirdperson_dist, 50.f);
     OPTION(int, viewmodel_fov, 68);
     OPTION(float, mat_ambient_light_r, 0.0f);

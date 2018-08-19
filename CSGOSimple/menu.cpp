@@ -254,6 +254,7 @@ void RenderMiscTab()
 		ImGui::Checkbox("Third Person", &g_Options.misc_thirdperson);
 		ImGui::SliderFloat("ThirdPerson Distance", &g_Options.misc_thirdperson_dist, 0.f, 150.f);
         ImGui::Checkbox("No hands", &g_Options.misc_no_hands);
+		ImGui::Checkbox("Rank reveal", &g_Options.misc_showranks);
         ImGui::PushItemWidth(-1.0f);
         ImGui::SliderInt("viewmodel_fov:", &g_Options.viewmodel_fov, 68, 120);
         ImGui::SliderFloat("mat_ambient_light_r:", &g_Options.mat_ambient_light_r, 0, 1);

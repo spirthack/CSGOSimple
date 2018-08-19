@@ -265,14 +265,20 @@ namespace Utils {
      * @brief Reveal the ranks of all players on the server
      *
      */
-    void RankRevealAll()
-    {
-        using ServerRankRevealAll = char(__cdecl*)(int*);
+	void RankRevealAll()
+	{
+		using ServerRankRevealAll = bool(__cdecl*)(float*);
 
-        static auto fnServerRankRevealAll = PatternScan(GetModuleHandleW(L"client_panorama.dll"), "55 8B EC 8B 0D ? ? ? ? 85 C9 75 ? A1 ? ? ? ? 68 ? ? ? ? 8B 08 8B 01 FF 50 ? 85 C0 74 ? 8B C8 E8 ? ? ? ? 8B C8 EB ? 33 C9 89 0D ? ? ? ? 8B 45 ? FF 70 ? E8 ? ? ? ? B0 ? 5D");
+		static uint8_t* fnServerRankRevealAll = 0;
 
-        int v[3] = { 0,0,0 };
+		if (!fnServerRankRevealAll) 
+			fnServerRankRevealAll = PatternScan(GetModuleHandleA("client_panorama.dll"), "C7 00 ?? ?? ?? ?? E8 ?? ?? ?? ?? 83 EC 08 8D 4E 74") + 0x2;
 
-        reinterpret_cast<ServerRankRevealAll>(fnServerRankRevealAll)(v);
-    }
+		if (fnServerRankRevealAll) {
+			float v[3] = { 0,0,0 };
+
+			reinterpret_cast<ServerRankRevealAll>(fnServerRankRevealAll)(v);
+		}
+	}
+
 }
