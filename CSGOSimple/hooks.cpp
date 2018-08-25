@@ -105,7 +105,8 @@ namespace Hooks
 
 
 		ImGui::Render();
-		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData(), esp_drawlist);
+		if (g_EngineClient->IsConnected())
+			ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData(), esp_drawlist);
 
 		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, colorwrite);
 		pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, srgbwrite);
