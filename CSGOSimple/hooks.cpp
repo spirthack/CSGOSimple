@@ -105,7 +105,7 @@ namespace Hooks
 
 
 		ImGui::Render();
-		if (g_EngineClient->IsConnected())
+		//if (g_EngineClient->IsConnected())
 			ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData(), esp_drawlist);
 
 		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, colorwrite);
@@ -185,14 +185,7 @@ namespace Hooks
 			}
 		}
 		else if (panelId == panel) {
-			if (g_EngineClient->IsInGame() && !g_EngineClient->IsTakingScreenshot()) {
-
-				if (!g_LocalPlayer)
-					return;
-
-				Render::Get().BeginScene();
-				//Visuals::Get().OnPaintTraverse();
-			}
+			Render::Get().BeginScene();
 		}
 	}
 	//--------------------------------------------------------------------------------
