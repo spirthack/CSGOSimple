@@ -47,6 +47,12 @@ bool C_BaseCombatWeapon::HasBullets()
 
 bool C_BaseCombatWeapon::CanFire()
 {
+	static decltype(this) old_weapon = nullptr;
+	if (old_weapon != this) {
+		old_weapon = this;
+		return false; //cannot shoot first tick after switch
+	}
+
 	if (IsReloading() || m_iClip1() <= 0)
 		return false;
 
