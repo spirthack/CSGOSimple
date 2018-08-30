@@ -55,25 +55,22 @@ bool C_BaseCombatWeapon::CanFire()
 		return false; //cannot shoot first tick after switch
 	}
 
-	if (IsReloading() || m_iClip1() <= 0)
+	if (IsReloading() || m_iClip1() <= 0 || !g_LocalPlayer)
 		return false;
 
-	if (!g_LocalPlayer)
-		return false;
-
-	float flServerTime = g_LocalPlayer->m_nTickBase() * g_GlobalVars->interval_per_tick;
+	auto flServerTime = g_LocalPlayer->m_nTickBase() * g_GlobalVars->interval_per_tick;
 
 	return m_flNextPrimaryAttack() <= flServerTime;
 }
 
 bool C_BaseCombatWeapon::IsGrenade()
 {
-	return GetCSWeaponData()->WeaponType == WEAPONTYPE_GRENADE;
+	return GetCSWeaponData()->iWeaponType == WEAPONTYPE_GRENADE;
 }
 
 bool C_BaseCombatWeapon::IsGun()
 {
-	switch (GetCSWeaponData()->WeaponType)
+	switch (GetCSWeaponData()->iWeaponType)
 	{
 	case WEAPONTYPE_C4:
 		return false;
@@ -91,12 +88,12 @@ bool C_BaseCombatWeapon::IsGun()
 bool C_BaseCombatWeapon::IsKnife()
 {
 	if (this->m_Item().m_iItemDefinitionIndex() == WEAPON_TASER) return false;
-	return GetCSWeaponData()->WeaponType == WEAPONTYPE_KNIFE;
+	return GetCSWeaponData()->iWeaponType == WEAPONTYPE_KNIFE;
 }
 
 bool C_BaseCombatWeapon::IsRifle()
 {
-	switch (GetCSWeaponData()->WeaponType)
+	switch (GetCSWeaponData()->iWeaponType)
 	{
 	case WEAPONTYPE_RIFLE:
 		return true;
@@ -113,7 +110,7 @@ bool C_BaseCombatWeapon::IsRifle()
 
 bool C_BaseCombatWeapon::IsPistol()
 {
-	switch (GetCSWeaponData()->WeaponType)
+	switch (GetCSWeaponData()->iWeaponType)
 	{
 	case WEAPONTYPE_PISTOL:
 		return true;
@@ -124,7 +121,7 @@ bool C_BaseCombatWeapon::IsPistol()
 
 bool C_BaseCombatWeapon::IsSniper()
 {
-	switch (GetCSWeaponData()->WeaponType)
+	switch (GetCSWeaponData()->iWeaponType)
 	{
 	case WEAPONTYPE_SNIPER_RIFLE:
 		return true;
@@ -155,8 +152,7 @@ void C_BaseCombatWeapon::UpdateAccuracyPenalty()
 }
 
 CUtlVector<IRefCounted*>& C_BaseCombatWeapon::m_CustomMaterials()
-{
-	static auto inReload = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "83 BE ? ? ? ? ? 7F 67") + 2) - 12;
+{	static auto inReload = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "83 BE ? ? ? ? ? 7F 67") + 2) - 12;
 	return *(CUtlVector<IRefCounted*>*)((uintptr_t)this + inReload);
 }
 
