@@ -148,10 +148,6 @@ namespace Hooks
 			BunnyHop::OnCreateMove(cmd);
 		}
 
-		auto activeweapon = g_LocalPlayer->m_hActiveWeapon();
-
-
-		if (cmd->buttons ^ IN_ATTACK && activeweapon && activeweapon->IsWeapon() && !activeweapon->IsKnife() && activeweapon->CanFire()) cmd->buttons |= IN_ATTACK;
 
 		verified->m_cmd = *cmd;
 		verified->m_crc = cmd->GetChecksum();
