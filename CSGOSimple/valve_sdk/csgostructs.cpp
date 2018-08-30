@@ -47,9 +47,11 @@ bool C_BaseCombatWeapon::HasBullets()
 
 bool C_BaseCombatWeapon::CanFire()
 {
-	static decltype(this) old_weapon = nullptr;
-	if (old_weapon != this) {
-		old_weapon = this;
+	static decltype(this) stored_weapon = nullptr;
+	static auto stored_tick = 0;
+	if (stored_weapon != this || stored_tick >= g_LocalPlayer->m_nTickBase()) {
+		stored_weapon = this;
+		stored_tick = g_LocalPlayer->m_nTickBase();
 		return false; //cannot shoot first tick after switch
 	}
 

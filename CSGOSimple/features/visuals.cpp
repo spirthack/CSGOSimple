@@ -334,7 +334,6 @@ void Visuals::AddToDrawList() {
 	if (!g_EngineClient->IsInGame() || !g_LocalPlayer)
 		return;
 
-
 	for (auto i = 1; i <= g_EntityList->GetHighestEntityIndex(); ++i) {
 		auto entity = C_BaseEntity::GetEntityByIndex(i);
 
