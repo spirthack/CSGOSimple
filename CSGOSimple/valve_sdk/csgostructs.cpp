@@ -148,7 +148,7 @@ float C_BaseCombatWeapon::GetSpread()
 
 void C_BaseCombatWeapon::UpdateAccuracyPenalty()
 {
-	CallVFunction<void(__thiscall*)(void*)>(this, 468)(this);
+	CallVFunction<void(__thiscall*)(void*)>(this, 467)(this);
 }
 
 CUtlVector<IRefCounted*>& C_BaseCombatWeapon::m_CustomMaterials()
