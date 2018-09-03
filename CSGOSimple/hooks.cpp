@@ -111,9 +111,6 @@ namespace Hooks
 		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, colorwrite);
 		pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, srgbwrite);
 
-		if (InputSys::Get().IsKeyDown(VK_TAB) && g_Options.misc_showranks)
-			Utils::RankRevealAll();
-
 		return oEndScene(pDevice);
 	}
 	//--------------------------------------------------------------------------------
@@ -186,6 +183,9 @@ namespace Hooks
 			}
 		}
 		else if (panelId == panel) {
+			if (g_LocalPlayer && InputSys::Get().IsKeyDown(VK_TAB) && g_Options.misc_showranks)
+				Utils::RankRevealAll();
+
 			Render::Get().BeginScene();
 		}
 	}
