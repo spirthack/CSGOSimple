@@ -331,9 +331,6 @@ void Visuals::ThirdPerson() {
 
 
 void Visuals::AddToDrawList() {
-	if (!g_EngineClient->IsInGame() || !g_LocalPlayer)
-		return;
-
 	for (auto i = 1; i <= g_EntityList->GetHighestEntityIndex(); ++i) {
 		auto entity = C_BaseEntity::GetEntityByIndex(i);
 
@@ -359,6 +356,8 @@ void Visuals::AddToDrawList() {
 		else if (entity->IsPlantedC4() && g_Options.esp_planted_c4)
 			RenderPlantedC4(entity);
 	}
+
+
 	if (g_Options.esp_crosshair)
 		RenderCrosshair();
 

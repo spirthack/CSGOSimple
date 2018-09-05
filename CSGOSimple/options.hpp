@@ -57,7 +57,8 @@ public:
     OPTION(bool, misc_bhop, false);
     OPTION(bool, misc_no_hands, false);
 	OPTION(bool, misc_thirdperson, false);
-	OPTION(bool, misc_showranks, false);
+	OPTION(bool, misc_showranks, true);
+	OPTION(bool, misc_watermark, true);
 	OPTION(float, misc_thirdperson_dist, 50.f);
     OPTION(int, viewmodel_fov, 68);
     OPTION(float, mat_ambient_light_r, 0.0f);
@@ -90,6 +91,7 @@ public:
     OPTION(Color, color_chams_player_enemy_occluded, Color(255, 128, 0));
     OPTION(Color, color_chams_arms_visible, Color(0, 128, 255));
     OPTION(Color, color_chams_arms_occluded, Color(0, 128, 255));
+	OPTION(Color, color_watermark, Color(0, 128, 255)); // no menu config cuz its useless
 };
 
 extern Config g_Options;

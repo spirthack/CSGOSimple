@@ -44,7 +44,6 @@ namespace Hooks
 		vguipanel_hook.hook_index(index::PaintTraverse, hkPaintTraverse);
 
 		sound_hook.hook_index(index::EmitSound1, hkEmitSound1);
-		//vguisurf_hook.hook_index(index::PlaySound, hkPlaySound);
 		vguisurf_hook.hook_index(index::LockCursor, hkLockCursor);
 
 		mdlrender_hook.hook_index(index::DrawModelExecute, hkDrawModelExecute);
@@ -105,8 +104,7 @@ namespace Hooks
 
 
 		ImGui::Render();
-		//if (g_EngineClient->IsConnected())
-			ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData(), esp_drawlist);
+		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData(), esp_drawlist);
 
 		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, colorwrite);
 		pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, srgbwrite);
@@ -125,9 +123,8 @@ namespace Hooks
 
 		auto hr = oReset(device, pPresentationParameters);
 
-		if (hr >= 0) {
+		if (hr >= 0)
 			Menu::Get().OnDeviceReset();
-		}
 
 		return hr;
 	}
@@ -144,9 +141,8 @@ namespace Hooks
 		if (!cmd || !cmd->command_number)
 			return;
 
-		if (g_Options.misc_bhop) {
+		if (g_Options.misc_bhop)
 			BunnyHop::OnCreateMove(cmd);
-		}
 
 
 		verified->m_cmd = *cmd;
@@ -186,6 +182,13 @@ namespace Hooks
 			}
 		}
 		else if (panelId == panel) {
+			//Ignore 50% cuz it called very often
+			static bool bSkip = false;
+			bSkip = !bSkip;
+
+			if (bSkip)
+				return;
+
 			Render::Get().BeginScene();
 		}
 	}
@@ -217,31 +220,6 @@ namespace Hooks
 
 	}
 	//--------------------------------------------------------------------------------
-	void __stdcall hkPlaySound(const char* name) // not used
-	{
-		static auto oPlaySound = vguisurf_hook.get_original<PlaySound>(index::PlaySound);
-
-		oPlaySound(g_VGuiSurface, name);
-
-		// Auto Accept
-		if (strstr(name, "UI/competitive_accept_beep.wav")) {
-			static auto fnAccept =
-				(void(*)())Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 F8 83 EC 08 56 8B 35 ? ? ? ? 57 83 BE");
-
-			fnAccept();
-
-			//This will flash the CSGO window on the taskbar
-			//so we know a game was found (you cant hear the beep sometimes cause it auto-accepts too fast)
-			FLASHWINFO fi;
-			fi.cbSize = sizeof(FLASHWINFO);
-			fi.hwnd = InputSys::Get().GetMainWindow();
-			fi.dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG;
-			fi.uCount = 0;
-			fi.dwTimeout = 0;
-			FlashWindowEx(&fi);
-		}
-	}
-	//--------------------------------------------------------------------------------
 	int __stdcall hkDoPostScreenEffects(int a1)
 	{
 		auto oDoPostScreenEffects = clientmode_hook.get_original<DoPostScreenEffects>(index::DoPostScreenSpaceEffects);
@@ -255,7 +233,7 @@ namespace Hooks
 	void __stdcall hkFrameStageNotify(ClientFrameStage_t stage)
 	{
 		static auto ofunc = hlclient_hook.get_original<FrameStageNotify>(index::FrameStageNotify);
-
+		// may be u will use it lol
 		ofunc(g_CHLClient, stage);
 	}
 	//--------------------------------------------------------------------------------
@@ -263,9 +241,8 @@ namespace Hooks
 	{
 		static auto ofunc = clientmode_hook.get_original<OverrideView>(index::OverrideView);
 
-		if (g_EngineClient->IsInGame() && vsView) {
+		if (g_EngineClient->IsInGame() && vsView)
 			Visuals::Get().ThirdPerson();
-		}
 
 		ofunc(g_ClientMode, vsView);
 	}

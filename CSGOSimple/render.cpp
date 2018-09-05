@@ -56,13 +56,18 @@ void Render::ClearDrawList() {
 	render_mutex.unlock();
 }
 
-void Render::BeginScene()
-{
+void Render::BeginScene() {
 	draw_list->Clear();
 	draw_list->PushClipRectFullScreen();
 
-	if (g_Options.esp_enabled)
+
+	if (g_Options.misc_watermark) //lol
+		Render::Get().RenderText("CSGOSimple", 10, 5, 14.f, g_Options.color_watermark);
+
+
+	if (g_EngineClient->IsInGame() && g_LocalPlayer && g_Options.esp_enabled)
 		Visuals::Get().AddToDrawList();
+
 
 	render_mutex.lock();
 	*draw_list_act = *draw_list;
