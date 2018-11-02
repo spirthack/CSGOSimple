@@ -256,7 +256,7 @@ namespace Utils {
 
         // Fix so we can change names how many times we want
         // This code will only run once because of `static`
-        static auto do_once = (nameConvar->SetValue("\n­­­"), true);
+        static auto do_once = (nameConvar->SetValue("\nï¿½ï¿½ï¿½"), true);
 
         nameConvar->SetValue(name);
     }

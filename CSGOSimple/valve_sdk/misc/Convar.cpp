@@ -595,7 +595,7 @@ void ConVar::ChangeStringValue(const char *tempVal, float flOldValue)
         m_Value.m_StringLength = len;
     }
 
-    memcpy(m_Value.m_pszString, tempVal, len);
+	memcpy(m_Value.m_pszString, std::to_string(this->GetFloat()).c_str(), len);
 
     // Invoke any necessary callback function
     for(int i = 0; i < m_fnChangeCallbacks.Count(); i++) {
