@@ -7,7 +7,18 @@ bool C_BaseEntity::IsPlayer()
 	//index: 152
 	//ref: "effects/nightvision"
 	//sig: 8B 92 ? ? ? ? FF D2 84 C0 0F 45 F7 85 F6
-	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 152)(this);
+	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 153)(this);
+}
+
+bool C_BaseEntity::IsLoot() {
+	return (GetClientClass()->m_ClassID == ClassId_CPhysPropAmmoBox ||
+		GetClientClass()->m_ClassID == ClassId_CPhysPropLootCrate ||
+		GetClientClass()->m_ClassID == ClassId_CPhysPropRadarJammer ||
+		GetClientClass()->m_ClassID == ClassId_CPhysPropWeaponUpgrade ||
+		GetClientClass()->m_ClassID == ClassId_CDrone ||
+		GetClientClass()->m_ClassID == ClassId_CDronegun ||
+		GetClientClass()->m_ClassID == ClassId_CItem_Healthshot ||
+		GetClientClass()->m_ClassID == ClassId_CItemCash);
 }
 
 bool C_BaseEntity::IsWeapon()

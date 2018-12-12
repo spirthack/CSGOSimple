@@ -117,6 +117,7 @@ public:
 	}
 
 	bool IsPlayer();
+	bool IsLoot();
 	bool IsWeapon();
 	bool IsPlantedC4();
 	bool IsDefuseKit();
