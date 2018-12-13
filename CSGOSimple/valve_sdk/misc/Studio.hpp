@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Math/Vector.hpp"
+#include "../math/Vector.hpp"
 
 typedef float Quaternion[4];
 typedef float RadianEuler[3];
@@ -43,6 +43,16 @@ typedef float RadianEuler[3];
 #define BONE_HAS_SAVEFRAME_ROT32        0x00800000    // Quaternion32
 
 
+#define HITGROUP_GENERIC 0
+#define HITGROUP_HEAD 1
+#define HITGROUP_CHEST 2
+#define HITGROUP_STOMACH 3
+#define HITGROUP_LEFTARM 4    
+#define HITGROUP_RIGHTARM 5
+#define HITGROUP_LEFTLEG 6
+#define HITGROUP_RIGHTLEG 7
+#define HITGROUP_GEAR 10
+
 enum modtype_t
 {
     mod_bad = 0,
@@ -53,44 +63,64 @@ enum modtype_t
 
 enum Hitboxes
 {
-    HITBOX_HEAD,
-    HITBOX_NECK,
-    HITBOX_PELVIS,
-    HITBOX_STOMACH,
-    HITBOX_LOWER_CHEST,
-    HITBOX_CHEST,
-    HITBOX_UPPER_CHEST,
-    HITBOX_RIGHT_THIGH,
-    HITBOX_LEFT_THIGH,
-    HITBOX_RIGHT_CALF,
-    HITBOX_LEFT_CALF,
-    HITBOX_RIGHT_FOOT,
-    HITBOX_LEFT_FOOT,
-    HITBOX_RIGHT_HAND,
-    HITBOX_LEFT_HAND,
-    HITBOX_RIGHT_UPPER_ARM,
-    HITBOX_RIGHT_FOREARM,
-    HITBOX_LEFT_UPPER_ARM,
-    HITBOX_LEFT_FOREARM,
-    HITBOX_MAX
+	HITBOX_HEAD,
+	HITBOX_NECK,
+	HITBOX_PELVIS,
+	HITBOX_STOMACH,
+	HITBOX_LOWER_CHEST,
+	HITBOX_CHEST,
+	HITBOX_UPPER_CHEST,
+	HITBOX_RIGHT_THIGH,
+	HITBOX_LEFT_THIGH,
+	HITBOX_RIGHT_CALF,
+	HITBOX_LEFT_CALF,
+	HITBOX_RIGHT_FOOT,
+	HITBOX_LEFT_FOOT,
+	HITBOX_RIGHT_HAND,
+	HITBOX_LEFT_HAND,
+	HITBOX_RIGHT_UPPER_ARM,
+	HITBOX_RIGHT_FOREARM,
+	HITBOX_LEFT_UPPER_ARM,
+	HITBOX_LEFT_FOREARM,
+	HITBOX_MAX
 };
+
 
 typedef unsigned short MDLHandle_t;
 
+
 struct mstudiobone_t
 {
-    int     sznameindex;
-    int     parent;		// parent bone
-    int     bonecontroller[6];	// bone controller index, -1 == none
-    Vector  pos;
-    Quaternion  quat;
-    RadianEuler rot;
-    Vector      posscale;
-    Vector      rotscale;
+	int                    sznameindex;
+	inline char * const    pszName(void) const { return ((char *)this) + sznameindex; }
+	int                    parent;
+	int                    bonecontroller[6];    // bone controller index, -1 == none
+	Vector                 pos;
+	Quaternion             quat;
+	RadianEuler            rot;
+	// compression scale
+	Vector                 posscale;
+	Vector                 rotscale;
 
-    matrix3x4_t poseToBone;
-    Quaternion  qAlignment;
-    int					flags;
+	matrix3x4_t            poseToBone;
+	Quaternion             qAlignment;
+	int                    flags;
+	int                    proctype;
+	int                    procindex;
+	mutable int            physicsbone;
+	inline void *          pProcedure() const { if (procindex == 0) return NULL; else return  (void *)(((byte *)this) + procindex); };
+	int                    surfacepropidx;
+	inline char * const    pszSurfaceProp(void) const { return ((char *)this) + surfacepropidx; }
+	inline int             GetSurfaceProp(void) const { return surfacepropLookup; }
+
+	int                    contents;
+	int                    surfacepropLookup;
+	int                    m_iPad01[7];
+
+	mstudiobone_t() {}
+private:
+	// No copy constructors allowed
+	mstudiobone_t(const mstudiobone_t& vOther);
 };
 
 
