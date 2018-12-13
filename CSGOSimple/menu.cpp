@@ -136,6 +136,7 @@ void RenderEspTab()
             ImGui::Checkbox("Dropped Weapons", &g_Options.esp_dropped_weapons);
             ImGui::Checkbox("Defuse Kit", &g_Options.esp_defuse_kit);
             ImGui::Checkbox("Planted C4", &g_Options.esp_planted_c4);
+			ImGui::Checkbox("Item Esp", &g_Options.esp_items);
 
             ImGui::NextColumn();
 
@@ -148,6 +149,7 @@ void RenderEspTab()
             ImGuiEx::ColorEdit3("Dropped Weapons", &g_Options.color_esp_weapons);
             ImGuiEx::ColorEdit3("Defuse Kit", &g_Options.color_esp_defuse);
             ImGuiEx::ColorEdit3("Planted C4", &g_Options.color_esp_c4);
+			ImGuiEx::ColorEdit3("Item Esp", &g_Options.color_esp_item);
             ImGui::PopItemWidth();
 
             ImGui::Columns(1, nullptr, false);
