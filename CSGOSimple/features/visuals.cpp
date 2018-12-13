@@ -267,6 +267,52 @@ void Visuals::RenderPlantedC4(C_BaseEntity* ent)
 	Render::Get().RenderText(name, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 14.f, g_Options.color_esp_c4);
 }
 //--------------------------------------------------------------------------------
+void Visuals::RenderItemEsp(C_BaseEntity* ent)
+{
+	std::string itemstr = "Undefined";
+	const model_t * itemModel = ent->GetModel();
+	if (!itemModel)
+		return;
+	studiohdr_t * hdr = g_MdlInfo->GetStudiomodel(itemModel);
+	if (!hdr)
+		return;
+	itemstr = hdr->szName;
+	if (itemstr.find("case_pistol") != std::string::npos)
+		itemstr = "Pistol Case";
+	else if (itemstr.find("case_light_weapon") != std::string::npos)
+		itemstr = "Light Case";
+	else if (itemstr.find("case_heavy_weapon") != std::string::npos)
+		itemstr = "Heavy Case";
+	else if (itemstr.find("case_explosive") != std::string::npos)
+		itemstr = "Explosive Case";
+	else if (itemstr.find("case_tools") != std::string::npos)
+		itemstr = "Tools Case";
+	else if (itemstr.find("random") != std::string::npos)
+		itemstr = "Airdrop";
+	else if (itemstr.find("dz_armor_helmet") != std::string::npos)
+		itemstr = "Full Armor";
+	else if (itemstr.find("dz_helmet") != std::string::npos)
+		itemstr = "Helmet";
+	else if (itemstr.find("dz_armor") != std::string::npos)
+		itemstr = "Armor";
+	else if (itemstr.find("upgrade_tablet") != std::string::npos)
+		itemstr = "Tablet Upgrade";
+	else if (itemstr.find("briefcase") != std::string::npos)
+		itemstr = "Briefcase";
+	else if (itemstr.find("parachutepack") != std::string::npos)
+		itemstr = "Parachute";
+	else if (itemstr.find("dufflebag") != std::string::npos)
+		itemstr = "Cash Dufflebag";
+	else if (itemstr.find("ammobox") != std::string::npos)
+		itemstr = "Ammobox";
+	auto bbox = GetBBox(ent);
+	if (bbox.right == 0 || bbox.bottom == 0)
+		return;
+	auto sz = g_pDefaultFont->CalcTextSizeA(14.f, FLT_MAX, 0.0f, itemstr.c_str());
+	int w = bbox.right - bbox.left;
+	Render::Get().RenderText(itemstr, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 14.f, g_Options.color_esp_item);
+}
+//--------------------------------------------------------------------------------
 void Visuals::ThirdPerson() {
 	if (!g_LocalPlayer)
 		return;
@@ -355,6 +401,8 @@ void Visuals::AddToDrawList() {
 			RenderDefuseKit(entity);
 		else if (entity->IsPlantedC4() && g_Options.esp_planted_c4)
 			RenderPlantedC4(entity);
+		else if (entity->IsLoot() && g_Options.esp_items)
+			RenderItemEsp(entity);
 	}
 
 

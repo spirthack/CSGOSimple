@@ -23,6 +23,7 @@ public:
     OPTION(bool, esp_dropped_weapons, false);
     OPTION(bool, esp_defuse_kit, false);
     OPTION(bool, esp_planted_c4, false);
+	OPTION(bool, esp_items, false);
 
     // 
     // GLOW
@@ -76,6 +77,7 @@ public:
     OPTION(Color, color_esp_weapons, Color(128, 0, 128));
     OPTION(Color, color_esp_defuse, Color(0, 128, 255));
     OPTION(Color, color_esp_c4, Color(255, 255, 0));
+	OPTION(Color, color_esp_item, Color(255, 255, 255));
 
     OPTION(Color, color_glow_ally, Color(0, 128, 255));
     OPTION(Color, color_glow_enemy, Color(255, 0, 0));
