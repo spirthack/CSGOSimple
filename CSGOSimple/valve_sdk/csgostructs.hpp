@@ -112,7 +112,7 @@ public:
 
 	const matrix3x4_t& m_rgflCoordinateFrame()
 	{
-		static auto _m_rgflCoordinateFrame = NetvarSys::Get().GetOffset("DT_BaseEntity", "m_CollisionGroup") - 0x30;
+		static auto _m_rgflCoordinateFrame = NetvarSys::Get().GetOffset("DT_CSPlayer", "m_CollisionGroup") - 0x30;
 		return *(matrix3x4_t*)((uintptr_t)this + _m_rgflCoordinateFrame);
 	}
 
