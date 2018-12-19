@@ -17,13 +17,11 @@ public:
 	bool                m_fJoystickAdvancedInit;       
 	char                pad_0x08[0x2C];                
 	void*               m_pKeys;                       
-	char                pad_0x38[0x64];                
-	int					pad_0x41;
-	int					pad_0x42;
+	char                pad_0x38[0x6C];                
 	bool                m_fCameraInterceptingMouse;    
 	bool                m_fCameraInThirdPerson;        
 	bool                m_fCameraMovingWithMouse;      
-	Vector				m_vecCameraOffset;             
+	Vector		    m_vecCameraOffset;             
 	bool                m_fCameraDistanceMove;         
 	int                 m_nCameraOldX;                 
 	int                 m_nCameraOldY;                 
