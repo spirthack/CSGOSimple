@@ -75,4 +75,5 @@ namespace Utils {
      *
      */
     void RankRevealAll();
+	bool IsDangerZone();
 }

@@ -61,7 +61,7 @@ void Glow::Run()
         switch(class_id) {
             case ClassId_CCSPlayer:
             {
-                auto is_enemy = entity->m_iTeamNum() != g_LocalPlayer->m_iTeamNum();
+                auto is_enemy = !g_LocalPlayer->IsTeamMate();
 
                 if(entity->HasC4() && is_enemy && g_Options.glow_c4_carrier) {
                     color = g_Options.color_glow_c4_carrier;

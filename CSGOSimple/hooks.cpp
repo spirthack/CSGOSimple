@@ -25,13 +25,13 @@ namespace Hooks
 
 	void Initialize()
 	{
-		hlclient_hook.setup(g_CHLClient);
-		direct3d_hook.setup(g_D3DDevice9);
+		hlclient_hook.setup(g_CHLClient, "client_panorama.dll");
+		direct3d_hook.setup(g_D3DDevice9, "shaderapidx9.dll");
 		vguipanel_hook.setup(g_VGuiPanel);
 		vguisurf_hook.setup(g_VGuiSurface);
 		sound_hook.setup(g_EngineSound);
-		mdlrender_hook.setup(g_MdlRender);
-		clientmode_hook.setup(g_ClientMode);
+		mdlrender_hook.setup(g_MdlRender, "engine.dll");
+		clientmode_hook.setup(g_ClientMode, "client_panorama.dll");
 		ConVar* sv_cheats_con = g_CVar->FindVar("sv_cheats");
 		sv_cheats.setup(sv_cheats_con);
 

@@ -484,3 +484,11 @@ float_t C_BasePlayer::m_flSpawnTime()
 {
 	return *(float_t*)((uintptr_t)this + 0xA290);
 }
+
+bool C_BasePlayer::IsTeamMate()
+{
+	if (Utils::IsDangerZone())
+		return (g_LocalPlayer->m_nSurvivalTeam() == -1) ? false : (g_LocalPlayer->m_nSurvivalTeam() == this->m_nSurvivalTeam());
+	else
+		return this->m_iTeamNum() == g_LocalPlayer->m_iTeamNum();
+}

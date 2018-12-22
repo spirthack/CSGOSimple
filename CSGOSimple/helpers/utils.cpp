@@ -277,5 +277,12 @@ namespace Utils {
 			reinterpret_cast<ServerRankRevealAll>(fnServerRankRevealAll)(v);
 		}
 	}
+	bool IsDangerZone()
+	{
+		static auto game_mode = g_CVar->FindVar("game_mode");
+		static auto game_type = g_CVar->FindVar("game_type");
+
+		return game_mode->GetInt() == 0 && game_type->GetInt() == 6;
+	}
 
 }

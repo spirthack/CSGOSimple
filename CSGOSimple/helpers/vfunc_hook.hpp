@@ -32,21 +32,21 @@ namespace detail
 class vfunc_hook
 {
 public:
+	uintptr_t * search_free_data_page(const char * module_name, const std::size_t vmt_size);
 	vfunc_hook();
 	vfunc_hook(void* base);
 	~vfunc_hook();
 
-	bool setup(void* class_base = nullptr);
-
+	bool setup(void * base, const char * moduleName = nullptr);
 	template<typename T>
 	void hook_index(int index, T fun)
 	{
 		assert(index >= 0 && index <= (int)vftbl_len);
-		new_vftbl[index + 1] = reinterpret_cast<std::uintptr_t>(fun);
+		new_vftb1[index + 1] = reinterpret_cast<std::uintptr_t>(fun);
 	}
 	void unhook_index(int index)
 	{
-		new_vftbl[index] = old_vftbl[index];
+		new_vftb1[index] = old_vftbl[index];
 	}
 	void unhook_all()
 	{
@@ -68,10 +68,13 @@ public:
 	}
 
 private:
+
 	static inline std::size_t estimate_vftbl_length(std::uintptr_t* vftbl_start);
 
 	void*           class_base;
 	std::size_t     vftbl_len;
-	std::uintptr_t* new_vftbl;
+	std::uintptr_t* new_vftb1;
 	std::uintptr_t* old_vftbl;
+	LPCVOID         search_base = nullptr;
+	bool wasAllocated = false;
 };

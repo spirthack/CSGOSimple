@@ -112,7 +112,7 @@ public:
 
 	const matrix3x4_t& m_rgflCoordinateFrame()
 	{
-		static auto _m_rgflCoordinateFrame = NetvarSys::Get().GetOffset("DT_CSPlayer", "m_CollisionGroup") - 0x30;
+		static auto _m_rgflCoordinateFrame = NetvarSys::Get().GetOffset("DT_BaseEntity", "m_CollisionGroup") - 0x30;
 		return *(matrix3x4_t*)((uintptr_t)this + _m_rgflCoordinateFrame);
 	}
 
@@ -239,6 +239,7 @@ public:
 	NETVAR(int32_t, m_iAccount, "DT_CSPlayer", "m_iAccount");
 	NETVAR(float, m_flFlashDuration, "DT_CSPlayer", "m_flFlashDuration");
 	NETVAR(float, m_flSimulationTime, "DT_BaseEntity", "m_flSimulationTime");
+	NETVAR(int32_t, m_nSurvivalTeam, "DT_CSPlayer", "m_nSurvivalTeam");
 	NETVAR(float, m_flCycle, "DT_ServerAnimationData", "m_flCycle");
 	NETVAR(int, m_nSequence, "DT_BaseViewModel", "m_nSequence");
 	PNETVAR(char, m_szLastPlaceName, "DT_BasePlayer", "m_szLastPlaceName");
@@ -313,15 +314,11 @@ public:
 	bool          CanSeePlayer(C_BasePlayer* player, const Vector& pos);
 	void UpdateClientSideAnimation();
 	void SetAngle2(QAngle wantedang);
-
 	int m_nMoveType();
-
-
 	QAngle * GetVAngles();
-
 	float GetFlashBangTime();
-
 	float_t m_flSpawnTime();
+	bool IsTeamMate();
 
 };
 

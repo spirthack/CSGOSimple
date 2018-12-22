@@ -80,7 +80,7 @@ bool Visuals::Player::Begin(C_BasePlayer* pl)
 		return false;
 
 	ctx.pl = pl;
-	ctx.is_enemy = g_LocalPlayer->m_iTeamNum() != pl->m_iTeamNum();
+	ctx.is_enemy = !pl->IsTeamMate();
 	ctx.is_visible = g_LocalPlayer->CanSeePlayer(pl, HITBOX_CHEST);
 
 	if (!ctx.is_enemy && g_Options.esp_enemies_only)

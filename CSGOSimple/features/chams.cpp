@@ -135,7 +135,7 @@ void Chams::OnDrawModelExecute(
         auto ent = C_BasePlayer::GetPlayerByIndex(info.entity_index);
 
         if(ent && g_LocalPlayer && ent->IsAlive()) {
-            const auto enemy = ent->m_iTeamNum() != g_LocalPlayer->m_iTeamNum();
+            const auto enemy = !g_LocalPlayer->IsTeamMate();
             if(!enemy && g_Options.chams_player_enemies_only)
                 return;
 
