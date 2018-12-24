@@ -137,6 +137,9 @@ namespace Hooks
 
 		if (!cmd || !cmd->command_number)
 			return;
+		
+		if (Menu::Get().IsVisible())
+			cmd->buttons &= ~IN_ATTACK;
 
 		if (g_Options.misc_bhop)
 			BunnyHop::OnCreateMove(cmd);
