@@ -100,11 +100,13 @@ namespace Hooks
 
 		auto esp_drawlist = Render::Get().RenderScene();
 
+
 		Menu::Get().Render();
 
+		ImGui::Render(esp_drawlist);
 
-		ImGui::Render();
-		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData(), esp_drawlist);
+		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+
 
 		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, colorwrite);
 		pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, srgbwrite);

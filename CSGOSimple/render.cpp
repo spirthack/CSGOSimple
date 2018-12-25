@@ -101,7 +101,7 @@ ImDrawList* Render::RenderScene() {
 float Render::RenderText(const std::string& text, const ImVec2& pos, float size, Color color, bool center, ImFont* pFont)
 {
 	ImVec2 textSize = pFont->CalcTextSizeA(size, FLT_MAX, 0.0f, text.c_str());
-
+	if (!pFont->ContainerAtlas) return 0.f;
 	draw_list->PushTextureID(pFont->ContainerAtlas->TexID);
 
 	if (center)

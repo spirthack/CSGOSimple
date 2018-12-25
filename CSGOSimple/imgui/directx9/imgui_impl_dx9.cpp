@@ -50,7 +50,7 @@ struct CUSTOMVERTEX
 
 // Render function.
 // (this used to be set in io.RenderDrawListsFn and called by ImGui::Render(), but you can now call this directly from your main loop)
-void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data, ImDrawList* draw_list_esp)
+void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
 {
 	// Avoid rendering when minimized
 	ImGuiIO& io = ImGui::GetIO();
@@ -101,30 +101,6 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data, ImDrawList* draw_list_e
 	if (g_pIB->Lock(0, (UINT)(draw_data->TotalIdxCount * sizeof(ImDrawIdx)), (void**)&idx_dst, D3DLOCK_DISCARD) < 0)
 		return;
 
-	// THIS FOR ESP
-
-
-	if (!draw_list_esp->VtxBuffer.empty()) {
-		const ImDrawList* cmd_list_esp = draw_list_esp;
-		const ImDrawVert* vtx_src_esp = cmd_list_esp->VtxBuffer.Data;
-
-		for (int i = 0; i < cmd_list_esp->VtxBuffer.Size; i++)
-		{
-			vtx_dst->pos[0] = vtx_src_esp->pos.x;
-			vtx_dst->pos[1] = vtx_src_esp->pos.y;
-			vtx_dst->pos[2] = 0.0f;
-			vtx_dst->col = (vtx_src_esp->col & 0xFF00FF00) | ((vtx_src_esp->col & 0xFF0000) >> 16) | ((vtx_src_esp->col & 0xFF) << 16);     // RGBA --> ARGB for DirectX9
-			vtx_dst->uv[0] = vtx_src_esp->uv.x;
-			vtx_dst->uv[1] = vtx_src_esp->uv.y;
-			vtx_dst++;
-			vtx_src_esp++;
-		}
-		memcpy(idx_dst, cmd_list_esp->IdxBuffer.Data, cmd_list_esp->IdxBuffer.Size * sizeof(ImDrawIdx));
-		idx_dst += cmd_list_esp->IdxBuffer.Size;
-	}
-
-
-	//////////////////////////
 
 	for (int n = 0; n < draw_data->CmdListsCount; n++)
 	{
@@ -204,25 +180,6 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data, ImDrawList* draw_list_e
 	int vtx_offset = 0;
 	int idx_offset = 0;
 
-	const ImDrawList* cmd_list_esp = draw_list_esp;
-	for (int cmd_i = 0; cmd_i < cmd_list_esp->CmdBuffer.Size; cmd_i++)
-	{
-		const ImDrawCmd* pcmd = &cmd_list_esp->CmdBuffer[cmd_i];
-		if (pcmd->UserCallback)
-		{
-			pcmd->UserCallback(cmd_list_esp, pcmd);
-		}
-		else
-		{
-			const RECT r = { (LONG)pcmd->ClipRect.x, (LONG)pcmd->ClipRect.y, (LONG)pcmd->ClipRect.z, (LONG)pcmd->ClipRect.w };
-			g_pd3dDevice->SetTexture(0, (LPDIRECT3DTEXTURE9)pcmd->TextureId);
-			g_pd3dDevice->SetScissorRect(&r);
-			g_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, vtx_offset, 0, (UINT)cmd_list_esp->VtxBuffer.Size, idx_offset, pcmd->ElemCount / 3);
-		}
-		idx_offset += pcmd->ElemCount;
-	}
-	vtx_offset += cmd_list_esp->VtxBuffer.Size;
-
 	for (int n = 0; n < draw_data->CmdListsCount; n++)
 	{
 		const ImDrawList* cmd_list = draw_data->CmdLists[n];
@@ -257,6 +214,8 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data, ImDrawList* draw_list_e
 
 	g_pd3dDevice->SetVertexDeclaration(vertDec);
 	g_pd3dDevice->SetVertexShader(vertShader);
+
+
 }
 
 static bool ImGui_ImplWin32_UpdateMouseCursor()
