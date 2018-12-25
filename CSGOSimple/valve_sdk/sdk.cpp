@@ -28,6 +28,7 @@ IViewRender*          g_ViewRender     = nullptr;
 IDirect3DDevice9*     g_D3DDevice9     = nullptr;
 CClientState*         g_ClientState    = nullptr;
 IPhysicsSurfaceProps* g_PhysSurface    = nullptr;
+IInputSystem*         g_InputSystem    = nullptr;
 C_LocalPlayer         g_LocalPlayer;
 
 namespace Interfaces
@@ -59,6 +60,7 @@ namespace Interfaces
         auto matSysFactory    = get_module_factory(GetModuleHandleW(L"materialsystem.dll"));
         auto dataCacheFactory = get_module_factory(GetModuleHandleW(L"datacache.dll"));
         auto vphysicsFactory  = get_module_factory(GetModuleHandleW(L"vphysics.dll"));
+		auto inputSysFactory  = get_module_factory(GetModuleHandleW(L"inputsystem.dll"));
         
         g_CHLClient           = get_interface<IBaseClientDLL>      (clientFactory   , "VClient018");
         g_EntityList          = get_interface<IClientEntityList>   (clientFactory   , "VClientEntityList003");
@@ -78,6 +80,7 @@ namespace Interfaces
         g_VGuiPanel           = get_interface<IPanel>              (vgui2Factory    , "VGUI_Panel009");
         g_VGuiSurface         = get_interface<ISurface>            (vguiFactory     , "VGUI_Surface031");
         g_PhysSurface         = get_interface<IPhysicsSurfaceProps>(vphysicsFactory , "VPhysicsSurfaceProps001");
+		g_InputSystem         = get_interface<IInputSystem>        (inputSysFactory , "InputSystemVersion001");
 
         auto client = GetModuleHandleW(L"client_panorama.dll");
         auto engine = GetModuleHandleW(L"engine.dll");
@@ -120,5 +123,6 @@ namespace Interfaces
         PRINT_INTERFACE(g_VGuiPanel   );
         PRINT_INTERFACE(g_VGuiSurface );
         PRINT_INTERFACE(g_PhysSurface );
+		PRINT_INTERFACE(g_InputSystem );
     }
 }

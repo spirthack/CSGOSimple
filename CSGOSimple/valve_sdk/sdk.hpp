@@ -36,6 +36,7 @@
 #include "Interfaces/IViewRender.hpp"
 #include "Interfaces/CClientState.hpp"
 #include "Interfaces/IPhysics.hpp"
+#include "Interfaces/IInputSystem.hpp"
 
 #include "Misc/Convar.hpp"
 #include "Misc/CUserCmd.hpp"
@@ -77,6 +78,7 @@ extern IViewRender*          g_ViewRender;
 extern IDirect3DDevice9*     g_D3DDevice9;
 extern CClientState*         g_ClientState;
 extern IPhysicsSurfaceProps* g_PhysSurface;
+extern IInputSystem*         g_InputSystem;
 
 template<typename... Args>
 void ConMsg(const char* pMsg, Args... args)

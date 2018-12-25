@@ -256,6 +256,7 @@ namespace Hooks
 
 		if (Menu::Get().IsVisible()) {
 			g_VGuiSurface->UnlockCursor();
+			g_InputSystem->ResetInputState();
 			return;
 		}
 		ofunc(g_VGuiSurface);
