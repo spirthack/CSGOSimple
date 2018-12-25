@@ -154,7 +154,7 @@ float C_BaseCombatWeapon::GetInaccuracy()
 
 float C_BaseCombatWeapon::GetSpread()
 {
-	return CallVFunction<float(__thiscall*)(void*)>(this, 439)(this);
+	return CallVFunction<float(__thiscall*)(void*)>(this, 440)(this);
 }
 
 void C_BaseCombatWeapon::UpdateAccuracyPenalty()
