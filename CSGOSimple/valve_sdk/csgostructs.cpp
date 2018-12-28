@@ -289,8 +289,8 @@ bool C_BasePlayer::IsAlive()
 
 bool C_BasePlayer::IsFlashed()
 {
-	if (m_flFlashDuration() > 0.f) return true;
-	return false;
+	static auto m_flFlashMaxAlpha = NetvarSys::Get().GetOffset("DT_CSPlayer", "m_flFlashMaxAlpha");
+	return *(float*)((uintptr_t)this + m_flFlashMaxAlpha - 0x8) > 200.0;
 }
 
 bool C_BasePlayer::HasC4()

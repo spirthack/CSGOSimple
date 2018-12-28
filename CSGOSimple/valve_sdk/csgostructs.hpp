@@ -191,7 +191,6 @@ public:
 	bool IsRifle();
 	bool IsPistol();
 	bool IsSniper();
-	bool IsShotBeingFired();
 	bool IsGun();
 	float GetInaccuracy();
 	float GetSpread();
