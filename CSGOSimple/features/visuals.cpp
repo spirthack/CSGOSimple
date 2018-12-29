@@ -389,6 +389,8 @@ void Visuals::AddToDrawList() {
 		if (!entity)
 			continue;
 		
+		if (entity == g_LocalPlayer && !g_Input->m_fCameraInThirdPerson)
+			continue;
 
 		if (i < 65) {
 			auto player = Player();
