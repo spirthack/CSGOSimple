@@ -81,7 +81,8 @@ namespace Hooks
 		mat_ambient_light_r->SetValue(g_Options.mat_ambient_light_r);
 		mat_ambient_light_g->SetValue(g_Options.mat_ambient_light_g);
 		mat_ambient_light_b->SetValue(g_Options.mat_ambient_light_b);
-		crosshair_cvar->SetValue(!g_Options.esp_crosshair);
+		if (g_Options.esp_enabled)
+			crosshair_cvar->SetValue(!g_Options.esp_crosshair);
 
 		DWORD colorwrite, srgbwrite;
 		pDevice->GetRenderState(D3DRS_COLORWRITEENABLE, &colorwrite);
