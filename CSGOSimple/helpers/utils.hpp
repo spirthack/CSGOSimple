@@ -5,7 +5,6 @@
 #include <string>
 #include <initializer_list>
 #include "../valve_sdk/sdk.hpp"
-#include "../datamap.hpp"
 
 namespace Utils {
 	unsigned int FindInDataMap(datamap_t * pMap, const char * name);

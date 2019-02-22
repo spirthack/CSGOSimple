@@ -1,5 +1,4 @@
 #pragma once
-#include "valve_sdk/sdk.hpp"
 class IRefCounted {
 private:
 	volatile long refCount;

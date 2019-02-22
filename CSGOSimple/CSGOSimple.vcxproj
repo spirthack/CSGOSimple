@@ -22,6 +22,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -126,7 +127,7 @@
     <ClCompile Include="valve_sdk\netvars.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="datamap.hpp" />
+    <ClInclude Include="valve_sdk\Misc\datamap.hpp" />
     <ClInclude Include="droid.hpp" />
     <ClInclude Include="features\bhop.hpp" />
     <ClInclude Include="features\chams.hpp" />
@@ -144,7 +145,7 @@
     <ClInclude Include="imgui\stb_rect_pack.h" />
     <ClInclude Include="imgui\stb_textedit.h" />
     <ClInclude Include="imgui\stb_truetype.h" />
-    <ClInclude Include="IRefCounted.h" />
+    <ClInclude Include="valve_sdk\interfaces\IRefCounted.hpp" />
     <ClInclude Include="menu.hpp" />
     <ClInclude Include="options.hpp" />
     <ClInclude Include="render.hpp" />

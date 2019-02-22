@@ -359,20 +359,20 @@
     <ClInclude Include="helpers\input.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="datamap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="droid.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IRefCounted.h">
-      <Filter>Header Files\SDK</Filter>
-    </ClInclude>
     <ClInclude Include="render.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="valve_sdk\interfaces\IRefCounted.hpp">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="valve_sdk\Misc\datamap.hpp">
+      <Filter>Header Files\SDK</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

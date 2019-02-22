@@ -37,10 +37,12 @@
 #include "Interfaces/CClientState.hpp"
 #include "Interfaces/IPhysics.hpp"
 #include "Interfaces/IInputSystem.hpp"
+#include "interfaces/IRefCounted.hpp"
 
 #include "Misc/Convar.hpp"
 #include "Misc/CUserCmd.hpp"
 #include "Misc/glow_outline_effect.hpp"
+#include "Misc/datamap.hpp"
 
 #include "netvars.hpp"
 

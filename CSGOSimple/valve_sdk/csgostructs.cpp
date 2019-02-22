@@ -181,14 +181,12 @@ CUserCmd*& C_BasePlayer::m_pCurrentCommand()
 
 int C_BasePlayer::GetNumAnimOverlays()
 {
-	return *(int*)((DWORD)this + 0x297C);
+	return *(int*)((DWORD)this + 0x298C);
 }
 
 AnimationLayer *C_BasePlayer::GetAnimOverlays()
 {
-	// to find offset: use 9/12/17 dll
-	// sig: 55 8B EC 51 53 8B 5D 08 33 C0
-	return *(AnimationLayer**)((DWORD)this + 10608);
+	return *(AnimationLayer**)((DWORD)this + 0x2980);
 }
 
 AnimationLayer *C_BasePlayer::GetAnimOverlay(int i)
@@ -214,24 +212,16 @@ int C_BasePlayer::GetSequenceActivity(int sequence)
 	return get_sequence_activity(this, hdr, sequence);
 }
 
-CBasePlayerAnimState *C_BasePlayer::GetBasePlayerAnimState()
+CCSGOPlayerAnimState *C_BasePlayer::GetPlayerAnimState()
 {
-	static int basePlayerAnimStateOffset = 0x3874;
-	return *(CBasePlayerAnimState**)((DWORD)this + basePlayerAnimStateOffset);
-}
-
-CCSPlayerAnimState *C_BasePlayer::GetPlayerAnimState()
-{
-	return *(CCSPlayerAnimState**)((DWORD)this + 0x3870);
+	return *(CCSGOPlayerAnimState**)((DWORD)this + 0x3900);
 }
 
 void C_BasePlayer::UpdateAnimationState(CCSGOPlayerAnimState *state, QAngle angle)
 {
 	static auto UpdateAnimState = Utils::PatternScan(
-		GetModuleHandle(L"client_panorama.dll"), "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24");
-	/*static auto UpdateAnimState = Utils::PatternScan(
-	GetModuleHandle(L"client_panorama.dll"), "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24");
-	*/
+		GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24");
+
 	if (!UpdateAnimState)
 		return;
 
@@ -253,7 +243,7 @@ void C_BasePlayer::UpdateAnimationState(CCSGOPlayerAnimState *state, QAngle angl
 void C_BasePlayer::ResetAnimationState(CCSGOPlayerAnimState *state)
 {
 	using ResetAnimState_t = void(__thiscall*)(CCSGOPlayerAnimState*);
-	static auto ResetAnimState = (ResetAnimState_t)Utils::PatternScan(GetModuleHandle(L"client_panorama.dll"), "56 6A 01 68 ? ? ? ? 8B F1");
+	static auto ResetAnimState = (ResetAnimState_t)Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "56 6A 01 68 ? ? ? ? 8B F1");
 	if (!ResetAnimState)
 		return;
 
@@ -263,7 +253,7 @@ void C_BasePlayer::ResetAnimationState(CCSGOPlayerAnimState *state)
 void C_BasePlayer::CreateAnimationState(CCSGOPlayerAnimState *state)
 {
 	using CreateAnimState_t = void(__thiscall*)(CCSGOPlayerAnimState*, C_BasePlayer*);
-	static auto CreateAnimState = (CreateAnimState_t)Utils::PatternScan(GetModuleHandle(L"client_panorama.dll"), "55 8B EC 56 8B F1 B9 ? ? ? ? C7 46");
+	static auto CreateAnimState = (CreateAnimState_t)Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 56 8B F1 B9 ? ? ? ? C7 46");
 	if (!CreateAnimState)
 		return;
 
@@ -336,14 +326,6 @@ mstudiobbox_t* C_BasePlayer::GetHitbox(int hitbox_id)
 			auto hitbox = studio_model->GetHitboxSet(0)->GetHitbox(hitbox_id);
 			if (hitbox) {
 				return hitbox;
-				//auto
-				//	min = Vector{},
-				//	max = Vector{};
-
-				//Math::VectorTransform(hitbox->bbmin, boneMatrix[hitbox->bone], min);
-				//Math::VectorTransform(hitbox->bbmax, boneMatrix[hitbox->bone], max);
-
-				//return (min + max) / 2.0f;
 			}
 		}
 	}
@@ -412,9 +394,6 @@ bool C_BasePlayer::CanSeePlayer(C_BasePlayer* player, const Vector& pos)
 	CTraceFilter filter;
 	filter.pSkip = this;
 
-	//auto start = GetEyePos();
-	//auto dir = (pos - start).Normalized();
-
 	ray.Init(GetEyePos(), pos);
 	g_EngineTrace->TraceRay(ray, MASK_SHOT | CONTENTS_GRATE, &filter, &tr);
 
@@ -426,17 +405,16 @@ void C_BasePlayer::UpdateClientSideAnimation()
 	return CallVFunction<void(__thiscall*)(void*)>(this, 218)(this);
 }
 
-void C_BasePlayer::SetAngle2(QAngle wantedang)
-{
-	typedef void(__thiscall* SetAngleFn)(void*, const QAngle &);
-	static SetAngleFn SetAngle2 = reinterpret_cast<SetAngleFn>(Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1"));
-	SetAngle2(this, wantedang);
-}
-
 void C_BasePlayer::InvalidateBoneCache()
 {
-	static auto InvalidateBoneCacheFn = Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "80 3D ?? ?? ?? ?? ?? 74 16 A1 ?? ?? ?? ?? 48 C7 81");
-	reinterpret_cast<void(__fastcall*)(void*)>(InvalidateBoneCacheFn)(this);
+	static DWORD addr = (DWORD)Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81");
+
+	*(int*)((uintptr_t)this + 0xA30) = g_GlobalVars->framecount; //we'll skip occlusion checks now
+	*(int*)((uintptr_t)this + 0xA28) = 0;//clear occlusion flags
+
+	unsigned long g_iModelBoneCounter = **(unsigned long**)(addr + 10);
+	*(unsigned int*)((DWORD)this + 0x2924) = 0xFF7FFFFF; // m_flLastBoneSetupTime = -FLT_MAX;
+	*(unsigned int*)((DWORD)this + 0x2690) = (g_iModelBoneCounter - 1); // m_iMostRecentModelBoneCounter = g_iModelBoneCounter - 1;
 }
 
 int C_BasePlayer::m_nMoveType()
@@ -469,18 +447,7 @@ void C_BaseViewModel::SendViewModelMatchingSequence(int sequence)
 	return CallVFunction<void(__thiscall*)(void*, int)>(this, 241)(this, sequence);
 }
 
-CUtlVector<IRefCounted*>& C_EconItemView::m_CustomMaterials()
-{
-	return *(CUtlVector<IRefCounted*>*)((uintptr_t)this + 0x14);
-}
-
-CUtlVector<IRefCounted*>& C_EconItemView::m_VisualsDataProcessors()
-{
-	static auto inReload = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "81 C7 ? ? ? ? 8B 4F 0C 8B 57 04 89 4C 24 0C") + 2);
-	return *(CUtlVector<IRefCounted*>*)((uintptr_t)this + inReload);
-}
-
 float_t C_BasePlayer::m_flSpawnTime()
 {
-	return *(float_t*)((uintptr_t)this + 0xA290);
+	return *(float_t*)((uintptr_t)this + 0xA2C0);
 }
