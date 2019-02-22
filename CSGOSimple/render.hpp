@@ -16,9 +16,7 @@
 #include "valve_sdk/misc/Color.hpp"
 
 extern ImFont* g_pDefaultFont;
-extern ImFont* g_pC4Font;
-extern ImFont* g_pIconFont;
-
+extern ImFont* g_pSecondFont;
 
 
 class Vector;
@@ -27,8 +25,6 @@ class Render
 	: public Singleton<Render>
 {
 	friend class Singleton<Render>;
-
-	Render();
 
 private:
 	ImDrawList * draw_list_act;
@@ -45,12 +41,10 @@ public:
 	void Initialize();
 	void GetFonts();
 	void ClearDrawList();
-	void SaveState(IDirect3DDevice9 * pDevice);
-	void RestoreState(IDirect3DDevice9 * pDevice);
 	void BeginScene();
 	ImDrawList* RenderScene();
 
-	float RenderText(const std::string& text, const ImVec2& position, float size, Color color, bool center = false, ImFont* pFont = g_pDefaultFont);
+	float RenderText(const std::string& text, ImVec2 position, float size, Color color, bool center = false, bool outline = true, ImFont* pFont = g_pDefaultFont);
 
 	void RenderCircle3D(Vector position, float points, float radius, Color color);
 
@@ -111,8 +105,8 @@ public:
 		draw_list->AddLine(ImVec2(x1, y1), ImVec2(x2, y2), GetU32(color), thickness);
 	}
 	template <class T>
-	inline float RenderText(const std::string& text, T x, T y, float size, Color clr, bool center = false, ImFont* pFont = g_pDefaultFont) {
-		return RenderText(text, ImVec2(x, y), size, clr, center, pFont);
+	inline float RenderText(const std::string& text, T x, T y, float size, Color clr, bool center = false, bool outline = true, ImFont* pFont = g_pDefaultFont) {
+		return RenderText(text, ImVec2(x, y), size, clr, center, outline, pFont);
 	}
 	template <class T>
 	inline void RenderCircle(T x, T y, float radius, int points, Color color, float thickness = 1.f) {

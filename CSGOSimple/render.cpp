@@ -7,21 +7,11 @@
 #include "helpers/input.hpp"
 #include "menu.hpp"
 #include "options.hpp"
-#include "droid.hpp"
+#include "fonts/fonts.hpp"
 #include "helpers/math.hpp"
 
 ImFont* g_pDefaultFont;
-ImFont* g_pC4Font;
-ImFont* g_pIconFont;
-
-
-//CRITICAL_SECTION render_cs;
-
-Render::Render()
-{
-	//InitializeCriticalSection(&render_cs);
-
-}
+ImFont* g_pSecondFont;
 
 ImDrawListSharedData _data;
 
@@ -35,21 +25,33 @@ void Render::Initialize()
 	ImGui_ImplWin32_Init(InputSys::Get().GetMainWindow());
 	ImGui_ImplDX9_Init(g_D3DDevice9);
 
-	_data = ImDrawListSharedData();
-
-	draw_list = new ImDrawList(&_data);
-	draw_list_act = new ImDrawList(&_data);
-	draw_list_rendering = new ImDrawList(&_data);
+	draw_list = new ImDrawList(ImGui::GetDrawListSharedData());
+	draw_list_act = new ImDrawList(ImGui::GetDrawListSharedData());
+	draw_list_rendering = new ImDrawList(ImGui::GetDrawListSharedData());
 
 	GetFonts();
 }
 
 void Render::GetFonts() {
-	ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Droid_compressed_data, Droid_compressed_size, 14.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
-	g_pDefaultFont = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Droid_compressed_data, Droid_compressed_size, 18.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
-	g_pC4Font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Droid_compressed_data, Droid_compressed_size, 32.f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
 
-	g_pIconFont = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Droid_compressed_data, Droid_compressed_size, 18.f);
+	// menu font
+	ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
+		Fonts::Droid_compressed_data,
+		Fonts::Droid_compressed_size,
+		14.f);
+	
+	// esp font
+	g_pDefaultFont = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
+		Fonts::Droid_compressed_data,
+		Fonts::Droid_compressed_size,
+		18.f);
+	
+
+	// font for watermark; just example
+	g_pSecondFont = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
+		Fonts::Cousine_compressed_data,
+		Fonts::Cousine_compressed_size,
+		18.f); 
 }
 
 void Render::ClearDrawList() {
@@ -64,8 +66,7 @@ void Render::BeginScene() {
 
 
 	if (g_Options.misc_watermark) //lol
-		Render::Get().RenderText("CSGOSimple", 10, 5, 14.f, g_Options.color_watermark);
-
+		Render::Get().RenderText("CSGOSimple", 10, 5, 18.f, g_Options.color_watermark, false, true, g_pSecondFont);
 
 	if (g_EngineClient->IsInGame() && g_LocalPlayer && g_Options.esp_enabled)
 		Visuals::Get().AddToDrawList();
@@ -84,46 +85,26 @@ ImDrawList* Render::RenderScene() {
 	}
 
 	return draw_list_rendering;
-	/*
-	if (!draw_list_rendering->VtxBuffer.empty()) {
-	draw_data.Valid = true;
-	draw_data.CmdLists = &draw_list_rendering;
-	draw_data.CmdListsCount = 1;
-	draw_data.TotalVtxCount = draw_list_rendering->VtxBuffer.Size;
-	draw_data.TotalIdxCount = draw_list_rendering->IdxBuffer.Size;
-	}
-
-
-
-	if (draw_data.Valid)
-	ImGui_ImplDX9_RenderDrawData(&draw_data);*/
 }
 
 
-float Render::RenderText(const std::string& text, const ImVec2& pos, float size, Color color, bool center, ImFont* pFont)
+float Render::RenderText(const std::string& text, ImVec2 pos, float size, Color color, bool center, bool outline, ImFont* pFont)
 {
 	ImVec2 textSize = pFont->CalcTextSizeA(size, FLT_MAX, 0.0f, text.c_str());
 	if (!pFont->ContainerAtlas) return 0.f;
 	draw_list->PushTextureID(pFont->ContainerAtlas->TexID);
 
 	if (center)
-	{
-		draw_list->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) + 1, (pos.y) + 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
-		draw_list->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) - 1, (pos.y) - 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
-		draw_list->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) + 1, (pos.y) - 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
-		draw_list->AddText(pFont, size, ImVec2((pos.x - textSize.x / 2.0f) - 1, (pos.y) + 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
+		pos.x -= textSize.x / 2.0f;
 
-		draw_list->AddText(pFont, size, ImVec2(pos.x - textSize.x / 2.0f, pos.y), GetU32(color), text.c_str());
+	if (outline) {
+		draw_list->AddText(pFont, size, ImVec2(pos.x + 1, pos.y + 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
+		draw_list->AddText(pFont, size, ImVec2(pos.x - 1, pos.y - 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
+		draw_list->AddText(pFont, size, ImVec2(pos.x + 1, pos.y - 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
+		draw_list->AddText(pFont, size, ImVec2(pos.x - 1, pos.y + 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
 	}
-	else
-	{
-		draw_list->AddText(pFont, size, ImVec2((pos.x) + 1, (pos.y) + 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
-		draw_list->AddText(pFont, size, ImVec2((pos.x) - 1, (pos.y) - 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
-		draw_list->AddText(pFont, size, ImVec2((pos.x) + 1, (pos.y) - 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
-		draw_list->AddText(pFont, size, ImVec2((pos.x) - 1, (pos.y) + 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
 
-		draw_list->AddText(pFont, size, ImVec2(pos.x, pos.y), GetU32(color), text.c_str());
-	}
+	draw_list->AddText(pFont, size, pos, GetU32(color), text.c_str());
 
 	draw_list->PopTextureID();
 
