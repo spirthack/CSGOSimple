@@ -18,8 +18,6 @@ public:
 
     void Render();
 
-    void Show();
-    void Hide();
     void Toggle();
 
     bool IsVisible() const { return _visible; }

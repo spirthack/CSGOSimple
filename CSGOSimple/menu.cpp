@@ -11,7 +11,8 @@
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui/imgui_internal.h"
-#include "imgui/directx9/imgui_impl_dx9.h"
+#include "imgui/impl/imgui_impl_dx9.h"
+#include "imgui/impl/imgui_impl_win32.h"
 
 
 // =========================================================
@@ -25,8 +26,6 @@ static char* sidebar_tabs[] = {
     "MISC",
     "CONFIG"
 };
-
-static ConVar* cl_mouseenable = nullptr;
 
 constexpr static float get_sidebar_item_width() { return 150.0f; }
 constexpr static float get_sidebar_item_height() { return  50.0f; }
@@ -301,17 +300,16 @@ void RenderEmptyTab()
 
 void Menu::Initialize()
 {
+	CreateStyle();
+
     _visible = true;
-
-    cl_mouseenable = g_CVar->FindVar("cl_mouseenable");
-
-    CreateStyle();
 }
 
 void Menu::Shutdown()
 {
     ImGui_ImplDX9_Shutdown();
-    cl_mouseenable->SetValue(true);
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void Menu::OnDeviceLost()
@@ -385,21 +383,8 @@ void Menu::Render()
     }
 }
 
-void Menu::Show()
-{
-    _visible = true;
-    cl_mouseenable->SetValue(false);
-}
-
-void Menu::Hide()
-{
-    _visible = false;
-    cl_mouseenable->SetValue(true);
-}
-
 void Menu::Toggle()
 {
-	cl_mouseenable->SetValue(_visible);
     _visible = !_visible;
 }
 

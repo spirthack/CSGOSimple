@@ -98,6 +98,8 @@ namespace Hooks
 		pDevice->SetSamplerState(NULL, D3DSAMP_SRGBTEXTURE, NULL);
 
 		ImGui_ImplDX9_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
 
 		auto esp_drawlist = Render::Get().RenderScene();
 

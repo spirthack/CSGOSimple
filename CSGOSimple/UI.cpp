@@ -278,12 +278,6 @@ const char* const KeyNames[] = {
 	"VK_RMENU"
 };
 
-static bool IsKeyPressedMap(ImGuiKey key, bool repeat = true)
-{
-	const int key_index = GImGui->IO.KeyMap[key];
-	return (key_index >= 0) ? ImGui::IsKeyPressed(key_index, repeat) : false;
-}
-
 bool ImGui::Hotkey(const char* label, int* k, const ImVec2& size_arg)
 {
 	ImGuiWindow* window = ImGui::GetCurrentWindow();

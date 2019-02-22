@@ -84,9 +84,6 @@
     <ClCompile Include="valve_sdk\math\VMatrix.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\directx9\imgui_impl_dx9.cpp">
-      <Filter>Source Files\imgui</Filter>
-    </ClCompile>
     <ClCompile Include="imgui\imgui_draw.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
@@ -121,6 +118,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="features\visuals.cpp">
+      <Filter>Source Files\features</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\impl\imgui_impl_dx9.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\impl\imgui_impl_win32.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
   </ItemGroup>
@@ -326,9 +332,6 @@
     <ClInclude Include="helpers\vfunc_hook.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="imgui\directx9\imgui_impl_dx9.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
     <ClInclude Include="imgui\imgui_internal.h">
       <Filter>Header Files\imgui</Filter>
     </ClInclude>
@@ -373,6 +376,12 @@
     </ClInclude>
     <ClInclude Include="valve_sdk\Misc\datamap.hpp">
       <Filter>Header Files\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\impl\imgui_impl_dx9.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\impl\imgui_impl_win32.h">
+      <Filter>Header Files\imgui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

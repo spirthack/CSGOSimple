@@ -104,9 +104,11 @@
     <ClCompile Include="helpers\utils.cpp" />
     <ClCompile Include="helpers\vfunc_hook.cpp" />
     <ClCompile Include="hooks.cpp" />
-    <ClCompile Include="imgui\directx9\imgui_impl_dx9.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="imgui\impl\imgui_impl_dx9.cpp" />
+    <ClCompile Include="imgui\impl\imgui_impl_win32.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="options.cpp" />
@@ -127,6 +129,8 @@
     <ClCompile Include="valve_sdk\netvars.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="imgui\impl\imgui_impl_dx9.h" />
+    <ClInclude Include="imgui\impl\imgui_impl_win32.h" />
     <ClInclude Include="valve_sdk\Misc\datamap.hpp" />
     <ClInclude Include="droid.hpp" />
     <ClInclude Include="features\bhop.hpp" />
@@ -138,7 +142,6 @@
     <ClInclude Include="helpers\utils.hpp" />
     <ClInclude Include="helpers\vfunc_hook.hpp" />
     <ClInclude Include="hooks.hpp" />
-    <ClInclude Include="imgui\directx9\imgui_impl_dx9.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_internal.h" />

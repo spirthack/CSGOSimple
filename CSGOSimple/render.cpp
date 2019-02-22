@@ -31,7 +31,9 @@ void Render::Initialize()
 {
 	ImGui::CreateContext();
 
-	ImGui_ImplDX9_Init(InputSys::Get().GetMainWindow(), g_D3DDevice9);
+
+	ImGui_ImplWin32_Init(InputSys::Get().GetMainWindow());
+	ImGui_ImplDX9_Init(g_D3DDevice9);
 
 	_data = ImDrawListSharedData();
 
