@@ -62,6 +62,8 @@ namespace Hooks
 		vguisurf_hook.unhook_all();
 		mdlrender_hook.unhook_all();
 		clientmode_hook.unhook_all();
+		sound_hook.unhook_all();
+		sv_cheats.unhook_all();
 
 		Glow::Get().Shutdown();
 	}
