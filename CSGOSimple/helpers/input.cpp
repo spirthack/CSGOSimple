@@ -37,7 +37,7 @@ LRESULT __stdcall InputSys::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM l
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam) && Menu::Get().IsVisible())
 		return true;
 
-	return CallWindowProcW((WNDPROC)Get().m_ulOldWndProc, hWnd, msg, wParam, lParam);
+	return CallWindowProc((WNDPROC)Get().m_ulOldWndProc, hWnd, msg, wParam, lParam);
 }
 
 bool InputSys::ProcessMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
