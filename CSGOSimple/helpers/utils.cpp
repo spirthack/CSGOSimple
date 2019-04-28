@@ -15,6 +15,42 @@ HANDLE _err = NULL, _old_err = NULL;
 HANDLE _in = NULL, _old_in = NULL;
 
 namespace Utils {
+	std::vector<char> HexToBytes(const std::string& hex) {
+		std::vector<char> res;
+
+		for (auto i = 0u; i < hex.length(); i += 2) {
+			std::string byteString = hex.substr(i, 2);
+			char byte = (char)strtol(byteString.c_str(), NULL, 16);
+			res.push_back(byte);
+		}
+
+		return res;
+	}
+	std::string BytesToString(unsigned char* data, int len) {
+		constexpr char hexmap[] = { '0', '1', '2', '3', '4', '5', '6', '7',
+                                    '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+		std::string res(len * 2, ' ');
+		for (int i = 0; i < len; ++i) {
+			res[2 * i] = hexmap[(data[i] & 0xF0) >> 4];
+			res[2 * i + 1] = hexmap[data[i] & 0x0F];
+		}
+		return res;
+	}
+	std::vector<std::string> Split(const std::string& str, const char* delim) {
+		std::vector<std::string> res;
+		char* pTempStr = _strdup(str.c_str());
+		char* context = NULL;
+		char* pWord = strtok_s(pTempStr, delim, &context);
+		while (pWord != NULL) {
+			res.push_back(pWord);
+			pWord = strtok_s(NULL, delim, &context);
+		}
+
+		free(pTempStr);
+
+		return res;
+	}
+
 	unsigned int FindInDataMap(datamap_t *pMap, const char *name) {
 		while (pMap) {
 			for (int i = 0; i<pMap->dataNumFields; i++) {

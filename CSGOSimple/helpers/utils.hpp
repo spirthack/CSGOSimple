@@ -7,6 +7,9 @@
 #include "../valve_sdk/sdk.hpp"
 
 namespace Utils {
+	std::vector<char> HexToBytes(const std::string& hex);
+	std::string BytesToString(unsigned char* data, int len);
+	std::vector<std::string> Split(const std::string& str, const char* delim);
 	unsigned int FindInDataMap(datamap_t * pMap, const char * name);
     /*
      * @brief Create console

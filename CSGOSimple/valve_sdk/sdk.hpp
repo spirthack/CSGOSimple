@@ -54,33 +54,33 @@ namespace Interfaces
     void Dump();
 }
 
-extern IVEngineClient*       g_EngineClient;
-extern IBaseClientDLL*       g_CHLClient;
-extern IClientEntityList*    g_EntityList;
-extern CGlobalVarsBase*      g_GlobalVars;
-extern IEngineTrace*         g_EngineTrace;
-extern ICvar*                g_CVar;
-extern IPanel*               g_VGuiPanel;
-extern IClientMode*          g_ClientMode;
-extern IVDebugOverlay*       g_DebugOverlay;
-extern ISurface*             g_VGuiSurface;
-extern CInput*               g_Input;
-extern IVModelInfoClient*    g_MdlInfo;
-extern IVModelRender*        g_MdlRender;
-extern IVRenderView*         g_RenderView;
-extern IMaterialSystem*      g_MatSystem;
-extern IGameEventManager2*   g_GameEvents;
-extern IMoveHelper*          g_MoveHelper;
-extern IMDLCache*            g_MdlCache;
-extern IPrediction*          g_Prediction;
-extern CGameMovement*        g_GameMovement;
-extern IEngineSound*         g_EngineSound;
-extern CGlowObjectManager*   g_GlowObjManager;
-extern IViewRender*          g_ViewRender;
-extern IDirect3DDevice9*     g_D3DDevice9;
-extern CClientState*         g_ClientState;
-extern IPhysicsSurfaceProps* g_PhysSurface;
-extern IInputSystem*         g_InputSystem;
+inline IVEngineClient*       g_EngineClient;
+inline IBaseClientDLL*       g_CHLClient;
+inline IClientEntityList*    g_EntityList;
+inline CGlobalVarsBase*      g_GlobalVars;
+inline IEngineTrace*         g_EngineTrace;
+inline ICvar*                g_CVar;
+inline IPanel*               g_VGuiPanel;
+inline IClientMode*          g_ClientMode;
+inline IVDebugOverlay*       g_DebugOverlay;
+inline ISurface*             g_VGuiSurface;
+inline CInput*               g_Input;
+inline IVModelInfoClient*    g_MdlInfo;
+inline IVModelRender*        g_MdlRender;
+inline IVRenderView*         g_RenderView;
+inline IMaterialSystem*      g_MatSystem;
+inline IGameEventManager2*   g_GameEvents;
+inline IMoveHelper*          g_MoveHelper;
+inline IMDLCache*            g_MdlCache;
+inline IPrediction*          g_Prediction;
+inline CGameMovement*        g_GameMovement;
+inline IEngineSound*         g_EngineSound;
+inline CGlowObjectManager*   g_GlowObjManager;
+inline IViewRender*          g_ViewRender;
+inline IDirect3DDevice9*     g_D3DDevice9;
+inline CClientState*         g_ClientState;
+inline IPhysicsSurfaceProps* g_PhysSurface;
+inline IInputSystem*         g_InputSystem;
 
 template<typename... Args>
 void ConMsg(const char* pMsg, Args... args)
@@ -112,5 +112,5 @@ private:
     C_BasePlayer** m_local;
 };
 
-extern C_LocalPlayer g_LocalPlayer;
+inline C_LocalPlayer g_LocalPlayer;
 

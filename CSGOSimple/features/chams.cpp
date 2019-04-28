@@ -119,7 +119,7 @@ void Chams::OnDrawModelExecute(
     const ModelRenderInfo_t &info,
     matrix3x4_t *matrix)
 {
-    static auto fnDME = Hooks::mdlrender_hook.get_original<Hooks::DrawModelExecute>(index::DrawModelExecute);
+    static auto fnDME = Hooks::mdlrender_hook.get_original<decltype(&Hooks::hkDrawModelExecute)>(index::DrawModelExecute);
 
     const auto mdl = info.pModel;
 
@@ -149,7 +149,7 @@ void Chams::OnDrawModelExecute(
                     g_Options.chams_player_wireframe,
                     false,
                     clr_back);
-                fnDME(g_MdlRender, ctx, state, info, matrix);
+                fnDME(g_MdlRender, 0, ctx, state, info, matrix);
                 OverrideMaterial(
                     false,
                     g_Options.chams_player_flat,
@@ -192,7 +192,7 @@ void Chams::OnDrawModelExecute(
                     g_Options.chams_arms_wireframe,
                     false,
                     g_Options.color_chams_arms_occluded);
-                fnDME(g_MdlRender, ctx, state, info, matrix);
+                fnDME(g_MdlRender, 0, ctx, state, info, matrix);
                 OverrideMaterial(
                     false,
                     g_Options.chams_arms_flat,

@@ -2,35 +2,6 @@
 
 #include "../Helpers/Utils.hpp"
 
-IVEngineClient*       g_EngineClient   = nullptr;
-IBaseClientDLL*       g_CHLClient      = nullptr;
-IClientEntityList*    g_EntityList     = nullptr;
-CGlobalVarsBase*      g_GlobalVars     = nullptr;
-IEngineTrace*         g_EngineTrace    = nullptr;
-ICvar*                g_CVar           = nullptr;
-IPanel*               g_VGuiPanel      = nullptr;
-IClientMode*          g_ClientMode     = nullptr;
-IVDebugOverlay*       g_DebugOverlay   = nullptr;
-ISurface*             g_VGuiSurface    = nullptr;
-CInput*               g_Input          = nullptr;
-IVModelInfoClient*    g_MdlInfo        = nullptr;
-IVModelRender*        g_MdlRender      = nullptr;
-IVRenderView*         g_RenderView     = nullptr;
-IMaterialSystem*      g_MatSystem      = nullptr;
-IGameEventManager2*   g_GameEvents     = nullptr;
-IMoveHelper*          g_MoveHelper     = nullptr;
-IMDLCache*            g_MdlCache       = nullptr;
-IPrediction*          g_Prediction     = nullptr;
-CGameMovement*        g_GameMovement   = nullptr;
-IEngineSound*         g_EngineSound    = nullptr;
-CGlowObjectManager*   g_GlowObjManager = nullptr;
-IViewRender*          g_ViewRender     = nullptr;
-IDirect3DDevice9*     g_D3DDevice9     = nullptr;
-CClientState*         g_ClientState    = nullptr;
-IPhysicsSurfaceProps* g_PhysSurface    = nullptr;
-IInputSystem*         g_InputSystem    = nullptr;
-C_LocalPlayer         g_LocalPlayer;
-
 namespace Interfaces
 {
     CreateInterfaceFn get_module_factory(HMODULE module)
