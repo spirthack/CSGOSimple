@@ -277,7 +277,9 @@ void Visuals::RenderItemEsp(C_BaseEntity* ent)
 	if (!hdr)
 		return;
 	itemstr = hdr->szName;
-	if (itemstr.find("case_pistol") != std::string::npos)
+	if (ent->GetClientClass()->m_ClassID == ClassId_CBumpMine)
+		itemstr = "";
+	else if (itemstr.find("case_pistol") != std::string::npos)
 		itemstr = "Pistol Case";
 	else if (itemstr.find("case_light_weapon") != std::string::npos)
 		itemstr = "Light Case";
@@ -307,6 +309,19 @@ void Visuals::RenderItemEsp(C_BaseEntity* ent)
 		itemstr = "Ammobox";
 	else if (itemstr.find("dronegun") != std::string::npos)
 		itemstr = "Turrel";
+	else if (itemstr.find("exojump") != std::string::npos)
+		itemstr = "Exojump";
+	else if (itemstr.find("healthshot") != std::string::npos)
+		itemstr = "Healthshot";
+	else {
+		/*May be you will search some missing items..*/
+		/*static std::vector<std::string> unk_loot;
+		if (std::find(unk_loot.begin(), unk_loot.end(), itemstr) == unk_loot.end()) {
+			Utils::ConsolePrint(itemstr.c_str());
+			unk_loot.push_back(itemstr);
+		}*/
+		return;
+	}
 	
 	auto bbox = GetBBox(ent);
 	if (bbox.right == 0 || bbox.bottom == 0)

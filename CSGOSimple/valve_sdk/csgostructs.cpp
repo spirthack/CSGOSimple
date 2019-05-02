@@ -11,14 +11,15 @@ bool C_BaseEntity::IsPlayer()
 }
 
 bool C_BaseEntity::IsLoot() {
-	return (GetClientClass()->m_ClassID == ClassId_CPhysPropAmmoBox ||
+	return GetClientClass()->m_ClassID == ClassId_CPhysPropAmmoBox ||
 		GetClientClass()->m_ClassID == ClassId_CPhysPropLootCrate ||
 		GetClientClass()->m_ClassID == ClassId_CPhysPropRadarJammer ||
 		GetClientClass()->m_ClassID == ClassId_CPhysPropWeaponUpgrade ||
 		GetClientClass()->m_ClassID == ClassId_CDrone ||
 		GetClientClass()->m_ClassID == ClassId_CDronegun ||
 		GetClientClass()->m_ClassID == ClassId_CItem_Healthshot ||
-		GetClientClass()->m_ClassID == ClassId_CItemCash);
+		GetClientClass()->m_ClassID == ClassId_CItemCash || 
+		GetClientClass()->m_ClassID == ClassId_CBumpMine;
 }
 
 bool C_BaseEntity::IsWeapon()
