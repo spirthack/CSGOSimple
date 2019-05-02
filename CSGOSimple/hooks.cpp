@@ -84,19 +84,24 @@ namespace Hooks {
 		pDevice->SetSamplerState(NULL, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP);
 		pDevice->SetSamplerState(NULL, D3DSAMP_SRGBTEXTURE, NULL);
 
+		
 		ImGui_ImplDX9_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-		auto esp_drawlist = Render::Get().RenderScene();
 
+		ImDrawList* esp_drawlist = nullptr;
+
+	
+
+		esp_drawlist = Render::Get().RenderScene();
 
 		Menu::Get().Render();
+	
 
 		ImGui::Render(esp_drawlist);
 
 		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
-
 
 		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, colorwrite);
 		pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, srgbwrite);
