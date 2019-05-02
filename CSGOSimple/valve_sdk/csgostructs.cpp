@@ -26,7 +26,7 @@ bool C_BaseEntity::IsWeapon()
 	//index: 160
 	//ref: "CNewParticleEffect::DrawModel"
 	//sig: 8B 80 ? ? ? ? FF D0 84 C0 74 6F 8B 4D A4
-	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 161)(this);
+	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 162)(this);
 }
 
 
@@ -42,7 +42,7 @@ bool C_BaseEntity::IsDefuseKit()
 
 CCSWeaponInfo* C_BaseCombatWeapon::GetCSWeaponData()
 {
-	return CallVFunction<CCSWeaponInfo*(__thiscall*)(void*)>(this, 448)(this);
+	return CallVFunction<CCSWeaponInfo*(__thiscall*)(void*)>(this, 454)(this);
 	/*
 	static auto fnGetWpnData
 	= reinterpret_cast<CCSWeaponInfo*(__thiscall*)(void*)>(
@@ -149,17 +149,17 @@ bool C_BaseCombatWeapon::IsReloading()
 
 float C_BaseCombatWeapon::GetInaccuracy()
 {
-	return CallVFunction<float(__thiscall*)(void*)>(this, 471)(this);
+	return CallVFunction<float(__thiscall*)(void*)>(this, 476)(this);
 }
 
 float C_BaseCombatWeapon::GetSpread()
 {
-	return CallVFunction<float(__thiscall*)(void*)>(this, 440)(this);
+	return CallVFunction<float(__thiscall*)(void*)>(this, 446)(this);
 }
 
 void C_BaseCombatWeapon::UpdateAccuracyPenalty()
 {
-	CallVFunction<void(__thiscall*)(void*)>(this, 472)(this);
+	CallVFunction<void(__thiscall*)(void*)>(this, 477)(this);
 }
 
 CUtlVector<IRefCounted*>& C_BaseCombatWeapon::m_CustomMaterials()
@@ -402,7 +402,7 @@ bool C_BasePlayer::CanSeePlayer(C_BasePlayer* player, const Vector& pos)
 
 void C_BasePlayer::UpdateClientSideAnimation()
 {
-	return CallVFunction<void(__thiscall*)(void*)>(this, 218)(this);
+	return CallVFunction<void(__thiscall*)(void*)>(this, 221)(this);
 }
 
 void C_BasePlayer::InvalidateBoneCache()
@@ -444,7 +444,7 @@ float C_BasePlayer::GetFlashBangTime()
 
 void C_BaseViewModel::SendViewModelMatchingSequence(int sequence)
 {
-	return CallVFunction<void(__thiscall*)(void*, int)>(this, 241)(this, sequence);
+	return CallVFunction<void(__thiscall*)(void*, int)>(this, 244)(this, sequence);
 }
 
 float_t C_BasePlayer::m_flSpawnTime()
