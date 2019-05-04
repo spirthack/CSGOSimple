@@ -32,6 +32,10 @@ class Options
 {
 public:
 		// 
+		// AIM
+		// 
+		OPTION(bool, aim_enable, false);
+		// 
 		// ESP
 		// 
 		OPTION(bool, esp_enabled, false);
