@@ -96,9 +96,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="features\aimbot.cpp" />
     <ClCompile Include="features\bhop.cpp" />
     <ClCompile Include="features\chams.cpp" />
-    <ClCompile Include="features\glow.cpp" />
+    <ClCompile Include="features\glow.cpp" />   
     <ClCompile Include="features\visuals.cpp" />
     <ClCompile Include="helpers\input.cpp" />
     <ClCompile Include="helpers\math.cpp" />
