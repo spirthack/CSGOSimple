@@ -264,6 +264,12 @@ namespace Hooks {
 	{
 		static auto ofunc = mdlrender_hook.get_original<decltype(&hkDrawModelExecute)>(index::DrawModelExecute);
 
+		if (g_MdlRender->IsForcedMaterialOverride() &&
+			!strstr(pInfo.pModel->szName, "arms") &&
+			!strstr(pInfo.pModel->szName, "weapons/v_")) {
+			return ofunc(_this, edx, ctx, state, pInfo, pCustomBoneToWorld);
+		}
+
 		Chams::Get().OnDrawModelExecute(ctx, state, pInfo, pCustomBoneToWorld);
 
 		ofunc(_this, edx, ctx, state, pInfo, pCustomBoneToWorld);
