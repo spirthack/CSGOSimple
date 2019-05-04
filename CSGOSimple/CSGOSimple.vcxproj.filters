@@ -86,6 +86,9 @@
     <ClCompile Include="imgui\imgui.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
+     <ClCompile Include="features\aimbot.cpp">
+      <Filter>Source Files\features</Filter>
+    </ClCompile>
     <ClCompile Include="features\bhop.cpp">
       <Filter>Source Files\features</Filter>
     </ClCompile>
