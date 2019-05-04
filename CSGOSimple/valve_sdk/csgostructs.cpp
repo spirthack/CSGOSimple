@@ -7,7 +7,7 @@ bool C_BaseEntity::IsPlayer()
 	//index: 152
 	//ref: "effects/nightvision"
 	//sig: 8B 92 ? ? ? ? FF D2 84 C0 0F 45 F7 85 F6
-	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 153)(this);
+	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 155)(this);
 }
 
 bool C_BaseEntity::IsLoot() {
@@ -27,7 +27,7 @@ bool C_BaseEntity::IsWeapon()
 	//index: 160
 	//ref: "CNewParticleEffect::DrawModel"
 	//sig: 8B 80 ? ? ? ? FF D0 84 C0 74 6F 8B 4D A4
-	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 162)(this);
+	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 163)(this);
 }
 
 
@@ -420,7 +420,7 @@ void C_BasePlayer::InvalidateBoneCache()
 
 int C_BasePlayer::m_nMoveType()
 {
-	return *(int*)((uintptr_t)this + 0x258);
+	return *(int*)((uintptr_t)this + 0x25C);
 }
 
 QAngle* C_BasePlayer::GetVAngles()
