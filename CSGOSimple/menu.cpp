@@ -288,7 +288,7 @@ void RenderEmptyTab()
 	bool placeholder_true = true;
 
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-	ImGui::ToggleButton("AIM", &placeholder_true, ImVec2{ group_w, 25.0f });
+	ImGui::ToggleButton("SKINS", &placeholder_true, ImVec2{ group_w, 25.0f });
 	ImGui::PopStyleVar();
 
 	ImGui::BeginGroupBox("##body_content");
@@ -301,6 +301,24 @@ void RenderEmptyTab()
 		 pos = pos + wsize / 2.0f;
 
 		 ImGui::RenderText(pos - ImGui::CalcTextSize(message) / 2.0f, message);
+	}
+	ImGui::EndGroupBox();
+}
+
+void RenderAimbotTab()
+{
+	auto& style = ImGui::GetStyle();
+	float group_w = ImGui::GetCurrentWindow()->Size.x - style.WindowPadding.x * 2;
+
+	bool placeholder_true = true;
+
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+	ImGui::ToggleButton("AIM", &placeholder_true, ImVec2{ group_w, 25.0f });
+	ImGui::PopStyleVar();
+
+	ImGui::BeginGroupBox("##body_content");
+	{
+		ImGui::Checkbox("Enable", g_Options.aim_enable);
 	}
 	ImGui::EndGroupBox();
 }
@@ -396,7 +414,7 @@ void Menu::Render()
         if(active_sidebar_tab == TAB_ESP) {
             RenderEspTab();
         } else if(active_sidebar_tab == TAB_AIMBOT) {
-            RenderEmptyTab();
+            RenderAimbotTab();
         } else if(active_sidebar_tab == TAB_MISC) {
             RenderMiscTab();
         } else if(active_sidebar_tab == TAB_CONFIG) {
