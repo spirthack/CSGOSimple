@@ -40,3 +40,4 @@ void Aimbot::CreateMove(CUserCmd* cmd){
 		g_EngineClient->SetViewAngles(&aimvector);
 	}
 }
+Aimbot g_Aimbot;
