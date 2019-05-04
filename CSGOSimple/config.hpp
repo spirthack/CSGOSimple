@@ -19,7 +19,7 @@ public:
 			auto name = el->name;
 			auto val = el->value;
 			auto sizeof_val = el->size;
-			fout << name << "\t" << Utils::BytesToString((unsigned char*)val, sizeof_val) << std::endl;
+			fout << name << "\t" << Utils::BytesToString((unsigned char*)*(int*)&val, sizeof_val) << std::endl;
 		}
 		fout.close();
 	}
@@ -42,7 +42,7 @@ public:
 				const auto &el = &(*(Var<bool>*)(&g_Options)) + i;
 				if (data[0] == el->name) {
 					auto bytes = Utils::HexToBytes(data[1]);
-					memcpy(el->value, bytes.data(), el->size);
+					memcpy(*(void**)&el->value, bytes.data(), el->size);
 				}
 			}
 		}

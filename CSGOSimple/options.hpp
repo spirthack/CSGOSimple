@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <unordered_map>
 #include <vector>
 #include "valve_sdk/Misc/Color.hpp"
@@ -12,20 +13,16 @@ template <typename T = bool>
 class Var {
 public:
 	std::string name;
-	T* value ;
+	std::shared_ptr<T> value;
 	int32_t size;
 	Var(std::string name, T v) : name(name) {
-		value = new T;
-		*value = v;
+		value = std::make_shared<T>(v);
 		size = sizeof(T);
 	}
-	~Var() {
-		delete value;
-	}
 	operator T() { return *value; }
-	operator T*() { return value; }
+	operator T*() { return &*value; }
 	operator T() const { return *value; }
-	operator T*() const { return value; }
+	//operator T*() const { return value; }
 };
 
 class Options
