@@ -1,4 +1,4 @@
-#include "aim.h"
+#include "aimbot.h"
 #include "../options.hpp"
 
 void Aimbot::CreateMove(CUserCmd* cmd){
