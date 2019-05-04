@@ -434,15 +434,6 @@ void C_BaseAttributableItem::SetGloveModelIndex(int modelIndex)
 	return CallVFunction<void(__thiscall*)(void*, int)>(this, 75)(this, modelIndex);
 }
 
-float C_BasePlayer::GetFlashBangTime()
-{
-
-	static uint32_t m_flFlashBangTime = *(uint32_t*)((uint32_t)Utils::PatternScan(GetModuleHandleA("client_panorama.dll"),
-		"F3 0F 10 86 ?? ?? ?? ?? 0F 2F 40 10 76 30") + 4);
-	return *(float*)(this + m_flFlashBangTime);
-	//return *(float*)((uintptr_t)this + 0xa308);
-}
-
 void C_BaseViewModel::SendViewModelMatchingSequence(int sequence)
 {
 	return CallVFunction<void(__thiscall*)(void*, int)>(this, 244)(this, sequence);

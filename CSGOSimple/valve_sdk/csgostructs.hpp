@@ -301,12 +301,7 @@ public:
 	void UpdateClientSideAnimation();
 
 	int m_nMoveType();
-
-
 	QAngle * GetVAngles();
-
-	float GetFlashBangTime();
-
 	float_t m_flSpawnTime();
 
 };
