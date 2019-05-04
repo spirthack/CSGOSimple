@@ -340,6 +340,9 @@
     <ClInclude Include="imgui\imconfig.h">
       <Filter>Header Files\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="features\aimbot.h">
+      <Filter>Header Files\features</Filter>
+    </ClInclude>
     <ClInclude Include="features\bhop.hpp">
       <Filter>Header Files\features</Filter>
     </ClInclude>
