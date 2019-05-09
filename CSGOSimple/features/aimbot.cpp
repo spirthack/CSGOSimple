@@ -6,9 +6,9 @@ void Aimbot::CreateMove(CUserCmd* cmd){
 	Vector eyepos;
 	QAngle aimvector;
 	
-	for (int i = 1; i <= g_EntityList->GetHighestEntityIndex(); i++) {
+	for (int i = 1; i <= g_EngineClient->GetMaxClients(); i++) {
 		auto ent = C_BaseEntity::GetEntityByIndex(i);
-		auto entity = (C_BasePlayer*)ent; 
+		auto entity = (C_BasePlayer*)ent;
 
 		if (!entity || !entity->IsAlive())
 			continue;
@@ -19,24 +19,13 @@ void Aimbot::CreateMove(CUserCmd* cmd){
 		if (!entity->GetHitboxPos(HITBOX_HEAD, hitboxpos))
 			continue;
 		auto weapon = g_LocalPlayer->m_hActiveWeapon();
-		if (!weapon)
+		if (!weapon || !weapon->IsGun())
 			continue;
-		if (!weapon->IsGun())
+		if (!g_LocalPlayer->CanSeePlayer(entity, hitboxpos))
 			continue;
-      
-		eyepos = g_LocalPlayer->GetEyePos();	
-    
-		CGameTrace tr;
-		Ray_t ray;
-		CTraceFilter filter;
-		filter.pSkip = g_LocalPlayer;
-		auto start = eyepos;
-		ray.Init(start, hitboxpos);
-		g_EngineTrace->TraceRay(ray, MASK_SHOT | CONTENTS_GRATE, &filter, &tr);
-		if (tr.hit_entity != entity)
-			continue;
-	
+		eyepos = g_LocalPlayer->GetEyePos();
 		aimvector = Math::CalcAngle(eyepos, hitboxpos);
+		Math::Normalize3(aimvector);
 		g_EngineClient->SetViewAngles(&aimvector);
 	}
 }
