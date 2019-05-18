@@ -73,21 +73,25 @@ bool InputSys::ProcessMouseMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	switch (uMsg) {
 	case WM_MBUTTONDOWN:
 	case WM_MBUTTONUP:
+	case WM_MBUTTONDBLCLK:
 		state = uMsg == WM_MBUTTONUP ? KeyState::Up : KeyState::Down;
 		key = VK_MBUTTON;
 		break;
 	case WM_RBUTTONDOWN:
 	case WM_RBUTTONUP:
+	case WM_RBUTTONDBLCLK:
 		state = uMsg == WM_RBUTTONUP ? KeyState::Up : KeyState::Down;
 		key = VK_RBUTTON;
 		break;
 	case WM_LBUTTONDOWN:
 	case WM_LBUTTONUP:
+	case WM_LBUTTONDBLCLK:
 		state = uMsg == WM_LBUTTONUP ? KeyState::Up : KeyState::Down;
 		key = VK_LBUTTON;
 		break;
 	case WM_XBUTTONDOWN:
 	case WM_XBUTTONUP:
+	case WM_XBUTTONDBLCLK:
 		state = uMsg == WM_XBUTTONUP ? KeyState::Up : KeyState::Down;
 		key = (HIWORD(wParam) == XBUTTON1 ? VK_XBUTTON1 : VK_XBUTTON2);
 		break;
