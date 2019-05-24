@@ -441,5 +441,5 @@ void C_BaseViewModel::SendViewModelMatchingSequence(int sequence)
 
 float_t C_BasePlayer::m_flSpawnTime()
 {
-	return *(float_t*)((uintptr_t)this + 0xA2C0);
+	return *(float_t*)((uintptr_t)this + 0xA360);
 }
