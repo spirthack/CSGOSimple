@@ -303,15 +303,7 @@ namespace Utils {
      */
 	void RankRevealAll()
 	{
-		using ServerRankRevealAll = char(__cdecl*)(int*);
-
-		static uint8_t* fnServerRankRevealAll = PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 8B 0D ? ? ? ? 85 C9 75 ? A1 ? ? ? ? 68 ? ? ? ? 8B 08 8B 01 FF 50 ? 85 C0 74 ? 8B C8 E8 ? ? ? ? 8B C8 EB ? 33 C9 89 0D ? ? ? ? 8B 45 ? FF 70 ? E8 ? ? ? ? B0 ? 5D");
-
-		if (fnServerRankRevealAll) {
-			int v[3] = { 0,0,0 };
-
-			reinterpret_cast<ServerRankRevealAll>(fnServerRankRevealAll)(v);
-		}
+		g_CHLClient->DispatchUserMessage(50, 0, 0, nullptr);
 	}
 
 }
