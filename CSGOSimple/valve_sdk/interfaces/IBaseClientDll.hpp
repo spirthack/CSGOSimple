@@ -36,4 +36,10 @@ public:
     virtual void             LevelInitPostEntity() = 0;
     virtual void             LevelShutdown(void) = 0;
     virtual ClientClass*     GetAllClasses(void) = 0;
+    
+    bool DispatchUserMessage(int messageType, int arg, int arg1, void* data)
+	{
+		using DispatchUserMessage_t = bool* (__thiscall*)(void*, int, int, int, void*);
+		return CallVFunction<DispatchUserMessage_t>(this, 38)(this, messageType, arg, arg1, data);
+	}
 };
