@@ -97,20 +97,5 @@ void ConColorMsg(const Color& clr, const char* pMsg, Args... args)
 
 #include "Misc/EHandle.hpp"
 
-class C_LocalPlayer
-{
-    friend bool operator==(const C_LocalPlayer& lhs, void* rhs);
-public:
-    C_LocalPlayer() : m_local(nullptr) {}
-
-    operator bool() const { return *m_local != nullptr; }
-    operator C_BasePlayer*() const { return *m_local; }
-
-    C_BasePlayer* operator->() { return *m_local; }
-
-private:
-    C_BasePlayer** m_local;
-};
-
-inline C_LocalPlayer g_LocalPlayer;
+inline C_BasePlayer* g_LocalPlayer;
 
