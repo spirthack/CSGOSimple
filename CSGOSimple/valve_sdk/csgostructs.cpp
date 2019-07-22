@@ -199,16 +199,12 @@ AnimationLayer *C_BasePlayer::GetAnimOverlay(int i)
 
 int C_BasePlayer::GetSequenceActivity(int sequence)
 {
-	auto hdr = g_MdlInfo->GetStudiomodel(this->GetModel());
+	auto *hdr = g_MdlInfo->GetStudiomodel(this->GetModel());
 
 	if (!hdr)
 		return -1;
 
-	// sig for stuidohdr_t version: 53 56 8B F1 8B DA 85 F6 74 55
-	// sig for C_BaseAnimating version: 55 8B EC 83 7D 08 FF 56 8B F1 74 3D
-	// c_csplayer vfunc 242, follow calls to find the function.
-
-	static auto get_sequence_activity = reinterpret_cast<int(__fastcall*)(void*, studiohdr_t*, int)>(Utils::PatternScan(GetModuleHandle(L"client_panorama.dll"), "55 8B EC 83 7D 08 FF 56 8B F1 74 3D"));
+	static auto get_sequence_activity = reinterpret_cast<int(__fastcall*)(void*, studiohdr_t*, int)>(Utils::PatternScan(GetModuleHandle("client_panorama.dll"), "55 8B EC 53 8B 5D 08 56 8B F1 83"));
 
 	return get_sequence_activity(this, hdr, sequence);
 }
