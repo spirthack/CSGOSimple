@@ -233,10 +233,9 @@ public:
 	NETVAR(int32_t, m_iAccount, "DT_CSPlayer", "m_iAccount");
 	NETVAR(float, m_flFlashDuration, "DT_CSPlayer", "m_flFlashDuration");
 	NETVAR(float, m_flSimulationTime, "DT_BaseEntity", "m_flSimulationTime");
-	NETVAR(float, m_flCycle, "DT_ServerAnimationData", "m_flCycle");
+	NETVAR(float, m_flCycle, "DT_BaseAnimating", "m_flCycle");
 	NETVAR(int, m_nSequence, "DT_BaseViewModel", "m_nSequence");
-	PNETVAR(char, m_szLastPlaceName, "DT_BasePlayer", "m_szLastPlaceName");
-	NETPROP(m_flLowerBodyYawTargetProp, "DT_CSPlayer", "m_flLowerBodyYawTarget");
+	NETVAR(float, m_flNextAttack, "DT_BaseCombatCharacter", "m_flNextAttack");
 
 	//NETVAR(int, m_iAccount, "DT_CSPlayer", "m_iAccount");
 
@@ -253,7 +252,10 @@ public:
 
 	PNETVAR(CHandle<C_BaseCombatWeapon>, m_hMyWeapons, "DT_BaseCombatCharacter", "m_hMyWeapons");
 	PNETVAR(CHandle<C_BaseAttributableItem>, m_hMyWearables, "DT_BaseCombatCharacter", "m_hMyWearables");
+	PNETVAR(char, m_szLastPlaceName, "DT_BasePlayer", "m_szLastPlaceName");
 
+
+	NETPROP(m_flLowerBodyYawTargetProp, "DT_CSPlayer", "m_flLowerBodyYawTarget");
 	CUserCmd*& m_pCurrentCommand();
 
 	/*gladiator v2*/

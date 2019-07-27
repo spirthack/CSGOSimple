@@ -59,18 +59,18 @@ bool C_BaseCombatWeapon::HasBullets()
 
 bool C_BaseCombatWeapon::CanFire()
 {
-	static decltype(this) stored_weapon = nullptr;
-	static auto stored_tick = 0;
-	if (stored_weapon != this || stored_tick >= g_LocalPlayer->m_nTickBase()) {
-		stored_weapon = this;
-		stored_tick = g_LocalPlayer->m_nTickBase();
-		return false; //cannot shoot first tick after switch
-	}
-
-	if (IsReloading() || m_iClip1() <= 0 || !g_LocalPlayer)
+	auto owner = this->m_hOwnerEntity().Get();
+	if (!owner)
 		return false;
 
-	auto flServerTime = g_LocalPlayer->m_nTickBase() * g_GlobalVars->interval_per_tick;
+	if (IsReloading() || m_iClip1() <= 0)
+		return false;
+
+	auto flServerTime = owner->m_nTickBase() * g_GlobalVars->interval_per_tick;
+
+	if (owner->m_flNextAttack() > flServerTime)
+		return false;
+
 
 	return m_flNextPrimaryAttack() <= flServerTime;
 }
@@ -207,8 +207,8 @@ int C_BasePlayer::GetSequenceActivity(int sequence)
 	// sig for stuidohdr_t version: 53 56 8B F1 8B DA 85 F6 74 55
 	// sig for C_BaseAnimating version: 55 8B EC 83 7D 08 FF 56 8B F1 74 3D
 	// c_csplayer vfunc 242, follow calls to find the function.
-
-	static auto get_sequence_activity = reinterpret_cast<int(__fastcall*)(void*, studiohdr_t*, int)>(Utils::PatternScan(GetModuleHandle(L"client_panorama.dll"), "55 8B EC 83 7D 08 FF 56 8B F1 74 3D"));
+	// Thanks @Kron1Q for merge request
+	static auto get_sequence_activity = reinterpret_cast<int(__fastcall*)(void*, studiohdr_t*, int)>(Utils::PatternScan(GetModuleHandle(L"client_panorama.dll"), "55 8B EC 53 8B 5D 08 56 8B F1 83"));
 
 	return get_sequence_activity(this, hdr, sequence);
 }

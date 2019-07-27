@@ -152,9 +152,8 @@ namespace Hooks {
 		{
 			push ebp
 			mov  ebp, esp
-			push ebx
-			lea  ecx, [esp]
-			push ecx
+			push ebx; not sure if we need this
+			push esp
 			push dword ptr[active]
 			push dword ptr[input_sample_frametime]
 			push dword ptr[sequence_number]
