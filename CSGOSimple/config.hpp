@@ -24,6 +24,8 @@ public:
 		fout.close();
 	}
 
+}}}}}}}}}}}}}}}}}}}}}}
+sosi
 
 	void Load() {
 		std::ifstream fin("csgosimple.cfg", std::ios::binary);
