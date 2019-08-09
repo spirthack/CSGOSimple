@@ -71,10 +71,4 @@ namespace Utils {
      * @param name New name
      */
     void SetName(const char* name);
-
-    /*
-     * @brief Reveal the ranks of all players on the server
-     *
-     */
-    void RankRevealAll();
 }

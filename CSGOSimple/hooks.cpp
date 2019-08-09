@@ -141,6 +141,10 @@ namespace Hooks {
 		if (g_Options.misc_bhop)
 			BunnyHop::OnCreateMove(cmd);
 
+		// https://github.com/spirthack/CSGOSimple/issues/69
+		if (g_Options.misc_showranks && cmd->buttons & IN_SCORE) // rank revealer will work even after unhooking, idk how to "hide" ranks  again
+			g_CHLClient->DispatchUserMessage(CS_UM_ServerRankRevealAll, 0, 0, nullptr);
+
 
 		verified->m_cmd = *cmd;
 		verified->m_crc = cmd->GetChecksum();
@@ -177,16 +181,14 @@ namespace Hooks {
 				panelId = panel;
 			}
 		}
-		else if (panelId == panel) {
+		else if (panelId == panel) 
+		{
 			//Ignore 50% cuz it called very often
 			static bool bSkip = false;
 			bSkip = !bSkip;
 
 			if (bSkip)
 				return;
-
-			if (g_LocalPlayer && InputSys::Get().IsKeyDown(VK_TAB) && g_Options.misc_showranks)
-				Utils::RankRevealAll();
 
 			Render::Get().BeginScene();
 		}

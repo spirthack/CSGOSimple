@@ -12,13 +12,8 @@
 
 DWORD WINAPI OnDllAttach(LPVOID base)
 {
-    // 
-    // Wait at most 10s for the main game modules to be loaded.
-    // 
-    if(Utils::WaitForModules(10000, { L"client_panorama.dll", L"engine.dll", L"shaderapidx9.dll" }) == WAIT_TIMEOUT) {
-        // One or more modules were not loaded in time
-        return FALSE;
-    }
+	while (!GetModuleHandleA("serverbrowser.dll"))
+		Sleep(1000);
 
 #ifdef _DEBUG
     Utils::AttachConsole();
@@ -53,6 +48,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
         });
 
         Utils::ConsolePrint("Finished.\n");
+		Utils::ConsolePrint("Built on: %s %s\n", __DATE__, __TIME__);
 
         while(!g_Unload)
             Sleep(1000);

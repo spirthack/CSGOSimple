@@ -365,8 +365,9 @@ void Menu::Render()
     //ImGui::PushStyle(_style);
 
     ImGui::SetNextWindowPos(ImVec2{ 0, 0 }, ImGuiSetCond_Once);
-    ImGui::SetNextWindowSize(ImVec2{ 1000, 0 }, ImGuiSetCond_Once);
-
+    ImGui::SetNextWindowSize(ImVec2{ 1000, 400 }, ImGuiSetCond_Once);
+	// https://github.com/spirthack/CSGOSimple/issues/63
+	// quick fix
 
 	if (ImGui::Begin("CSGOSimple",
 		&_visible,

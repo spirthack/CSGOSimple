@@ -65,7 +65,7 @@ void Render::BeginScene() {
 	draw_list->PushClipRectFullScreen();
 
 
-	if (g_Options.misc_watermark) //lol
+	if (g_Options.misc_watermark)
 		Render::Get().RenderText("CSGOSimple", 10, 5, 18.f, g_Options.color_watermark, false, true, g_pSecondFont);
 
 	if (g_EngineClient->IsInGame() && g_LocalPlayer && g_Options.esp_enabled)
