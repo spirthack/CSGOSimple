@@ -296,14 +296,4 @@ namespace Utils {
 
         nameConvar->SetValue(name);
     }
-
-    /*
-     * @brief Reveal the ranks of all players on the server
-     *
-     */
-	void RankRevealAll()
-	{
-		g_CHLClient->DispatchUserMessage(50, 0, 0, nullptr);
-	}
-
 }
