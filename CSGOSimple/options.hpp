@@ -86,6 +86,9 @@ public:
 		OPTION(float, mat_ambient_light_g, 0.0f);
 		OPTION(float, mat_ambient_light_b, 0.0f);
 
+		int sequence_number; // probably a better way to do this but I didn't want to modify the actual source that much
+		bool bSendPacket;
+
 		// 
 		// COLORS
 		// 

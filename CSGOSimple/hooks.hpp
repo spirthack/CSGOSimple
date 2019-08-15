@@ -49,4 +49,7 @@ namespace Hooks
 	void __fastcall hkLockCursor(void* _this);
     int  __fastcall hkDoPostScreenEffects(void* _this, int, int a1);
 	bool __fastcall hkSvCheatsGetBool(void* pConVar, void* edx);
+	void __fastcall hkUpdateClientAnimations(void* ecx, void* edx);
+	extern decltype (&hkUpdateClientAnimations) UpdateClientAnimations_fn;
+	static uintptr_t ClientAnimations = reinterpret_cast<uintptr_t>(Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 51 56 8B F1 80 BE ? ? ? ? ? 74 36"));
 }

@@ -1,5 +1,6 @@
 #include "hooks.hpp"
-#include <intrin.h>  
+#include <intrin.h>
+#include "detours.h"
 
 #include "render.hpp"
 #include "menu.hpp"
@@ -10,10 +11,12 @@
 #include "features/chams.hpp"
 #include "features/visuals.hpp"
 #include "features/glow.hpp"
+#include "features/anims.hpp"
 #pragma intrinsic(_ReturnAddress)  
 
 namespace Hooks {
 
+	decltype (&Hooks::hkUpdateClientAnimations) UpdateClientAnimations_fn;
 	void Initialize()
 	{
 		hlclient_hook.setup(g_CHLClient);
@@ -37,10 +40,12 @@ namespace Hooks {
 		clientmode_hook.hook_index(index::DoPostScreenSpaceEffects, hkDoPostScreenEffects);
 		clientmode_hook.hook_index(index::OverrideView, hkOverrideView);
 		sv_cheats.hook_index(index::SvCheatsGetBool, hkSvCheatsGetBool);
+		UpdateClientAnimations_fn = (decltype(&Hooks::hkUpdateClientAnimations))DetourFunction((byte*)ClientAnimations, (byte*)Hooks::hkUpdateClientAnimations);
 	}
 	//--------------------------------------------------------------------------------
 	void Shutdown()
 	{
+		DetourRemove(reinterpret_cast<PBYTE>(UpdateClientAnimations_fn), reinterpret_cast<PBYTE>(Hooks::hkUpdateClientAnimations));
 		hlclient_hook.unhook_all();
 		direct3d_hook.unhook_all();
 		vguipanel_hook.unhook_all();
@@ -145,6 +150,8 @@ namespace Hooks {
 		if (g_Options.misc_showranks && cmd->buttons & IN_SCORE) // rank revealer will work even after unhooking, idk how to "hide" ranks  again
 			g_CHLClient->DispatchUserMessage(CS_UM_ServerRankRevealAll, 0, 0, nullptr);
 
+		g_Options.sequence_number = sequence_number;
+		g_Options.bSendPacket = bSendPacket;
 
 		verified->m_cmd = *cmd;
 		verified->m_crc = cmd->GetChecksum();
@@ -235,6 +242,10 @@ namespace Hooks {
 	{
 		static auto ofunc = hlclient_hook.get_original<decltype(&hkFrameStageNotify)>(index::FrameStageNotify);
 		// may be u will use it lol
+
+		if (g_EngineClient->IsInGame() && stage == FRAME_RENDER_START)
+			Animations::AccurateLocalPlayer();
+
 		ofunc(g_CHLClient, edx, stage);
 	}
 	//--------------------------------------------------------------------------------
@@ -290,5 +301,17 @@ namespace Hooks {
 		if (reinterpret_cast<DWORD>(_ReturnAddress()) == reinterpret_cast<DWORD>(dwCAM_Think))
 			return true;
 		return ofunc(pConVar);
+	}
+
+	void __fastcall hkUpdateClientAnimations(void* ecx, void* edx) {
+		auto player = reinterpret_cast<C_BasePlayer*>(ecx);
+		if (!player->IsPlayer()) {
+			return;
+		}
+
+		if (Animations::AnimationRecord_t[player->EntIndex()].OverrideAnimations)
+			return;
+
+		UpdateClientAnimations_fn(ecx, edx);
 	}
 }

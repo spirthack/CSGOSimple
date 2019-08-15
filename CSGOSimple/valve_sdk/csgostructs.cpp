@@ -197,6 +197,13 @@ AnimationLayer *C_BasePlayer::GetAnimOverlay(int i)
 	return nullptr;
 }
 
+void C_BasePlayer::SetAbsAngles(const QAngle& angles) {
+	using SetAbsAnglesFn = void(__thiscall*)(void*, const QAngle & angles);
+	static SetAbsAnglesFn SetAbsAngles = (SetAbsAnglesFn)Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8");
+
+	SetAbsAngles(this, angles);
+}
+
 int C_BasePlayer::GetSequenceActivity(int sequence)
 {
 	auto hdr = g_MdlInfo->GetStudiomodel(this->GetModel());

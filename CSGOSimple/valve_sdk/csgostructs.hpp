@@ -249,7 +249,6 @@ public:
 		return *(std::array<float, 24>*)((uintptr_t)this + _m_flPoseParameter);
 	}
 
-
 	PNETVAR(CHandle<C_BaseCombatWeapon>, m_hMyWeapons, "DT_BaseCombatCharacter", "m_hMyWeapons");
 	PNETVAR(CHandle<C_BaseAttributableItem>, m_hMyWearables, "DT_BaseCombatCharacter", "m_hMyWearables");
 	PNETVAR(char, m_szLastPlaceName, "DT_BasePlayer", "m_szLastPlaceName");
@@ -263,6 +262,7 @@ public:
 	int GetNumAnimOverlays();
 	AnimationLayer *GetAnimOverlays();
 	AnimationLayer *GetAnimOverlay(int i);
+	void SetAbsAngles(const QAngle& angles);
 	int GetSequenceActivity(int sequence);
 	CCSGOPlayerAnimState *GetPlayerAnimState();
 
