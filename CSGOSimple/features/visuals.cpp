@@ -407,7 +407,7 @@ void Visuals::AddToDrawList() {
 		if (entity == g_LocalPlayer && !g_Input->m_fCameraInThirdPerson)
 			continue;
 
-		if (i < g_GlobalVars->maxClients) {
+		if (i <= g_GlobalVars->maxClients) {
 			auto player = Player();
 			if (player.Begin((C_BasePlayer*)entity)) {
 				if (g_Options.esp_player_snaplines) player.RenderSnapline();
