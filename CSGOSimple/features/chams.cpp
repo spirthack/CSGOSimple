@@ -7,97 +7,26 @@
 #include "../helpers/input.hpp"
 
 
-Chams::Chams()
-{
-	std::ofstream("csgo\\materials\\simple_regular.vmt") << R"#("VertexLitGeneric"
-{
-  "$basetexture" "vgui/white_additive"
-  "$ignorez"      "0"
-  "$envmap"       ""
-  "$nofog"        "1"
-  "$model"        "1"
-  "$nocull"       "0"
-  "$selfillum"    "1"
-  "$halflambert"  "1"
-  "$znearer"      "0"
-  "$flat"         "1"
-}
-)#";
-	std::ofstream("csgo\\materials\\simple_ignorez.vmt") << R"#("VertexLitGeneric"
-{
-  "$basetexture" "vgui/white_additive"
-  "$ignorez"      "1"
-  "$envmap"       ""
-  "$nofog"        "1"
-  "$model"        "1"
-  "$nocull"       "0"
-  "$selfillum"    "1"
-  "$halflambert"  "1"
-  "$znearer"      "0"
-  "$flat"         "1"
-}
-)#";
-	std::ofstream("csgo\\materials\\simple_flat.vmt") << R"#("UnlitGeneric"
-{
-  "$basetexture" "vgui/white_additive"
-  "$ignorez"      "0"
-  "$envmap"       ""
-  "$nofog"        "1"
-  "$model"        "1"
-  "$nocull"       "0"
-  "$selfillum"    "1"
-  "$halflambert"  "1"
-  "$znearer"      "0"
-  "$flat"         "1"
-}
-)#";
-
-	std::ofstream("csgo\\materials\\simple_flat_ignorez.vmt") << R"#("UnlitGeneric"
-{
-  "$basetexture" "vgui/white_additive"
-  "$ignorez"      "1"
-  "$envmap"       ""
-  "$nofog"        "1"
-  "$model"        "1"
-  "$nocull"       "0"
-  "$selfillum"    "1"
-  "$halflambert"  "1"
-  "$znearer"      "0"
-  "$flat"         "1"
-}
-)#";
-
-	materialRegular = g_MatSystem->FindMaterial("simple_regular", TEXTURE_GROUP_MODEL);
-	materialRegularIgnoreZ = g_MatSystem->FindMaterial("simple_ignorez", TEXTURE_GROUP_MODEL);
-	materialFlatIgnoreZ = g_MatSystem->FindMaterial("simple_flat_ignorez", TEXTURE_GROUP_MODEL);
-	materialFlat = g_MatSystem->FindMaterial("simple_flat", TEXTURE_GROUP_MODEL);
+Chams::Chams() {
+	materialRegular = g_MatSystem->FindMaterial("debug/debugambientcube");
+	materialFlat = g_MatSystem->FindMaterial("debug/debugdrawflat");
 }
 
-Chams::~Chams()
-{
-	std::remove("csgo\\materials\\simple_regular.vmt");
-	std::remove("csgo\\materials\\simple_ignorez.vmt");
-	std::remove("csgo\\materials\\simple_flat.vmt");
-	std::remove("csgo\\materials\\simple_flat_ignorez.vmt");
+Chams::~Chams() {
 }
 
 
-void Chams::OverrideMaterial(bool ignoreZ, bool flat, bool wireframe, bool glass, const Color& rgba)
-{
+void Chams::OverrideMaterial(bool ignoreZ, bool flat, bool wireframe, bool glass, const Color& rgba) {
 	IMaterial* material = nullptr;
 
 	if (flat) {
-		if (ignoreZ)
-			material = materialFlatIgnoreZ;
-		else
-			material = materialFlat;
+		material = materialFlat;
 	}
 	else {
-		if (ignoreZ)
-			material = materialRegularIgnoreZ;
-		else
-			material = materialRegular;
+		material = materialRegular;
 	}
+
+	material->SetMaterialVarFlag(MATERIAL_VAR_IGNOREZ, ignoreZ);
 
 
 	if (glass) {
