@@ -7,7 +7,7 @@ bool C_BaseEntity::IsPlayer()
 	//index: 152
 	//ref: "effects/nightvision"
 	//sig: 8B 92 ? ? ? ? FF D2 84 C0 0F 45 F7 85 F6
-	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 155)(this);
+	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 156)(this);
 }
 
 bool C_BaseEntity::IsLoot() {
@@ -43,7 +43,7 @@ bool C_BaseEntity::IsDefuseKit()
 
 CCSWeaponInfo* C_BaseCombatWeapon::GetCSWeaponData()
 {
-	return CallVFunction<CCSWeaponInfo*(__thiscall*)(void*)>(this, 454)(this);
+	return CallVFunction<CCSWeaponInfo*(__thiscall*)(void*)>(this, 455)(this);
 	/*
 	static auto fnGetWpnData
 	= reinterpret_cast<CCSWeaponInfo*(__thiscall*)(void*)>(
@@ -150,17 +150,17 @@ bool C_BaseCombatWeapon::IsReloading()
 
 float C_BaseCombatWeapon::GetInaccuracy()
 {
-	return CallVFunction<float(__thiscall*)(void*)>(this, 476)(this);
+	return CallVFunction<float(__thiscall*)(void*)>(this, 477)(this);
 }
 
 float C_BaseCombatWeapon::GetSpread()
 {
-	return CallVFunction<float(__thiscall*)(void*)>(this, 446)(this);
+	return CallVFunction<float(__thiscall*)(void*)>(this, 447)(this);
 }
 
 void C_BaseCombatWeapon::UpdateAccuracyPenalty()
 {
-	CallVFunction<void(__thiscall*)(void*)>(this, 477)(this);
+	CallVFunction<void(__thiscall*)(void*)>(this, 478)(this);
 }
 
 CUtlVector<IRefCounted*>& C_BaseCombatWeapon::m_CustomMaterials()
@@ -403,7 +403,7 @@ bool C_BasePlayer::CanSeePlayer(C_BasePlayer* player, const Vector& pos)
 
 void C_BasePlayer::UpdateClientSideAnimation()
 {
-	return CallVFunction<void(__thiscall*)(void*)>(this, 221)(this);
+	return CallVFunction<void(__thiscall*)(void*)>(this, 222)(this);
 }
 
 void C_BasePlayer::InvalidateBoneCache()
