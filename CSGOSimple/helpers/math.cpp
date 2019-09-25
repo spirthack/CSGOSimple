@@ -31,7 +31,10 @@ namespace Math
 		AngleVectors(viewAngle, aim);
 		AngleVectors(aimAngle, ang);
 
-		return RAD2DEG(acos(aim.Dot(ang) / aim.LengthSqr()));
+		auto res = RAD2DEG(acos(aim.Dot(ang) / aim.LengthSqr()));
+		if (std::isnan(res))
+			res = 0.f;
+		return res;
 	}
     //--------------------------------------------------------------------------------
     void ClampAngles(QAngle& angles)
