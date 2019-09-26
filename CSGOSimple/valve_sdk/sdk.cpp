@@ -68,6 +68,7 @@ namespace Interfaces
 		g_D3DDevice9      = **(IDirect3DDevice9***)(Utils::PatternScan(dx9api, "A1 ? ? ? ? 50 8B 08 FF 51 0C") + 1);
 		g_ClientState     =     **(CClientState***)(Utils::PatternScan(engine, "A1 ? ? ? ? 8B 80 ? ? ? ? C3") + 1);
 		g_LocalPlayer     =       *(C_LocalPlayer*)(Utils::PatternScan(client, "8B 0D ? ? ? ? 83 FF FF 74 07") + 2);
+		g_WeaponSystem    = *(IWeaponSystem * *)(Utils::PatternScan(client, "8B 35 ? ? ? ? FF 10 0F B7 C0") + 2);
     }
 
     void Dump()

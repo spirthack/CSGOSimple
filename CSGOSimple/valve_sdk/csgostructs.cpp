@@ -2,12 +2,15 @@
 #include "../Helpers/Math.hpp"
 #include "../Helpers/Utils.hpp"
 
+//increase it if valve added some funcs to baseentity :lillulmoa:
+constexpr auto VALVE_ADDED_FUNCS = 0ull;
+
 bool C_BaseEntity::IsPlayer()
 {
 	//index: 152
 	//ref: "effects/nightvision"
 	//sig: 8B 92 ? ? ? ? FF D2 84 C0 0F 45 F7 85 F6
-	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 156)(this);
+	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 157 + VALVE_ADDED_FUNCS)(this);
 }
 
 bool C_BaseEntity::IsLoot() {
@@ -27,7 +30,7 @@ bool C_BaseEntity::IsWeapon()
 	//index: 160
 	//ref: "CNewParticleEffect::DrawModel"
 	//sig: 8B 80 ? ? ? ? FF D0 84 C0 74 6F 8B 4D A4
-	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 164)(this);
+	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 165 + VALVE_ADDED_FUNCS)(this);
 }
 
 
@@ -43,13 +46,7 @@ bool C_BaseEntity::IsDefuseKit()
 
 CCSWeaponInfo* C_BaseCombatWeapon::GetCSWeaponData()
 {
-	return CallVFunction<CCSWeaponInfo*(__thiscall*)(void*)>(this, 455)(this);
-	/*
-	static auto fnGetWpnData
-	= reinterpret_cast<CCSWeaponInfo*(__thiscall*)(void*)>(
-	Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "55 8B EC 81 EC ? ? ? ? 53 8B D9 56 57 8D 8B")
-	);
-	return fnGetWpnData(this);*/
+	return g_WeaponSystem->GetWpnData(this->m_Item().m_iItemDefinitionIndex());
 }
 
 bool C_BaseCombatWeapon::HasBullets()
@@ -150,17 +147,17 @@ bool C_BaseCombatWeapon::IsReloading()
 
 float C_BaseCombatWeapon::GetInaccuracy()
 {
-	return CallVFunction<float(__thiscall*)(void*)>(this, 477)(this);
+	return CallVFunction<float(__thiscall*)(void*)>(this, 478 + VALVE_ADDED_FUNCS)(this);
 }
 
 float C_BaseCombatWeapon::GetSpread()
 {
-	return CallVFunction<float(__thiscall*)(void*)>(this, 447)(this);
+	return CallVFunction<float(__thiscall*)(void*)>(this, 448 + VALVE_ADDED_FUNCS)(this);
 }
 
 void C_BaseCombatWeapon::UpdateAccuracyPenalty()
 {
-	CallVFunction<void(__thiscall*)(void*)>(this, 478)(this);
+	CallVFunction<void(__thiscall*)(void*)>(this, 479 + VALVE_ADDED_FUNCS)(this);
 }
 
 CUtlVector<IRefCounted*>& C_BaseCombatWeapon::m_CustomMaterials()
@@ -403,7 +400,7 @@ bool C_BasePlayer::CanSeePlayer(C_BasePlayer* player, const Vector& pos)
 
 void C_BasePlayer::UpdateClientSideAnimation()
 {
-	return CallVFunction<void(__thiscall*)(void*)>(this, 222)(this);
+	return CallVFunction<void(__thiscall*)(void*)>(this, 223 + VALVE_ADDED_FUNCS)(this);
 }
 
 void C_BasePlayer::InvalidateBoneCache()
@@ -436,7 +433,7 @@ void C_BaseAttributableItem::SetGloveModelIndex(int modelIndex)
 
 void C_BaseViewModel::SendViewModelMatchingSequence(int sequence)
 {
-	return CallVFunction<void(__thiscall*)(void*, int)>(this, 244)(this, sequence);
+	return CallVFunction<void(__thiscall*)(void*, int)>(this, 245 + VALVE_ADDED_FUNCS)(this, sequence);
 }
 
 float_t C_BasePlayer::m_flSpawnTime()
