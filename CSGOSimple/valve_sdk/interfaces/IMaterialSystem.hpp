@@ -302,6 +302,7 @@ public:
     virtual void                            ReloadMaterials(const char *pSubString = NULL) = 0;
     virtual IMaterial*                      CreateMaterial(const char *pMaterialName, KeyValues *pVMTKeyValues) = 0;
     virtual IMaterial*                      FindMaterial(char const* pMaterialName, const char *pTextureGroupName = nullptr, bool complain = true, const char *pComplainPrefix = NULL) = 0;
+   	virtual void							unk0() = 0;
     virtual MaterialHandle_t                FirstMaterial() const = 0;
     virtual MaterialHandle_t                NextMaterial(MaterialHandle_t h) const = 0;
     virtual MaterialHandle_t                InvalidMaterial() const = 0;
