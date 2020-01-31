@@ -147,17 +147,17 @@ bool C_BaseCombatWeapon::IsReloading()
 
 float C_BaseCombatWeapon::GetInaccuracy()
 {
-	return CallVFunction<float(__thiscall*)(void*)>(this, 478 + VALVE_ADDED_FUNCS)(this);
+	return CallVFunction<float(__thiscall*)(void*)>(this, 481 + VALVE_ADDED_FUNCS)(this);
 }
 
 float C_BaseCombatWeapon::GetSpread()
 {
-	return CallVFunction<float(__thiscall*)(void*)>(this, 448 + VALVE_ADDED_FUNCS)(this);
+	return CallVFunction<float(__thiscall*)(void*)>(this, 451 + VALVE_ADDED_FUNCS)(this);
 }
 
 void C_BaseCombatWeapon::UpdateAccuracyPenalty()
 {
-	CallVFunction<void(__thiscall*)(void*)>(this, 479 + VALVE_ADDED_FUNCS)(this);
+	CallVFunction<void(__thiscall*)(void*)>(this, 482 + VALVE_ADDED_FUNCS)(this);
 }
 
 CUtlVector<IRefCounted*>& C_BaseCombatWeapon::m_CustomMaterials()
