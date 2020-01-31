@@ -24,7 +24,7 @@ bool vfunc_hook::setup(void* base /*= nullptr*/)
         return false;
 
     old_vftbl = *(std::uintptr_t**)class_base;
-    vftbl_len = estimate_vftbl_length(old_vftbl);
+    vftbl_len = estimate_vftbl_length(old_vftbl) * sizeof(std::uintptr_t);
 
     if(vftbl_len == 0)
         return false;
@@ -46,13 +46,12 @@ bool vfunc_hook::setup(void* base /*= nullptr*/)
 }
 std::size_t vfunc_hook::estimate_vftbl_length(std::uintptr_t* vftbl_start)
 {
-    auto len = std::size_t{};
+	MEMORY_BASIC_INFORMATION memInfo = { NULL };
+	int m_nSize = -1;
+	do {
+		m_nSize++;
+		VirtualQuery(reinterpret_cast<LPCVOID>(vftbl_start[m_nSize]), &memInfo, sizeof(memInfo));
+	} while (memInfo.Protect == PAGE_EXECUTE_READ || memInfo.Protect == PAGE_EXECUTE_READWRITE);
 
-    while(vftbl_start[len] >= 0x00010000 &&
-        vftbl_start[len] <  0xFFF00000 &&
-        len < 512 /* Hard coded value. Can cause problems, beware.*/) {
-        len++;
-    }
-
-    return len;
+	return m_nSize;
 }
