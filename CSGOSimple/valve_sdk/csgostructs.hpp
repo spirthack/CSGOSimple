@@ -45,6 +45,18 @@ enum CSWeaponType
 
 class C_BaseEntity;
 
+class CEventInfo
+{
+public:
+	uint16_t classID; //0x0000 0 implies not in use
+	char pad_0002[2]; //0x0002 
+	float fire_delay; //0x0004 If non-zero, the delay time when the event should be fired ( fixed up on the client )
+	char pad_0008[4]; //0x0008
+	ClientClass* pClientClass; //0x000C
+	void* pData; //0x0010 Raw event data
+	char pad_0014[48]; //0x0014
+}; //Size: 0x0044
+
 // Created with ReClass.NET by KN4CK3R
 class CHudTexture
 {
