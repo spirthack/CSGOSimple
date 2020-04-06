@@ -165,6 +165,7 @@ void Visuals::Player::RenderWeaponName()
 	auto weapon = ctx.pl->m_hActiveWeapon().Get();
 
 	if (!weapon) return;
+	if (!weapon->GetCSWeaponData()) return;
 
 	auto text = weapon->GetCSWeaponData()->szWeaponName + 7;
 	auto sz = g_pDefaultFont->CalcTextSizeA(14.f, FLT_MAX, 0.0f, text);
