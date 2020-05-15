@@ -27,4 +27,5 @@ private:
 
     ImGuiStyle        _style;
     bool              _visible;
+ 
 };

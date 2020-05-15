@@ -7,7 +7,6 @@
 #include "helpers/input.hpp"
 #include "options.hpp"
 #include "ui.hpp"
-#include "config.hpp"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui/imgui_internal.h"
@@ -318,12 +317,7 @@ void RenderConfigTab()
 
     ImGui::BeginGroupBox("##body_content");
     {
-		if (ImGui::Button("Save cfg")) {
-			Config::Get().Save();
-		}
-		if (ImGui::Button("Load cfg")) {
-			Config::Get().Load();
-		}
+		
     }
     ImGui::EndGroupBox();
 }

@@ -278,9 +278,96 @@ const char* const KeyNames[] = {
 	"VK_RMENU"
 };
 
+std::uint32_t get_from_name(const char* name)
+{
+	const auto size = sizeof(KeyNames) / sizeof(*KeyNames);
+
+	for (auto code = 0u; code < size; code++)
+	{
+		if (strstr(name, KeyNames[code]))
+			return code;
+	}
+
+	return 0u;
+}
+
+const char* get_from_code(const std::uint32_t code)
+{
+	if (code >= 124)
+		return "Unknown";
+
+	return KeyNames[code];
+}
+
 bool ImGui::Hotkey(const char* label, int* k, const ImVec2& size_arg)
 {
-	
+	static bool key_input = false;
+	static int* key_output = nullptr;
+
+	auto text = "Unknown";
+	auto changed = false;
+
+	if (key_input && key_output == k)
+	{
+		text = "...";
+
+		static const int mouse_code_array[5] =
+		{
+			1, 2, 4, 5, 6,
+		};
+
+		for (int i = 0; i < 5; i++)
+		{
+			if (IsMouseReleased(i))
+			{
+				changed = true;
+				key_input = false;
+				*k = mouse_code_array[i];
+				break;
+			}
+		}
+
+		for (int i = 5; i < 124; i++)
+		{
+			if (IsKeyReleased(i))
+			{
+				changed = true;
+				key_input = false;
+
+				if (i != VK_ESCAPE)
+					*k = i;
+
+				break;
+			}
+		}
+	}
+	else
+	{
+		auto name = get_from_code(*k);
+		text = name;
+	}
+
+	auto& style = GetStyle();
+
+	PushStyleColor(ImGuiCol_Button, style.Colors[ImGuiCol_FrameBg]);
+	PushStyleColor(ImGuiCol_ButtonHovered, style.Colors[ImGuiCol_FrameBgHovered]);
+	PushStyleColor(ImGuiCol_ButtonActive, style.Colors[ImGuiCol_FrameBgActive]);
+
+	if (Button(text, size_arg))
+	{
+		if (!changed)
+		{
+			key_input = true;
+			key_output = k;
+		}
+	}
+
+	ImGui::SameLine();
+	ImGui::Text(label);
+
+	PopStyleColor(3);
+
+	return false;
 }
 
 

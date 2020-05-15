@@ -131,6 +131,9 @@
     <ClCompile Include="imgui\imgui.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="imgui\imgui_stdlib.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="valve_sdk\misc\BaseHandle.hpp">
@@ -376,9 +379,6 @@
     <ClInclude Include="fonts\cousine.hpp">
       <Filter>Header Files\fonts</Filter>
     </ClInclude>
-    <ClInclude Include="config.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="valve_sdk\misc\FnvHash.hpp">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
@@ -417,6 +417,9 @@
     </ClInclude>
     <ClInclude Include="helpers\utils.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_stdlib.h">
+      <Filter>Header Files\imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
