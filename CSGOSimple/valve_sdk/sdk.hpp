@@ -5,10 +5,12 @@
 
 #include "Misc/Enums.hpp"
 #include "Misc/vfunc.hpp"
+#include "misc/FnvHash.hpp"
 
 #include "Math/VMatrix.hpp"
 #include "Math/QAngle.hpp"
 #include "Math/Vector.hpp"
+#include "math/SRect.hpp"
 #include "Misc/Studio.hpp"
 
 #include "Interfaces/IAppSystem.hpp"

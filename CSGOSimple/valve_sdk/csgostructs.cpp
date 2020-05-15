@@ -13,18 +13,6 @@ bool C_BaseEntity::IsPlayer()
 	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 157 + VALVE_ADDED_FUNCS)(this);
 }
 
-bool C_BaseEntity::IsLoot() {
-	return GetClientClass()->m_ClassID == ClassId_CPhysPropAmmoBox ||
-		GetClientClass()->m_ClassID == ClassId_CPhysPropLootCrate ||
-		GetClientClass()->m_ClassID == ClassId_CPhysPropRadarJammer ||
-		GetClientClass()->m_ClassID == ClassId_CPhysPropWeaponUpgrade ||
-		GetClientClass()->m_ClassID == ClassId_CDrone ||
-		GetClientClass()->m_ClassID == ClassId_CDronegun ||
-		GetClientClass()->m_ClassID == ClassId_CItem_Healthshot ||
-		GetClientClass()->m_ClassID == ClassId_CItemCash || 
-		GetClientClass()->m_ClassID == ClassId_CBumpMine;
-}
-
 bool C_BaseEntity::IsWeapon()
 {
 	//index: 160
@@ -36,17 +24,30 @@ bool C_BaseEntity::IsWeapon()
 
 bool C_BaseEntity::IsPlantedC4()
 {
-	return GetClientClass()->m_ClassID == ClassId_CPlantedC4;
+	return GetClientClass()->m_ClassID == CPlantedC4;
 }
 
 bool C_BaseEntity::IsDefuseKit()
 {
-	return GetClientClass()->m_ClassID == ClassId_CBaseAnimating;
+	return GetClientClass()->m_ClassID == CBaseAnimating;
+}
+
+bool C_BaseEntity::IsLoot()
+{
+	return GetClientClass()->m_ClassID == CPhysPropAmmoBox ||
+		GetClientClass()->m_ClassID == CPhysPropLootCrate ||
+		GetClientClass()->m_ClassID == CPhysPropRadarJammer ||
+		GetClientClass()->m_ClassID == CPhysPropWeaponUpgrade ||
+		GetClientClass()->m_ClassID == CDrone ||
+		GetClientClass()->m_ClassID == CDronegun ||
+		GetClientClass()->m_ClassID == CItem_Healthshot ||
+		GetClientClass()->m_ClassID == CItemCash ||
+		GetClientClass()->m_ClassID == CBumpMine;
 }
 
 CCSWeaponInfo* C_BaseCombatWeapon::GetCSWeaponData()
 {
-	return g_WeaponSystem->GetWpnData(this->m_Item().m_iItemDefinitionIndex());
+	return g_WeaponSystem->GetWpnData(this->m_iItemDefinitionIndex());
 }
 
 bool C_BaseCombatWeapon::HasBullets()
@@ -96,7 +97,7 @@ bool C_BaseCombatWeapon::IsGun()
 
 bool C_BaseCombatWeapon::IsKnife()
 {
-	if (this->m_Item().m_iItemDefinitionIndex() == WEAPON_TASER) return false;
+	if (this->m_iItemDefinitionIndex() == WEAPON_TASER) return false;
 	return GetCSWeaponData()->iWeaponType == WEAPONTYPE_KNIFE;
 }
 
@@ -160,103 +161,12 @@ void C_BaseCombatWeapon::UpdateAccuracyPenalty()
 	CallVFunction<void(__thiscall*)(void*)>(this, 479 + VALVE_ADDED_FUNCS)(this);
 }
 
-CUtlVector<IRefCounted*>& C_BaseCombatWeapon::m_CustomMaterials()
-{	static auto inReload = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "83 BE ? ? ? ? ? 7F 67") + 2) - 12;
-	return *(CUtlVector<IRefCounted*>*)((uintptr_t)this + inReload);
-}
-
-bool* C_BaseCombatWeapon::m_bCustomMaterialInitialized()
-{
-	static auto currentCommand = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "C6 86 ? ? ? ? ? FF 50 04") + 2);
-	return (bool*)((uintptr_t)this + currentCommand);
-}
-
 CUserCmd*& C_BasePlayer::m_pCurrentCommand()
 {
 	static auto currentCommand = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "89 BE ? ? ? ? E8 ? ? ? ? 85 FF") + 2);
 	return *(CUserCmd**)((uintptr_t)this + currentCommand);
 }
 
-int C_BasePlayer::GetNumAnimOverlays()
-{
-	return *(int*)((DWORD)this + 0x298C);
-}
-
-AnimationLayer *C_BasePlayer::GetAnimOverlays()
-{
-	return *(AnimationLayer**)((DWORD)this + 0x2980);
-}
-
-AnimationLayer *C_BasePlayer::GetAnimOverlay(int i)
-{
-	if (i < 15)
-		return &GetAnimOverlays()[i];
-	return nullptr;
-}
-
-int C_BasePlayer::GetSequenceActivity(int sequence)
-{
-	auto hdr = g_MdlInfo->GetStudiomodel(this->GetModel());
-
-	if (!hdr)
-		return -1;
-
-	// sig for stuidohdr_t version: 53 56 8B F1 8B DA 85 F6 74 55
-	// sig for C_BaseAnimating version: 55 8B EC 83 7D 08 FF 56 8B F1 74 3D
-	// c_csplayer vfunc 242, follow calls to find the function.
-	// Thanks @Kron1Q for merge request
-	static auto get_sequence_activity = reinterpret_cast<int(__fastcall*)(void*, studiohdr_t*, int)>(Utils::PatternScan(GetModuleHandle(L"client_panorama.dll"), "55 8B EC 53 8B 5D 08 56 8B F1 83"));
-
-	return get_sequence_activity(this, hdr, sequence);
-}
-
-CCSGOPlayerAnimState *C_BasePlayer::GetPlayerAnimState()
-{
-	return *(CCSGOPlayerAnimState**)((DWORD)this + 0x3900);
-}
-
-void C_BasePlayer::UpdateAnimationState(CCSGOPlayerAnimState *state, QAngle angle)
-{
-	static auto UpdateAnimState = Utils::PatternScan(
-		GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24");
-
-	if (!UpdateAnimState)
-		return;
-
-	__asm {
-		push 0
-	}
-
-	__asm
-	{
-		mov ecx, state
-
-		movss xmm1, dword ptr[angle + 4]
-		movss xmm2, dword ptr[angle]
-
-		call UpdateAnimState
-	}
-}
-
-void C_BasePlayer::ResetAnimationState(CCSGOPlayerAnimState *state)
-{
-	using ResetAnimState_t = void(__thiscall*)(CCSGOPlayerAnimState*);
-	static auto ResetAnimState = (ResetAnimState_t)Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "56 6A 01 68 ? ? ? ? 8B F1");
-	if (!ResetAnimState)
-		return;
-
-	ResetAnimState(state);
-}
-
-void C_BasePlayer::CreateAnimationState(CCSGOPlayerAnimState *state)
-{
-	using CreateAnimState_t = void(__thiscall*)(CCSGOPlayerAnimState*, C_BasePlayer*);
-	static auto CreateAnimState = (CreateAnimState_t)Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 56 8B F1 B9 ? ? ? ? C7 46");
-	if (!CreateAnimState)
-		return;
-
-	CreateAnimState(state, this);
-}
 
 Vector C_BasePlayer::GetEyePos()
 {
@@ -275,9 +185,23 @@ bool C_BasePlayer::IsAlive()
 	return m_lifeState() == LIFE_ALIVE;
 }
 
+
+
+bool C_BasePlayer::IsEnemy()
+{
+	if (g_CVar->FindVar("game_type")->GetInt() == 6)
+	{
+		return this->m_nSurvivalTeam() != g_LocalPlayer->m_nSurvivalTeam() || g_LocalPlayer->m_nSurvivalTeam() == -1;
+	}
+	else
+	{
+		return this->m_iTeamNum() != g_LocalPlayer->m_iTeamNum();
+	}
+}
+
 bool C_BasePlayer::IsFlashed()
 {
-	static auto m_flFlashMaxAlpha = NetvarSys::Get().GetOffset("DT_CSPlayer", "m_flFlashMaxAlpha");
+	static auto m_flFlashMaxAlpha = NetVarManager::Get().GetOffset(FNV("CCSPlayer->m_flFlashMaxAlpha"));
 	return *(float*)((uintptr_t)this + m_flFlashMaxAlpha - 0x8) > 200.0;
 }
 
@@ -398,45 +322,13 @@ bool C_BasePlayer::CanSeePlayer(C_BasePlayer* player, const Vector& pos)
 	return tr.hit_entity == player || tr.fraction > 0.97f;
 }
 
-void C_BasePlayer::UpdateClientSideAnimation()
-{
-	return CallVFunction<void(__thiscall*)(void*)>(this, 223 + VALVE_ADDED_FUNCS)(this);
-}
-
-void C_BasePlayer::InvalidateBoneCache()
-{
-	static DWORD addr = (DWORD)Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81");
-
-	*(int*)((uintptr_t)this + 0xA30) = g_GlobalVars->framecount; //we'll skip occlusion checks now
-	*(int*)((uintptr_t)this + 0xA28) = 0;//clear occlusion flags
-
-	unsigned long g_iModelBoneCounter = **(unsigned long**)(addr + 10);
-	*(unsigned int*)((DWORD)this + 0x2924) = 0xFF7FFFFF; // m_flLastBoneSetupTime = -FLT_MAX;
-	*(unsigned int*)((DWORD)this + 0x2690) = (g_iModelBoneCounter - 1); // m_iMostRecentModelBoneCounter = g_iModelBoneCounter - 1;
-}
-
 int C_BasePlayer::m_nMoveType()
 {
-	return *(int*)((uintptr_t)this + 0x25C);
+	return *reinterpret_cast<int*>(uintptr_t(this) + 0x25C);
 }
 
-QAngle* C_BasePlayer::GetVAngles()
-{
-	static auto deadflag = NetvarSys::Get().GetOffset("DT_BasePlayer", "deadflag");
-	return (QAngle*)((uintptr_t)this + deadflag + 0x4);
-}
-
-void C_BaseAttributableItem::SetGloveModelIndex(int modelIndex)
-{
-	return CallVFunction<void(__thiscall*)(void*, int)>(this, 75)(this, modelIndex);
-}
 
 void C_BaseViewModel::SendViewModelMatchingSequence(int sequence)
 {
 	return CallVFunction<void(__thiscall*)(void*, int)>(this, 246 + VALVE_ADDED_FUNCS)(this, sequence);
-}
-
-float_t C_BasePlayer::m_flSpawnTime()
-{
-	return *(float_t*)((uintptr_t)this + 0xA360);
 }

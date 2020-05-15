@@ -7,9 +7,9 @@
 #include "../helpers/utils.hpp"
 
 
-RECT GetBBox(C_BaseEntity* ent)
+SRect GetBBox(C_BaseEntity* ent)
 {
-	RECT rect{};
+	SRect rect{};
 	auto collideable = ent->GetCollideable();
 
 	if (!collideable)
@@ -58,20 +58,45 @@ RECT GetBBox(C_BaseEntity* ent)
 		if (bottom > screen_points[i].y)
 			bottom = screen_points[i].y;
 	}
-	return RECT{ (long)left, (long)top, (long)right, (long)bottom };
-}
-
-Visuals::Visuals()
-{
-	InitializeCriticalSection(&cs);
-}
-
-Visuals::~Visuals() {
-	DeleteCriticalSection(&cs);
+	return SRect{ left, top, right, bottom };
 }
 
 //--------------------------------------------------------------------------------
-void Visuals::Render() {
+void Visuals::Render() 
+{
+	for (auto i = 1; i <= g_EntityList->GetHighestEntityIndex(); ++i) {
+		auto entity = C_BasePlayer::GetPlayerByIndex(i);
+
+		if (!entity)
+			continue;
+		
+		if (!entity->IsEnemy() && !g_Input->m_fCameraInThirdPerson)
+			continue;
+
+		if (i <= g_GlobalVars->maxClients) {
+			auto player = Player();
+			if (player.Begin(entity)) {
+				if (g_Options.esp_player_snaplines) player.RenderSnapline();
+				if (g_Options.esp_player_boxes)     player.RenderBox();
+				if (g_Options.esp_player_weapons)   player.RenderWeaponName();
+				if (g_Options.esp_player_names)     player.RenderName();
+				if (g_Options.esp_player_health)    player.RenderHealth();
+				if (g_Options.esp_player_armour)    player.RenderArmour();
+			}
+		}
+		else if (g_Options.esp_dropped_weapons && entity->IsWeapon())
+			RenderWeapon(reinterpret_cast<C_BaseCombatWeapon*>(entity));
+		else if (g_Options.esp_dropped_weapons && entity->IsDefuseKit())
+			RenderDefuseKit(entity);
+		else if (entity->IsPlantedC4() && g_Options.esp_planted_c4)
+			RenderPlantedC4(reinterpret_cast<C_PlantedC4*>(entity));
+		else if (entity->IsLoot() && g_Options.esp_items)
+			RenderItemEsp(entity);
+	}
+
+
+	if (g_Options.esp_crosshair)
+		RenderCrosshair();
 }
 //--------------------------------------------------------------------------------
 bool Visuals::Player::Begin(C_BasePlayer* pl)
@@ -80,7 +105,7 @@ bool Visuals::Player::Begin(C_BasePlayer* pl)
 		return false;
 
 	ctx.pl = pl;
-	ctx.is_enemy = g_LocalPlayer->m_iTeamNum() != pl->m_iTeamNum();
+	ctx.is_enemy = pl->IsEnemy();
 	ctx.is_visible = g_LocalPlayer->CanSeePlayer(pl, HITBOX_CHEST);
 
 	if (!ctx.is_enemy && g_Options.esp_enemies_only)
@@ -109,16 +134,14 @@ bool Visuals::Player::Begin(C_BasePlayer* pl)
 }
 //--------------------------------------------------------------------------------
 void Visuals::Player::RenderBox() {
-	Render::Get().RenderBoxByType(ctx.bbox.left, ctx.bbox.top, ctx.bbox.right, ctx.bbox.bottom, ctx.clr, 1);
+	Render::Get().Rect({ ctx.bbox.left, ctx.bbox.top }, { ctx.bbox.right, ctx.bbox.bottom }, ctx.clr);
 }
 //--------------------------------------------------------------------------------
 void Visuals::Player::RenderName()
 {
 	player_info_t info = ctx.pl->GetPlayerInfo();
 
-	auto sz = g_pDefaultFont->CalcTextSizeA(14.f, FLT_MAX, 0.0f, info.szName);
-
-	Render::Get().RenderText(info.szName, ctx.feet_pos.x - sz.x / 2, ctx.head_pos.y - sz.y, 14.f,  ctx.clr);
+	Render::Get().Text(info.szName, { ctx.feet_pos.x, ctx.head_pos.y }, 14.f, ctx.clr);
 }
 //--------------------------------------------------------------------------------
 void Visuals::Player::RenderHealth()
@@ -128,18 +151,18 @@ void Visuals::Player::RenderHealth()
 	//float off = (box_h / 6.f) + 5;
 	float off = 8;
 
-	int height = (box_h * hp) / 100;
+	float height = (box_h * hp) / 100;
 
 	int green = int(hp * 2.55f);
 	int red = 255 - green;
 
-	int x = ctx.bbox.left - off;
-	int y = ctx.bbox.top;
-	int w = 4;
-	int h = box_h;
+	float x = ctx.bbox.left - off;
+	float y = ctx.bbox.top;
+	float w = 4;
+	float h = box_h;
 
-	Render::Get().RenderBox(x, y, x + w, y + h, Color::Black, 1.f, true);
-	Render::Get().RenderBox(x + 1, y + 1, x + w - 1, y + height - 2, Color(red, green, 0, 255), 1.f, true);
+	Render::Get().Rect({ x, y }, { x + w, y + h }, Color::Black);
+	Render::Get().Rect({ x + 1, y + 1 }, { x + w - 1, y + height - 2 }, Color(red, green, 0, 255));
 }
 //--------------------------------------------------------------------------------
 void Visuals::Player::RenderArmour()
@@ -151,13 +174,13 @@ void Visuals::Player::RenderArmour()
 
 	int height = (((box_h * armour) / 100));
 
-	int x = ctx.bbox.right + off;
-	int y = ctx.bbox.top;
-	int w = 4;
-	int h = box_h;
+	float x = ctx.bbox.right + off;
+	float y = ctx.bbox.top;
+	float w = 4;
+	float h = box_h;
 
-	Render::Get().RenderBox(x, y, x + w, y + h, Color::Black, 1.f, true);
-	Render::Get().RenderBox(x + 1, y + 1, x + w - 1, y + height - 2, Color(0, 50, 255, 255), 1.f, true);
+	Render::Get().Rect({ x, y }, { x + w, y + h }, Color::Black);
+	Render::Get().Rect({ x + 1, y + 1 }, { x + w - 1, y + height - 2 }, Color(0, 50, 255, 255));
 }
 //--------------------------------------------------------------------------------
 void Visuals::Player::RenderWeaponName()
@@ -167,9 +190,8 @@ void Visuals::Player::RenderWeaponName()
 	if (!weapon) return;
 
 	auto text = weapon->GetCSWeaponData()->szWeaponName + 7;
-	auto sz = g_pDefaultFont->CalcTextSizeA(14.f, FLT_MAX, 0.0f, text);
-	Render::Get().RenderText(text, ctx.feet_pos.x, ctx.feet_pos.y, 14.f, ctx.clr, true,
-		g_pDefaultFont);
+
+	Render::Get().Text(text, { ctx.feet_pos.x, ctx.feet_pos.y }, 14.f, ctx.clr);
 }
 //--------------------------------------------------------------------------------
 void Visuals::Player::RenderSnapline()
@@ -178,8 +200,8 @@ void Visuals::Player::RenderSnapline()
 	int screen_w, screen_h;
 	g_EngineClient->GetScreenSize(screen_w, screen_h);
 
-	Render::Get().RenderLine(screen_w / 2.f, (float)screen_h,
-		ctx.feet_pos.x, ctx.feet_pos.y, ctx.clr);
+	Render::Get().Line({ screen_w / 2.f, (float)screen_h },
+		{ ctx.feet_pos.x, ctx.feet_pos.y }, ctx.clr);
 }
 //--------------------------------------------------------------------------------
 void Visuals::RenderCrosshair()
@@ -188,10 +210,10 @@ void Visuals::RenderCrosshair()
 
 	g_EngineClient->GetScreenSize(w, h);
 
-	int cx = w / 2;
-	int cy = h / 2;
-	Render::Get().RenderLine(cx - 25, cy, cx + 25, cy, g_Options.color_esp_crosshair);
-	Render::Get().RenderLine(cx, cy - 25, cx, cy + 25, g_Options.color_esp_crosshair);
+	float cx = w / 2;
+	float cy = h / 2;
+	Render::Get().Line({ cx - 25, cy }, { cx + 25, cy }, g_Options.color_esp_crosshair);
+	Render::Get().Line({ cx, cy - 25 }, { cx, cy + 25 }, g_Options.color_esp_crosshair);
 }
 //--------------------------------------------------------------------------------
 void Visuals::RenderWeapon(C_BaseCombatWeapon* ent)
@@ -216,16 +238,15 @@ void Visuals::RenderWeapon(C_BaseCombatWeapon* ent)
 	if (bbox.right == 0 || bbox.bottom == 0)
 		return;
 
-	Render::Get().RenderBox(bbox, g_Options.color_esp_weapons);
+	Render::Get().Box(bbox, g_Options.color_esp_weapons);
 
 
 	auto name = clean_item_name(ent->GetClientClass()->m_pNetworkName);
 
-	auto sz = g_pDefaultFont->CalcTextSizeA(14.f, FLT_MAX, 0.0f, name);
 	int w = bbox.right - bbox.left;
 
 
-	Render::Get().RenderText(name, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 14.f, g_Options.color_esp_weapons);
+	Render::Get().Text(name, ImVec2((bbox.left + w * 0.5f), bbox.bottom + 1), 14.f, g_Options.color_esp_weapons);
 }
 //--------------------------------------------------------------------------------
 void Visuals::RenderDefuseKit(C_BaseEntity* ent)
@@ -238,15 +259,14 @@ void Visuals::RenderDefuseKit(C_BaseEntity* ent)
 	if (bbox.right == 0 || bbox.bottom == 0)
 		return;
 
-	Render::Get().RenderBox(bbox, g_Options.color_esp_defuse);
+	Render::Get().Box(bbox, g_Options.color_esp_defuse);
 
 	auto name = "Defuse Kit";
-	auto sz = g_pDefaultFont->CalcTextSizeA(14.f, FLT_MAX, 0.0f, name);
 	int w = bbox.right - bbox.left;
-	Render::Get().RenderText(name, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 14.f, g_Options.color_esp_defuse);
+	Render::Get().Text(name, ImVec2((bbox.left + w * 0.5f), bbox.bottom + 1), 14.f, g_Options.color_esp_defuse);
 }
 //--------------------------------------------------------------------------------
-void Visuals::RenderPlantedC4(C_BaseEntity* ent)
+void Visuals::RenderPlantedC4(C_PlantedC4* ent)
 {
 	auto bbox = GetBBox(ent);
 
@@ -254,17 +274,16 @@ void Visuals::RenderPlantedC4(C_BaseEntity* ent)
 		return;
 
 
-	Render::Get().RenderBox(bbox, g_Options.color_esp_c4);
+	Render::Get().Box(bbox, g_Options.color_esp_c4);
 
 
 	int bombTimer = std::ceil(ent->m_flC4Blow() - g_GlobalVars->curtime);
 	std::string timer = std::to_string(bombTimer);
 
 	auto name = (bombTimer < 0.f) ? "Bomb" : timer;
-	auto sz = g_pDefaultFont->CalcTextSizeA(14.f, FLT_MAX, 0.0f, name.c_str());
 	int w = bbox.right - bbox.left;
 
-	Render::Get().RenderText(name, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 14.f, g_Options.color_esp_c4);
+	Render::Get().Text(name, ImVec2((bbox.left + w * 0.5f), bbox.bottom + 1), 14.f, g_Options.color_esp_c4);
 }
 //--------------------------------------------------------------------------------
 void Visuals::RenderItemEsp(C_BaseEntity* ent)
@@ -277,7 +296,7 @@ void Visuals::RenderItemEsp(C_BaseEntity* ent)
 	if (!hdr)
 		return;
 	itemstr = hdr->szName;
-	if (ent->GetClientClass()->m_ClassID == ClassId_CBumpMine)
+	if (ent->GetClientClass()->m_ClassID == CBumpMine)
 		itemstr = "";
 	else if (itemstr.find("case_pistol") != std::string::npos)
 		itemstr = "Pistol Case";
@@ -330,8 +349,8 @@ void Visuals::RenderItemEsp(C_BaseEntity* ent)
 	int w = bbox.right - bbox.left;
 
 
-	//Render::Get().RenderBox(bbox, g_Options.color_esp_item);
-	Render::Get().RenderText(itemstr, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 14.f, g_Options.color_esp_item);
+	Render::Get().Box(bbox, g_Options.color_esp_item);
+	Render::Get().Text(itemstr, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 14.f, g_Options.color_esp_item);
 }
 //--------------------------------------------------------------------------------
 void Visuals::ThirdPerson() {
@@ -397,39 +416,3 @@ void Visuals::ThirdPerson() {
 }
 
 
-void Visuals::AddToDrawList() {
-	for (auto i = 1; i <= g_EntityList->GetHighestEntityIndex(); ++i) {
-		auto entity = C_BaseEntity::GetEntityByIndex(i);
-
-		if (!entity)
-			continue;
-		
-		if (entity == g_LocalPlayer && !g_Input->m_fCameraInThirdPerson)
-			continue;
-
-		if (i <= g_GlobalVars->maxClients) {
-			auto player = Player();
-			if (player.Begin((C_BasePlayer*)entity)) {
-				if (g_Options.esp_player_snaplines) player.RenderSnapline();
-				if (g_Options.esp_player_boxes)     player.RenderBox();
-				if (g_Options.esp_player_weapons)   player.RenderWeaponName();
-				if (g_Options.esp_player_names)     player.RenderName();
-				if (g_Options.esp_player_health)    player.RenderHealth();
-				if (g_Options.esp_player_armour)    player.RenderArmour();
-			}
-		}
-		else if (g_Options.esp_dropped_weapons && entity->IsWeapon())
-			RenderWeapon(static_cast<C_BaseCombatWeapon*>(entity));
-		else if (g_Options.esp_dropped_weapons && entity->IsDefuseKit())
-			RenderDefuseKit(entity);
-		else if (entity->IsPlantedC4() && g_Options.esp_planted_c4)
-			RenderPlantedC4(entity);
-		else if (entity->IsLoot() && g_Options.esp_items)
-			RenderItemEsp(entity);
-	}
-
-
-	if (g_Options.esp_crosshair)
-		RenderCrosshair();
-
-}

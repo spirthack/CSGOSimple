@@ -1,19 +1,14 @@
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "render.hpp"
-
 #include <mutex>
-
 #include "features/visuals.hpp"
 #include "valve_sdk/csgostructs.hpp"
 #include "helpers/input.hpp"
 #include "menu.hpp"
 #include "options.hpp"
-#include "fonts/fonts.hpp"
 #include "helpers/math.hpp"
 
-ImFont* g_pDefaultFont;
-ImFont* g_pSecondFont;
-
-ImDrawListSharedData _data;
+ImFont* g_pDefaultFont = nullptr;
 
 std::mutex render_mutex;
 
@@ -21,109 +16,93 @@ void Render::Initialize()
 {
 	ImGui::CreateContext();
 
-
 	ImGui_ImplWin32_Init(InputSys::Get().GetMainWindow());
 	ImGui_ImplDX9_Init(g_D3DDevice9);
 
-	draw_list = new ImDrawList(ImGui::GetDrawListSharedData());
-	draw_list_act = new ImDrawList(ImGui::GetDrawListSharedData());
-	draw_list_rendering = new ImDrawList(ImGui::GetDrawListSharedData());
+	m_draw_list = std::make_shared<ImDrawList>(ImGui::GetDrawListSharedData());
+	m_temp_draw_list = std::make_shared<ImDrawList>(ImGui::GetDrawListSharedData());
 
-	GetFonts();
+	auto& io = ImGui::GetIO();
+
+	ImFontConfig font_config;
+	font_config.RasterizerFlags = ImGuiFreeType::ForceAutoHint;
+
+	g_pDefaultFont = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 14.f, &font_config, io.Fonts->GetGlyphRangesCyrillic());
+
+	ImGuiFreeType::BuildFontAtlas(io.Fonts);
 }
 
-void Render::GetFonts() {
+ImVec2 Render::Text(const std::string& txt, const ImVec2& pos, float size, const Color& clr, ImFont* font, int flags)
+{
+	if (!font->ContainerAtlas)
+		return ImVec2();
 
-	// menu font
-	ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-		Fonts::Droid_compressed_data,
-		Fonts::Droid_compressed_size,
-		14.f);
-	
-	// esp font
-	g_pDefaultFont = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-		Fonts::Droid_compressed_data,
-		Fonts::Droid_compressed_size,
-		18.f);
-	
+	auto new_pos = pos;
+	auto text_size = font->CalcTextSizeA(size, FLT_MAX, 0.f, txt.c_str());
 
-	// font for watermark; just example
-	g_pSecondFont = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-		Fonts::Cousine_compressed_data,
-		Fonts::Cousine_compressed_size,
-		18.f); 
-}
+	flags& FONT_CENTERED_X ? new_pos.x -= text_size.x * 0.5f : 0;
 
-void Render::ClearDrawList() {
-	render_mutex.lock();
-	draw_list_act->Clear();
-	render_mutex.unlock();
-}
+	flags& FONT_CENTERED_Y ? new_pos.y -= text_size.y * 0.5f : 0;
 
-void Render::BeginScene() {
-	draw_list->Clear();
-	draw_list->PushClipRectFullScreen();
+	m_draw_list->PushTextureID(font->ContainerAtlas->TexID);
 
+	flags& FONT_DROP_SHADOW ? m_draw_list->AddText(font, size, ImVec2(new_pos.x + 1, new_pos.y + 1), Color(clr.a()).GetRawColor(), txt.c_str()) : 0;
 
-	if (g_Options.misc_watermark)
-		Render::Get().RenderText("CSGOSimple", 10, 5, 18.f, g_Options.color_watermark, false, true, g_pSecondFont);
-
-	if (g_EngineClient->IsInGame() && g_LocalPlayer && g_Options.esp_enabled)
-		Visuals::Get().AddToDrawList();
-
-
-	render_mutex.lock();
-	*draw_list_act = *draw_list;
-	render_mutex.unlock();
-}
-
-ImDrawList* Render::RenderScene() {
-
-	if (render_mutex.try_lock()) {
-		*draw_list_rendering = *draw_list_act;
-		render_mutex.unlock();
+	if (flags & FONT_OUTLINE) {
+		m_draw_list->AddText(font, size, ImVec2(new_pos.x + 1, new_pos.y + 1), Color(clr.a()).GetRawColor(), txt.c_str());
+		m_draw_list->AddText(font, size, ImVec2(new_pos.x - 1, new_pos.y - 1), Color(clr.a()).GetRawColor(), txt.c_str());
+		m_draw_list->AddText(font, size, ImVec2(new_pos.x + 1, new_pos.y - 1), Color(clr.a()).GetRawColor(), txt.c_str());
+		m_draw_list->AddText(font, size, ImVec2(new_pos.x - 1, new_pos.y + 1), Color(clr.a()).GetRawColor(), txt.c_str());
 	}
 
-	return draw_list_rendering;
+	m_draw_list->AddText(font, size, ImVec2(new_pos.x, new_pos.y), clr.GetRawColor(), txt.c_str());
+
+	m_draw_list->PopTextureID();
+
+	return ImVec2(pos.x + text_size.x, pos.y + text_size.y);
 }
 
-
-float Render::RenderText(const std::string& text, ImVec2 pos, float size, Color color, bool center, bool outline, ImFont* pFont)
+void Render::Line(const ImVec2& from, const ImVec2& to, const Color& clr)
 {
-	ImVec2 textSize = pFont->CalcTextSizeA(size, FLT_MAX, 0.0f, text.c_str());
-	if (!pFont->ContainerAtlas) return 0.f;
-	draw_list->PushTextureID(pFont->ContainerAtlas->TexID);
-
-	if (center)
-		pos.x -= textSize.x / 2.0f;
-
-	if (outline) {
-		draw_list->AddText(pFont, size, ImVec2(pos.x + 1, pos.y + 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
-		draw_list->AddText(pFont, size, ImVec2(pos.x - 1, pos.y - 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
-		draw_list->AddText(pFont, size, ImVec2(pos.x + 1, pos.y - 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
-		draw_list->AddText(pFont, size, ImVec2(pos.x - 1, pos.y + 1), GetU32(Color(0, 0, 0, color.a())), text.c_str());
-	}
-
-	draw_list->AddText(pFont, size, pos, GetU32(color), text.c_str());
-
-	draw_list->PopTextureID();
-
-	return pos.y + textSize.y;
+	m_draw_list->AddLine(from, to, clr.GetRawColor());
 }
 
-void Render::RenderCircle3D(Vector position, float points, float radius, Color color)
+void Render::Rect(const ImVec2& pos, const ImVec2& size, const Color& clr)
 {
-	float step = (float)M_PI * 2.0f / points;
+	m_draw_list->AddRect(pos, pos + size, clr.GetRawColor());
+}
 
-	for (float a = 0; a < (M_PI * 2.0f); a += step)
+void Render::RectFilled(const ImVec2& pos, const ImVec2& size, const Color& clr)
+{
+	m_draw_list->AddRectFilled(pos, pos + size, clr.GetRawColor());
+}
+
+void Render::Box(SRect r, Color color)
+{
+	Rect({ r.left, r.top }, { r.right, r.bottom }, color);
+}
+
+void Render::AddToDrawList()
+{
+	std::unique_lock<std::mutex> lock(render_mutex, std::try_to_lock);
+	if (!lock.owns_lock())
+		return;
+
+	*ImGui::GetBackgroundDrawList() = *m_temp_draw_list;
+}
+
+void Render::Begin()
+{
+	m_draw_list->Clear();
+	m_draw_list->PushClipRectFullScreen();
+
+	Visuals::Get().Render();
 	{
-		Vector start(radius * cosf(a) + position.x, radius * sinf(a) + position.y, position.z);
-		Vector end(radius * cosf(a + step) + position.x, radius * sinf(a + step) + position.y, position.z);
-
-		Vector start2d, end2d;
-		if (g_DebugOverlay->ScreenPosition(start, start2d) || g_DebugOverlay->ScreenPosition(end, end2d))
-			return;
-
-		RenderLine(start2d.x, start2d.y, end2d.x, end2d.y, color);
+		std::unique_lock<std::mutex> lock(render_mutex);
+		*m_temp_draw_list = *m_draw_list;
 	}
 }
+
+
+
+

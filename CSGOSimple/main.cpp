@@ -25,7 +25,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
         Interfaces::Initialize();
         Interfaces::Dump();
 
-        NetvarSys::Get().Initialize();
+        NetVarManager::Get().Initialize();
         InputSys::Get().Initialize();
 		Render::Get().Initialize();
         Menu::Get().Initialize();

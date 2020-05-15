@@ -215,7 +215,7 @@ public:
     }
     bool ShouldHitEntity(IHandleEntity* pEntityHandle, int /*contentsMask*/)
     {
-        return pEntityHandle != pEnt && ((IClientEntity*)pEntityHandle)->GetClientClass()->m_ClassID == ClassId_CCSPlayer;
+        return pEntityHandle != pEnt && ((IClientEntity*)pEntityHandle)->GetClientClass()->m_ClassID == CCSPlayer;
     }
     virtual TraceType GetTraceType() const
     {

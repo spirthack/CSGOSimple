@@ -6,24 +6,8 @@
 #include <vector>
 #include "valve_sdk/Misc/Color.hpp"
 
-#define A( s ) #s
-#define OPTION(type, var, val) Var<type> var = {A(var), val}
 
-template <typename T = bool>
-class Var {
-public:
-	std::string name;
-	std::shared_ptr<T> value;
-	int32_t size;
-	Var(std::string name, T v) : name(name) {
-		value = std::make_shared<T>(v);
-		size = sizeof(T);
-	}
-	operator T() { return *value; }
-	operator T*() { return &*value; }
-	operator T() const { return *value; }
-	//operator T*() const { return value; }
-};
+#define OPTION(type, var, val) type var =  val
 
 class Options
 {

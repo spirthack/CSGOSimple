@@ -11,8 +11,8 @@
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui/imgui_internal.h"
-#include "imgui/impl/imgui_impl_dx9.h"
-#include "imgui/impl/imgui_impl_win32.h"
+#include "imgui/imgui_impl_dx9.h"
+#include "imgui/imgui_impl_win32.h"
 
 
 // =========================================================
@@ -127,35 +127,35 @@ void RenderEspTab()
             ImGui::SetColumnOffset(2, 2 * group_w / 3.0f);
             ImGui::SetColumnOffset(3, group_w);
 
-            ImGui::Checkbox("Enabled", g_Options.esp_enabled);
-            ImGui::Checkbox("Team check", g_Options.esp_enemies_only);
-            ImGui::Checkbox("Boxes", g_Options.esp_player_boxes);
-            ImGui::Checkbox("Names", g_Options.esp_player_names);
-            ImGui::Checkbox("Health", g_Options.esp_player_health);
-            ImGui::Checkbox("Armour", g_Options.esp_player_armour);
-            ImGui::Checkbox("Weapon", g_Options.esp_player_weapons);
-            ImGui::Checkbox("Snaplines", g_Options.esp_player_snaplines);
+            ImGui::Checkbox("Enabled", &g_Options.esp_enabled);
+            ImGui::Checkbox("Team check", &g_Options.esp_enemies_only);
+            ImGui::Checkbox("Boxes", &g_Options.esp_player_boxes);
+            ImGui::Checkbox("Names", &g_Options.esp_player_names);
+            ImGui::Checkbox("Health", &g_Options.esp_player_health);
+            ImGui::Checkbox("Armour", &g_Options.esp_player_armour);
+            ImGui::Checkbox("Weapon", &g_Options.esp_player_weapons);
+            ImGui::Checkbox("Snaplines", &g_Options.esp_player_snaplines);
 
             ImGui::NextColumn();
 
-            ImGui::Checkbox("Crosshair", g_Options.esp_crosshair);
-            ImGui::Checkbox("Dropped Weapons", g_Options.esp_dropped_weapons);
-            ImGui::Checkbox("Defuse Kit", g_Options.esp_defuse_kit);
-            ImGui::Checkbox("Planted C4", g_Options.esp_planted_c4);
-			ImGui::Checkbox("Item Esp", g_Options.esp_items);
+            ImGui::Checkbox("Crosshair", &g_Options.esp_crosshair);
+            ImGui::Checkbox("Dropped Weapons", &g_Options.esp_dropped_weapons);
+            ImGui::Checkbox("Defuse Kit", &g_Options.esp_defuse_kit);
+            ImGui::Checkbox("Planted C4", &g_Options.esp_planted_c4);
+			ImGui::Checkbox("Item Esp", &g_Options.esp_items);
 
             ImGui::NextColumn();
 
             ImGui::PushItemWidth(100);
-            ImGuiEx::ColorEdit3("Allies Visible", g_Options.color_esp_ally_visible);
-            ImGuiEx::ColorEdit3("Enemies Visible", g_Options.color_esp_enemy_visible);
-            ImGuiEx::ColorEdit3("Allies Occluded", g_Options.color_esp_ally_occluded);
-            ImGuiEx::ColorEdit3("Enemies Occluded", g_Options.color_esp_enemy_occluded);
-            ImGuiEx::ColorEdit3("Crosshair", g_Options.color_esp_crosshair);
-            ImGuiEx::ColorEdit3("Dropped Weapons", g_Options.color_esp_weapons);
-            ImGuiEx::ColorEdit3("Defuse Kit", g_Options.color_esp_defuse);
-            ImGuiEx::ColorEdit3("Planted C4", g_Options.color_esp_c4);
-			ImGuiEx::ColorEdit3("Item Esp", g_Options.color_esp_item);
+            ImGuiEx::ColorEdit3("Allies Visible", &g_Options.color_esp_ally_visible);
+            ImGuiEx::ColorEdit3("Enemies Visible", &g_Options.color_esp_enemy_visible);
+            ImGuiEx::ColorEdit3("Allies Occluded", &g_Options.color_esp_ally_occluded);
+            ImGuiEx::ColorEdit3("Enemies Occluded", &g_Options.color_esp_enemy_occluded);
+            ImGuiEx::ColorEdit3("Crosshair", &g_Options.color_esp_crosshair);
+            ImGuiEx::ColorEdit3("Dropped Weapons", &g_Options.color_esp_weapons);
+            ImGuiEx::ColorEdit3("Defuse Kit", &g_Options.color_esp_defuse);
+            ImGuiEx::ColorEdit3("Planted C4", &g_Options.color_esp_c4);
+			ImGuiEx::ColorEdit3("Item Esp", &g_Options.color_esp_item);
             ImGui::PopItemWidth();
 
             ImGui::Columns(1, nullptr, false);
@@ -167,25 +167,25 @@ void RenderEspTab()
             ImGui::SetColumnOffset(2, 2 * group_w / 3.0f);
             ImGui::SetColumnOffset(3, group_w);
 
-            ImGui::Checkbox("Enabled", g_Options.glow_enabled);
-            ImGui::Checkbox("Team check", g_Options.glow_enemies_only);
-            ImGui::Checkbox("Players", g_Options.glow_players);
-            ImGui::Checkbox("Chickens", g_Options.glow_chickens);
-            ImGui::Checkbox("C4 Carrier", g_Options.glow_c4_carrier);
-            ImGui::Checkbox("Planted C4", g_Options.glow_planted_c4);
-            ImGui::Checkbox("Defuse Kits", g_Options.glow_defuse_kits);
-            ImGui::Checkbox("Weapons", g_Options.glow_weapons);
+            ImGui::Checkbox("Enabled", &g_Options.glow_enabled);
+            ImGui::Checkbox("Team check", &g_Options.glow_enemies_only);
+            ImGui::Checkbox("Players", &g_Options.glow_players);
+            ImGui::Checkbox("Chickens", &g_Options.glow_chickens);
+            ImGui::Checkbox("C4 Carrier", &g_Options.glow_c4_carrier);
+            ImGui::Checkbox("Planted C4", &g_Options.glow_planted_c4);
+            ImGui::Checkbox("Defuse Kits", &g_Options.glow_defuse_kits);
+            ImGui::Checkbox("Weapons", &g_Options.glow_weapons);
 
             ImGui::NextColumn();
 
             ImGui::PushItemWidth(100);
-            ImGuiEx::ColorEdit3("Ally", g_Options.color_glow_ally);
-            ImGuiEx::ColorEdit3("Enemy", g_Options.color_glow_enemy);
-            ImGuiEx::ColorEdit3("Chickens", g_Options.color_glow_chickens);
-            ImGuiEx::ColorEdit3("C4 Carrier", g_Options.color_glow_c4_carrier);
-            ImGuiEx::ColorEdit3("Planted C4", g_Options.color_glow_planted_c4);
-            ImGuiEx::ColorEdit3("Defuse Kits", g_Options.color_glow_defuse);
-            ImGuiEx::ColorEdit3("Weapons", g_Options.color_glow_weapons);
+            ImGuiEx::ColorEdit3("Ally", &g_Options.color_glow_ally);
+            ImGuiEx::ColorEdit3("Enemy", &g_Options.color_glow_enemy);
+            ImGuiEx::ColorEdit3("Chickens", &g_Options.color_glow_chickens);
+            ImGuiEx::ColorEdit3("C4 Carrier", &g_Options.color_glow_c4_carrier);
+            ImGuiEx::ColorEdit3("Planted C4", &g_Options.color_glow_planted_c4);
+            ImGuiEx::ColorEdit3("Defuse Kits", &g_Options.color_glow_defuse);
+            ImGuiEx::ColorEdit3("Weapons", &g_Options.color_glow_weapons);
             ImGui::PopItemWidth();
 
             ImGui::NextColumn();
@@ -201,17 +201,17 @@ void RenderEspTab()
 
             ImGui::BeginGroupBox("Players");
             {
-                ImGui::Checkbox("Enabled", g_Options.chams_player_enabled); ImGui::SameLine();
-                ImGui::Checkbox("Team Check", g_Options.chams_player_enemies_only);
-                ImGui::Checkbox("Wireframe", g_Options.chams_player_wireframe);
-                ImGui::Checkbox("Flat", g_Options.chams_player_flat);
-                ImGui::Checkbox("Ignore-Z", g_Options.chams_player_ignorez); ImGui::SameLine();
-                ImGui::Checkbox("Glass", g_Options.chams_player_glass);
+                ImGui::Checkbox("Enabled", &g_Options.chams_player_enabled); ImGui::SameLine();
+                ImGui::Checkbox("Team Check", &g_Options.chams_player_enemies_only);
+                ImGui::Checkbox("Wireframe", &g_Options.chams_player_wireframe);
+                ImGui::Checkbox("Flat", &g_Options.chams_player_flat);
+                ImGui::Checkbox("Ignore-Z", &g_Options.chams_player_ignorez); ImGui::SameLine();
+                ImGui::Checkbox("Glass", &g_Options.chams_player_glass);
                 ImGui::PushItemWidth(110);
-                ImGuiEx::ColorEdit4("Ally (Visible)", g_Options.color_chams_player_ally_visible);
-                ImGuiEx::ColorEdit4("Ally (Occluded)", g_Options.color_chams_player_ally_occluded);
-                ImGuiEx::ColorEdit4("Enemy (Visible)", g_Options.color_chams_player_enemy_visible);
-                ImGuiEx::ColorEdit4("Enemy (Occluded)", g_Options.color_chams_player_enemy_occluded);
+                ImGuiEx::ColorEdit4("Ally (Visible)", &g_Options.color_chams_player_ally_visible);
+                ImGuiEx::ColorEdit4("Ally (Occluded)", &g_Options.color_chams_player_ally_occluded);
+                ImGuiEx::ColorEdit4("Enemy (Visible)", &g_Options.color_chams_player_enemy_visible);
+                ImGuiEx::ColorEdit4("Enemy (Occluded)", &g_Options.color_chams_player_enemy_occluded);
                 ImGui::PopItemWidth();
             }
             ImGui::EndGroupBox();
@@ -220,14 +220,14 @@ void RenderEspTab()
 
             ImGui::BeginGroupBox("Arms");
             {
-                ImGui::Checkbox("Enabled", g_Options.chams_arms_enabled);
-                ImGui::Checkbox("Wireframe", g_Options.chams_arms_wireframe);
-                ImGui::Checkbox("Flat", g_Options.chams_arms_flat);
-                ImGui::Checkbox("Ignore-Z", g_Options.chams_arms_ignorez);
-                ImGui::Checkbox("Glass", g_Options.chams_arms_glass);
+                ImGui::Checkbox("Enabled", &g_Options.chams_arms_enabled);
+                ImGui::Checkbox("Wireframe", &g_Options.chams_arms_wireframe);
+                ImGui::Checkbox("Flat", &g_Options.chams_arms_flat);
+                ImGui::Checkbox("Ignore-Z", &g_Options.chams_arms_ignorez);
+                ImGui::Checkbox("Glass", &g_Options.chams_arms_glass);
                 ImGui::PushItemWidth(110);
-                ImGuiEx::ColorEdit4("Color (Visible)", g_Options.color_chams_arms_visible);
-                ImGuiEx::ColorEdit4("Color (Occluded)", g_Options.color_chams_arms_occluded);
+                ImGuiEx::ColorEdit4("Color (Visible)", &g_Options.color_chams_arms_visible);
+                ImGuiEx::ColorEdit4("Color (Occluded)", &g_Options.color_chams_arms_occluded);
                 ImGui::PopItemWidth();
             }
             ImGui::EndGroupBox();
@@ -258,20 +258,20 @@ void RenderMiscTab()
         ImGui::SetColumnOffset(2, 2 * group_w / 3.0f);
         ImGui::SetColumnOffset(3, group_w);
 
-        ImGui::Checkbox("Bunny hop", g_Options.misc_bhop);
-		ImGui::Checkbox("Third Person", g_Options.misc_thirdperson);
-		if(g_Options.misc_thirdperson)
-			ImGui::SliderFloat("Distance", g_Options.misc_thirdperson_dist, 0.f, 150.f);
-        ImGui::Checkbox("No hands", g_Options.misc_no_hands);
-		ImGui::Checkbox("Rank reveal", g_Options.misc_showranks);
-		ImGui::Checkbox("Watermark##hc", g_Options.misc_watermark);
+        ImGui::Checkbox("Bunny hop", &g_Options.misc_bhop);
+		ImGui::Checkbox("Third Person", &g_Options.misc_thirdperson);
+		if(&g_Options.misc_thirdperson)
+			ImGui::SliderFloat("Distance", &g_Options.misc_thirdperson_dist, 0.f, 150.f);
+        ImGui::Checkbox("No hands", &g_Options.misc_no_hands);
+		ImGui::Checkbox("Rank reveal", &g_Options.misc_showranks);
+		ImGui::Checkbox("Watermark##hc", &g_Options.misc_watermark);
         //ImGui::PushItemWidth(-1.0f);
 		ImGui::NextColumn();
-        ImGui::SliderInt("viewmodel_fov:", g_Options.viewmodel_fov, 68, 120);
+        ImGui::SliderInt("viewmodel_fov:", &g_Options.viewmodel_fov, 68, 120);
 		ImGui::Text("Postprocessing:");
-        ImGui::SliderFloat("Red", g_Options.mat_ambient_light_r, 0, 1);
-        ImGui::SliderFloat("Green", g_Options.mat_ambient_light_g, 0, 1);
-        ImGui::SliderFloat("Blue", g_Options.mat_ambient_light_b, 0, 1);
+        ImGui::SliderFloat("Red", &g_Options.mat_ambient_light_r, 0, 1);
+        ImGui::SliderFloat("Green", &g_Options.mat_ambient_light_g, 0, 1);
+        ImGui::SliderFloat("Blue", &g_Options.mat_ambient_light_b, 0, 1);
         //ImGui::PopItemWidth();
 
         ImGui::Columns(1, nullptr, false);
@@ -364,8 +364,8 @@ void Menu::Render()
 
     //ImGui::PushStyle(_style);
 
-    ImGui::SetNextWindowPos(ImVec2{ 0, 0 }, ImGuiSetCond_Once);
-    ImGui::SetNextWindowSize(ImVec2{ 1000, 400 }, ImGuiSetCond_Once);
+    ImGui::SetNextWindowPos(ImVec2{ 0, 0 }, ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2{ 1000, 400 }, ImGuiCond_Once);
 	// https://github.com/spirthack/CSGOSimple/issues/63
 	// quick fix
 

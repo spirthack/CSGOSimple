@@ -11,13 +11,7 @@
 
 class Visuals : public Singleton<Visuals>
 {
-	friend class Singleton<Visuals>;
-
-	CRITICAL_SECTION cs;
-
-	Visuals();
-	~Visuals();
-public:
+private:
 	class Player
 	{
 	public:
@@ -29,7 +23,7 @@ public:
 			Color         clr;
 			Vector        head_pos;
 			Vector        feet_pos;
-			RECT          bbox;
+			SRect          bbox;
 		} ctx;
 
 		bool Begin(C_BasePlayer * pl);
@@ -43,10 +37,9 @@ public:
 	void RenderCrosshair();
 	void RenderWeapon(C_BaseCombatWeapon* ent);
 	void RenderDefuseKit(C_BaseEntity* ent);
-	void RenderPlantedC4(C_BaseEntity* ent);
+	void RenderPlantedC4(C_PlantedC4* ent);
 	void RenderItemEsp(C_BaseEntity* ent);
-	void ThirdPerson();
 public:
-	void AddToDrawList();
 	void Render();
+	void ThirdPerson();
 };

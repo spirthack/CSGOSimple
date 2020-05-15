@@ -51,13 +51,13 @@ namespace Utils {
 		return res;
 	}
 
-	unsigned int FindInDataMap(datamap_t *pMap, const char *name) {
+	unsigned int FindInDataMap(datamap_t *pMap, uint32_t name) {
 		while (pMap) {
 			for (int i = 0; i<pMap->dataNumFields; i++) {
 				if (pMap->dataDesc[i].fieldName == NULL)
 					continue;
 
-				if (strcmp(name, pMap->dataDesc[i].fieldName) == 0)
+                if (name == fnv::hash_runtime(pMap->dataDesc[i].fieldName))
 					return pMap->dataDesc[i].fieldOffset[TD_OFFSET_NORMAL];
 
 				if (pMap->dataDesc[i].fieldType == FIELD_EMBEDDED) {

@@ -5,140 +5,44 @@
 
 #include "sdk.hpp"
 
-void NetvarSys::Initialize()
+void NetVarManager::Initialize()
 {
-    database.clear();
-
-    for(auto clientclass = g_CHLClient->GetAllClasses();
-        clientclass != nullptr;
-        clientclass = clientclass->m_pNext) {
-        if(clientclass->m_pRecvTable) {
-            database.emplace_back(LoadTable(clientclass->m_pRecvTable));
-        }
-    }
+	for (auto clazz = g_CHLClient->GetAllClasses(); clazz; clazz = clazz->m_pNext)
+		if (clazz->m_pRecvTable)
+			DumpRecursive(clazz->m_pNetworkName, clazz->m_pRecvTable, 0);
 }
 
-NetvarSys::netvar_table NetvarSys::LoadTable(RecvTable* recvTable)
+void NetVarManager::DumpRecursive(const char* base_class, RecvTable* table, uint16_t offset)
 {
-    auto table = netvar_table{};
+	for (auto i = 0; i < table->m_nProps; ++i)
+	{
+		auto prop_ptr = &table->m_pProps[i];
 
-    table.offset = 0;
-    table.name = recvTable->m_pNetTableName;
+		//Skip trash array items
+		if (!prop_ptr || isdigit(prop_ptr->m_pVarName[0]))
+			continue;
 
-    for(auto i = 0; i < recvTable->m_nProps; ++i) {
-        auto prop = &recvTable->m_pProps[i];
+		//We dont care about the base class, we already know that
+		if (fnv::hash_runtime(prop_ptr->m_pVarName) == FNV("baseclass"))
+			continue;
 
-        if(!prop || isdigit(prop->m_pVarName[0]))
-            continue;
-        if(strcmp("baseclass", prop->m_pVarName) == 0)
-            continue;
+		if (prop_ptr->m_RecvType == DPT_DataTable &&
+			prop_ptr->m_pDataTable != nullptr &&
+			prop_ptr->m_pDataTable->m_pNetTableName[0] == 'D') // Skip shitty tables
+		{
+			DumpRecursive(base_class, prop_ptr->m_pDataTable, offset + prop_ptr->m_Offset);
+		}
 
-        if(prop->m_RecvType == DPT_DataTable && prop->m_pDataTable) {
-            table.child_tables.emplace_back(LoadTable(prop->m_pDataTable));
-            table.child_tables.back().offset = prop->m_Offset;
-            table.child_tables.back().prop = prop;
-        } else {
-            table.child_props.emplace_back(prop);
-        }
-    }
-    return table;
-}
+		char hash_name[256];
 
-void NetvarSys::Dump()
-{
-    auto outfile = std::ofstream("netvar_dump.txt");
+		strcpy_s(hash_name, base_class);
+		strcat_s(hash_name, "->");
+		strcat_s(hash_name, prop_ptr->m_pVarName);
 
-    Dump(outfile);
-}
+		// Need to cast it to prevent FnvHash using the recursive hasher
+		// which would hash all 256 bytes
+		auto hash = fnv::hash_runtime(static_cast<const char*>(hash_name));
 
-void NetvarSys::Dump(std::ostream& stream)
-{
-    for(const auto& table : database) {
-        if(table.child_props.empty() && table.child_tables.empty())
-            continue;
-        stream << table.name << '\n';
-        DumpTable(stream, table, 1);
-        stream << '\n';
-    }
-
-    stream << std::endl;
-}
-
-void NetvarSys::DumpTable(std::ostream& stream, const netvar_table& table, uint32_t indentation)
-{
-    char line_buffer[1024];
-
-    for(const auto& prop : table.child_props) {
-        sprintf_s(line_buffer, "%*c%*s: 0x%08X", indentation * 4, ' ', -(50 - (int)indentation * 4), prop->m_pVarName, table.offset + prop->m_Offset);
-        stream << line_buffer << '\n';
-    }
-    for(const auto& child : table.child_tables) {
-        sprintf_s(line_buffer, "%*c%*s: 0x%08X", indentation * 4, ' ', -(50 - (int)indentation * 4), child.prop->m_pVarName, table.offset + child.offset);
-        stream << line_buffer << '\n';
-        DumpTable(stream, child, indentation + 1);
-    }
-}
-
-uint32_t NetvarSys::GetOffset(const std::string& tableName, const std::string& propName)
-{
-    auto result = 0u;
-    for(const auto& table : database) {
-        if(table.name == tableName) {
-            result = GetOffset(table, propName);
-            if(result != 0)
-                return result;
-        }
-    }
-    return 0;
-}
-
-uint32_t NetvarSys::GetOffset(const NetvarSys::netvar_table& table, const std::string& propName)
-{
-    for(const auto& prop : table.child_props) {
-        if(strncmp(prop->m_pVarName, propName.data(), propName.size()) == 0) {
-            return table.offset + prop->m_Offset;
-        }
-    }
-    for(const auto& child : table.child_tables) {
-        auto prop_offset = GetOffset(child, propName);
-        if(prop_offset != 0)
-            return table.offset + prop_offset;
-    }
-    for(const auto& child : table.child_tables) {
-        if(strncmp(child.prop->m_pVarName, propName.data(), propName.size()) == 0) {
-            return table.offset + child.offset;
-        }
-    }
-    return 0;
-}
-
-RecvProp* NetvarSys::GetNetvarProp(const std::string& tableName, const std::string& propName)
-{
-    RecvProp* result = nullptr;
-    for(const auto& table : database) {
-        if(table.name == tableName) {
-            result = GetNetvarProp(table, propName);
-        }
-    }
-    return result;
-}
-
-RecvProp* NetvarSys::GetNetvarProp(const NetvarSys::netvar_table& table, const std::string& propName)
-{
-    for(const auto& prop : table.child_props) {
-        if(strncmp(prop->m_pVarName, propName.data(), propName.size()) == 0) {
-            return prop;
-        }
-    }
-    for(const auto& child : table.child_tables) {
-        auto prop = GetNetvarProp(child, propName);
-        if(prop != 0)
-            return prop;
-    }
-    for(const auto& child : table.child_tables) {
-        if(strncmp(child.prop->m_pVarName, propName.data(), propName.size()) == 0) {
-            return child.prop;
-        }
-    }
-    return nullptr;
+		m_props[hash] = { prop_ptr,  uint16_t(offset + prop_ptr->m_Offset) };
+	}
 }
