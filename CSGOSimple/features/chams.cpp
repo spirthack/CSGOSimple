@@ -54,7 +54,7 @@ void Chams::OnDrawModelExecute(
 	const ModelRenderInfo_t& info,
 	matrix3x4_t* matrix)
 {
-	static auto fnDME = Hooks::mdlrender_hook.get_original<decltype(&Hooks::hkDrawModelExecute)>(index::DrawModelExecute);
+	static auto fnDME = Hooks::mdlrender_hook->get_original<decltype(&Hooks::hkDrawModelExecute)>(index::DrawModelExecute);
 
 	const auto mdl = info.pModel;
 

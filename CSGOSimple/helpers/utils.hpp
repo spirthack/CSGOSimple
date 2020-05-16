@@ -56,7 +56,7 @@ namespace Utils {
      *
      * @returns Address of the first occurence
      */
-    std::uint8_t* PatternScan(void* module, const char* signature);
+    std::uint8_t* PatternScan(const char* mod, const char* signature);
 
     /*
      * @brief Set player clantag

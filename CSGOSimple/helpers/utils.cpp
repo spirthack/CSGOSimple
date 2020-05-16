@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-
+#include <TlHelp32.h>
+#include <Psapi.h>
 #include "../valve_sdk/csgostructs.hpp"
 #include "Math.hpp"
 
@@ -223,7 +224,7 @@ namespace Utils {
      *
      * @returns Address of the first occurence
      */
-    std::uint8_t* PatternScan(void* module, const char* signature)
+    std::uint8_t* PatternScan(const char* mod, const char* signature)
     {
         static auto pattern_to_byte = [](const char* pattern) {
             auto bytes = std::vector<int>{};
@@ -243,29 +244,45 @@ namespace Utils {
             return bytes;
         };
 
-        auto dosHeader = (PIMAGE_DOS_HEADER)module;
-        auto ntHeaders = (PIMAGE_NT_HEADERS)((std::uint8_t*)module + dosHeader->e_lfanew);
+        const auto module_handle = GetModuleHandleA(mod);
+        if (!module_handle)
+            return {};
 
-        auto sizeOfImage = ntHeaders->OptionalHeader.SizeOfImage;
-        auto patternBytes = pattern_to_byte(signature);
-        auto scanBytes = reinterpret_cast<std::uint8_t*>(module);
+        MODULEINFO module_info;
+        GetModuleInformation(GetCurrentProcess(), reinterpret_cast<HMODULE>(module_handle), &module_info, sizeof(MODULEINFO));
 
-        auto s = patternBytes.size();
-        auto d = patternBytes.data();
+        const auto image_size = module_info.SizeOfImage;
 
-        for(auto i = 0ul; i < sizeOfImage - s; ++i) {
-            bool found = true;
-            for(auto j = 0ul; j < s; ++j) {
-                if(scanBytes[i + j] != d[j] && d[j] != -1) {
-                    found = false;
+        if (!image_size)
+            return {};
+
+        auto pattern_bytes = pattern_to_byte(signature);
+
+        const auto image_bytes = reinterpret_cast<byte*>(module_handle);
+
+        const auto signature_size = pattern_bytes.size();
+        const auto signature_bytes = pattern_bytes.data();
+
+        for (auto i = 0ul; i < image_size - signature_size; ++i)
+        {
+            auto byte_sequence_found = true;
+
+            for (auto j = 0ul; j < signature_size; ++j)
+            {
+                if (image_bytes[i + j] != signature_bytes[j] 
+                    && signature_bytes[j] != -1)
+                {
+                    byte_sequence_found = false;
                     break;
                 }
             }
-            if(found) {
-                return &scanBytes[i];
-            }
+            if (byte_sequence_found)
+                return &image_bytes[i];
+
+
         }
-        return nullptr;
+
+        return {};
     }
 
     /*
@@ -275,7 +292,7 @@ namespace Utils {
      */
     void SetClantag(const char* tag)
     {
-        static auto fnClantagChanged = (int(__fastcall*)(const char*, const char*))PatternScan(GetModuleHandleW(L"engine.dll"), "53 56 57 8B DA 8B F9 FF 15");
+        static auto fnClantagChanged = (int(__fastcall*)(const char*, const char*))PatternScan("engine.dll", "53 56 57 8B DA 8B F9 FF 15");
 
         fnClantagChanged(tag, tag);
     }

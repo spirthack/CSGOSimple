@@ -1,6 +1,7 @@
 #include "sdk.hpp"
-
 #include "../Helpers/Utils.hpp"
+
+uintptr_t** shader_device = nullptr;
 
 namespace Interfaces
 {
@@ -32,6 +33,7 @@ namespace Interfaces
         auto dataCacheFactory = get_module_factory(GetModuleHandleW(L"datacache.dll"));
         auto vphysicsFactory  = get_module_factory(GetModuleHandleW(L"vphysics.dll"));
         auto inputSysFactory  = get_module_factory(GetModuleHandleW(L"inputsystem.dll"));
+        auto shaderfactory    = get_module_factory(GetModuleHandleW(L"shaderapidx9.dll"));
         
         g_CHLClient           = get_interface<IBaseClientDLL>      (clientFactory   , "VClient018");
         g_EntityList          = get_interface<IClientEntityList>   (clientFactory   , "VClientEntityList003");
@@ -52,23 +54,27 @@ namespace Interfaces
         g_VGuiSurface         = get_interface<ISurface>            (vguiFactory     , "VGUI_Surface031");
         g_PhysSurface         = get_interface<IPhysicsSurfaceProps>(vphysicsFactory , "VPhysicsSurfaceProps001");
         g_InputSystem         = get_interface<IInputSystem>        (inputSysFactory , "InputSystemVersion001");
+        shader_device         = get_interface<uintptr_t*>          (shaderfactory   , "ShaderDevice001");
 
-        auto client = GetModuleHandleW(L"client_panorama.dll");
-        auto engine = GetModuleHandleW(L"engine.dll");
-        auto dx9api = GetModuleHandleW(L"shaderapidx9.dll");
+        auto client = "client_panorama.dll";
+        auto engine = "engine.dll";
+        auto dx9api = "shaderapidx9.dll";
 		do {
 			g_ClientMode  =      **(IClientMode***)((*(uintptr_t**)g_CHLClient)[10] + 0x5);
 		} while (!g_ClientMode);
         g_GlobalVars      =  **(CGlobalVarsBase***)((*(uintptr_t**)g_CHLClient)[0] + 0x1B);
 
+
 		g_Input           =             *(CInput**)(Utils::PatternScan(client, "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10") + 1);
 		g_MoveHelper      =      **(IMoveHelper***)(Utils::PatternScan(client, "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01") + 2);
 		g_GlowObjManager  = *(CGlowObjectManager**)(Utils::PatternScan(client, "0F 11 05 ? ? ? ? 83 C8 01") + 3);
 		g_ViewRender      =        *(IViewRender**)(Utils::PatternScan(client, "A1 ? ? ? ? B9 ? ? ? ? C7 05 ? ? ? ? ? ? ? ? FF 10") + 1);
-		g_D3DDevice9      = **(IDirect3DDevice9***)(Utils::PatternScan(dx9api, "A1 ? ? ? ? 50 8B 08 FF 51 0C") + 1);
 		g_ClientState     =     **(CClientState***)(Utils::PatternScan(engine, "A1 ? ? ? ? 8B 80 ? ? ? ? C3") + 1);
 		g_LocalPlayer     =       *(C_LocalPlayer*)(Utils::PatternScan(client, "8B 0D ? ? ? ? 83 FF FF 74 07") + 2);
 		g_WeaponSystem    = *(IWeaponSystem * *)(Utils::PatternScan(client, "8B 35 ? ? ? ? FF 10 0F B7 C0") + 2);
+        if (auto device_table = shader_device[0])
+            if (auto d3d = device_table[37])
+                g_D3DDevice9 = **reinterpret_cast<IDirect3DDevice9***>(d3d + 0x2);
     }
 
     void Dump()

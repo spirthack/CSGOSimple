@@ -345,12 +345,11 @@ void Visuals::RenderItemEsp(C_BaseEntity* ent)
 	auto bbox = GetBBox(ent);
 	if (bbox.right == 0 || bbox.bottom == 0)
 		return;
-	auto sz = g_pDefaultFont->CalcTextSizeA(14.f, FLT_MAX, 0.0f, itemstr.c_str());
 	int w = bbox.right - bbox.left;
 
 
 	Render::Get().Box(bbox, g_Options.color_esp_item);
-	Render::Get().Text(itemstr, ImVec2((bbox.left + w * 0.5f) - sz.x * 0.5f, bbox.bottom + 1), 14.f, g_Options.color_esp_item);
+	Render::Get().Text(itemstr, ImVec2((bbox.left + w * 0.5f), bbox.bottom + 1), 14.f, g_Options.color_esp_item);
 }
 //--------------------------------------------------------------------------------
 void Visuals::ThirdPerson() {

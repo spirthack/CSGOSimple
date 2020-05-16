@@ -1,10 +1,18 @@
 #pragma once
 
 #include <string>
+#include <functional>
 #include "singleton.hpp"
 #include "imgui/imgui.h"
 
 struct IDirect3DDevice9;
+
+class CTab
+{
+public:
+    const char* szName = nullptr;
+    std::function<void()> pRenderFunction = nullptr;
+};
 
 class Menu
     : public Singleton<Menu>

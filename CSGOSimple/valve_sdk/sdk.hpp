@@ -11,7 +11,9 @@
 #include "Math/QAngle.hpp"
 #include "Math/Vector.hpp"
 #include "math/SRect.hpp"
+
 #include "Misc/Studio.hpp"
+
 
 #include "Interfaces/IAppSystem.hpp"
 #include "Interfaces/IBaseClientDll.hpp"

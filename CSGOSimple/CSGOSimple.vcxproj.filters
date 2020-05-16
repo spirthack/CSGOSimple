@@ -74,9 +74,6 @@
     <ClCompile Include="valve_sdk\math\Vector4D.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="helpers\vfunc_hook.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
     <ClCompile Include="valve_sdk\math\VMatrix.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
@@ -133,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="imgui\imgui_stdlib.cpp">
       <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="features\aimbot.cpp">
+      <Filter>Source Files\features</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -420,6 +420,9 @@
     </ClInclude>
     <ClInclude Include="imgui\imgui_stdlib.h">
       <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="features\aimbot.hpp">
+      <Filter>Header Files\features</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

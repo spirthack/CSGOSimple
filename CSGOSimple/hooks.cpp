@@ -16,27 +16,24 @@ namespace Hooks {
 
 	void Initialize()
 	{
-		hlclient_hook.setup(g_CHLClient);
-		direct3d_hook.setup(g_D3DDevice9);
-		vguipanel_hook.setup(g_VGuiPanel);
-		vguisurf_hook.setup(g_VGuiSurface);
-		sound_hook.setup(g_EngineSound);
-		mdlrender_hook.setup(g_MdlRender);
-		clientmode_hook.setup(g_ClientMode);
-		ConVar* sv_cheats_con = g_CVar->FindVar("sv_cheats");
-		sv_cheats.setup(sv_cheats_con);
+		hlclient_hook = std::make_shared<hook_t>(g_CHLClient);
+		direct3d_hook = std::make_shared<hook_t>(g_D3DDevice9);
+		vguipanel_hook = std::make_shared<hook_t>(g_VGuiPanel);
+		vguisurf_hook = std::make_shared<hook_t>(g_VGuiSurface);
+		sound_hook = std::make_shared<hook_t>(g_EngineSound);
+		mdlrender_hook = std::make_shared<hook_t>(g_MdlRender);
+		clientmode_hook = std::make_shared<hook_t>(g_ClientMode);
 
-		direct3d_hook.hook_index(index::EndScene, hkEndScene);
-		direct3d_hook.hook_index(index::Reset, hkReset);
-		hlclient_hook.hook_index(index::FrameStageNotify, hkFrameStageNotify);
-		hlclient_hook.hook_index(index::CreateMove, hkCreateMove_Proxy);
-		vguipanel_hook.hook_index(index::PaintTraverse, hkPaintTraverse);
-		sound_hook.hook_index(index::EmitSound1, hkEmitSound1);
-		vguisurf_hook.hook_index(index::LockCursor, hkLockCursor);
-		mdlrender_hook.hook_index(index::DrawModelExecute, hkDrawModelExecute);
-		clientmode_hook.hook_index(index::DoPostScreenSpaceEffects, hkDoPostScreenEffects);
-		clientmode_hook.hook_index(index::OverrideView, hkOverrideView);
-		sv_cheats.hook_index(index::SvCheatsGetBool, hkSvCheatsGetBool);
+		direct3d_hook->hook(index::Present, hkPresent);
+		direct3d_hook->hook(index::Reset, hkReset);
+		hlclient_hook->hook(index::FrameStageNotify, hkFrameStageNotify);
+		hlclient_hook->hook(index::CreateMove, hkCreateMove_Proxy);
+		vguipanel_hook->hook(index::PaintTraverse, hkPaintTraverse);
+		sound_hook->hook(index::EmitSound1, hkEmitSound1);
+		vguisurf_hook->hook(index::LockCursor, hkLockCursor);
+		mdlrender_hook->hook(index::DrawModelExecute, hkDrawModelExecute);
+		clientmode_hook->hook(index::DoPostScreenSpaceEffects, hkDoPostScreenEffects);
+		clientmode_hook->hook(index::OverrideView, hkOverrideView);
 
 		static auto viewmodel_fov = g_CVar->FindVar("viewmodel_fov");
 		static auto mat_ambient_light_r = g_CVar->FindVar("mat_ambient_light_r");
@@ -55,21 +52,29 @@ namespace Hooks {
 	//--------------------------------------------------------------------------------
 	void Shutdown()
 	{
-		hlclient_hook.unhook_all();
-		direct3d_hook.unhook_all();
-		vguipanel_hook.unhook_all();
-		vguisurf_hook.unhook_all();
-		mdlrender_hook.unhook_all();
-		clientmode_hook.unhook_all();
-		sound_hook.unhook_all();
-		sv_cheats.unhook_all();
+		hlclient_hook->unhook();
+		direct3d_hook->unhook();
+		vguipanel_hook->unhook();
+		vguisurf_hook->unhook();
+		mdlrender_hook->unhook();
+		clientmode_hook->unhook();
+		sound_hook->unhook();
+		sv_cheats->unhook();
 
 		Glow::Get().Shutdown();
 	}
 	//--------------------------------------------------------------------------------
-	long __stdcall hkEndScene(IDirect3DDevice9* pDevice)
+	long __stdcall hkPresent(IDirect3DDevice9* device, RECT* src_rect, RECT* dest_rect, HWND dest_wnd_override, RGNDATA* dirty_region)
 	{
-		static auto oEndScene = direct3d_hook.get_original<decltype(&hkEndScene)>(index::EndScene);
+		static auto oPresent = direct3d_hook->get_original<decltype(&hkPresent)>(index::Present);
+
+		IDirect3DVertexDeclaration9* vert_dec;
+		if (device->GetVertexDeclaration(&vert_dec))
+			return oPresent(device, src_rect, dest_rect, dest_wnd_override, dirty_region);
+
+		IDirect3DVertexShader9* vert_shader;
+		if (device->GetVertexShader(&vert_shader))
+			return oPresent(device, src_rect, dest_rect, dest_wnd_override, dirty_region);
 
 		ImGui_ImplDX9_NewFrame();
 		ImGui_ImplWin32_NewFrame();
@@ -82,12 +87,15 @@ namespace Hooks {
 		ImGui::Render();
 		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
-		return oEndScene(pDevice);
+		device->SetVertexShader(vert_shader);
+		device->SetVertexDeclaration(vert_dec);
+
+		return oPresent(device, src_rect, dest_rect, dest_wnd_override, dirty_region);
 	}
 	//--------------------------------------------------------------------------------
 	long __stdcall hkReset(IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* pPresentationParameters)
 	{
-		static auto oReset = direct3d_hook.get_original<decltype(&hkReset)>(index::Reset);
+		static auto oReset = direct3d_hook->get_original<decltype(&hkReset)>(index::Reset);
 
 		Menu::Get().OnDeviceLost();
 
@@ -101,7 +109,7 @@ namespace Hooks {
 	//--------------------------------------------------------------------------------
 	void __stdcall hkCreateMove(int sequence_number, float input_sample_frametime, bool active, bool& bSendPacket)
 	{
-		static auto oCreateMove = hlclient_hook.get_original<decltype(&hkCreateMove_Proxy)>(index::CreateMove);
+		static auto oCreateMove = hlclient_hook->get_original<decltype(&hkCreateMove_Proxy)>(index::CreateMove);
 
 		oCreateMove(g_CHLClient, 0, sequence_number, input_sample_frametime, active);
 
@@ -110,7 +118,7 @@ namespace Hooks {
 
 		if (!cmd || !cmd->command_number)
 			return;
-		
+
 		if (Menu::Get().IsVisible())
 			cmd->buttons &= ~IN_ATTACK;
 
@@ -147,7 +155,7 @@ namespace Hooks {
 	void __fastcall hkPaintTraverse(void* _this, int edx, vgui::VPANEL panel, bool forceRepaint, bool allowForce)
 	{
 		static auto panelId = vgui::VPANEL{ 0 };
-		static auto oPaintTraverse = vguipanel_hook.get_original<decltype(&hkPaintTraverse)>(index::PaintTraverse);
+		static auto oPaintTraverse = vguipanel_hook->get_original<decltype(&hkPaintTraverse)>(index::PaintTraverse);
 
 		oPaintTraverse(g_VGuiPanel, edx, panel, forceRepaint, allowForce);
 
@@ -157,7 +165,7 @@ namespace Hooks {
 				panelId = panel;
 			}
 		}
-		else if (panelId == panel) 
+		else if (panelId == panel)
 		{
 			//Ignore 50% cuz it called very often
 			static bool bSkip = false;
@@ -170,12 +178,12 @@ namespace Hooks {
 		}
 	}
 	//--------------------------------------------------------------------------------
-	void __fastcall hkEmitSound1(void* _this, int edx, IRecipientFilter& filter, int iEntIndex, int iChannel, const char* pSoundEntry, unsigned int nSoundEntryHash, const char *pSample, float flVolume, int nSeed, float flAttenuation, int iFlags, int iPitch, const Vector* pOrigin, const Vector* pDirection, void* pUtlVecOrigins, bool bUpdatePositions, float soundtime, int speakerentity, int unk) {
-		static auto ofunc = sound_hook.get_original<decltype(&hkEmitSound1)>(index::EmitSound1);
+	void __fastcall hkEmitSound1(void* _this, int edx, IRecipientFilter& filter, int iEntIndex, int iChannel, const char* pSoundEntry, unsigned int nSoundEntryHash, const char* pSample, float flVolume, int nSeed, float flAttenuation, int iFlags, int iPitch, const Vector* pOrigin, const Vector* pDirection, void* pUtlVecOrigins, bool bUpdatePositions, float soundtime, int speakerentity, int unk) {
+		static auto ofunc = sound_hook->get_original<decltype(&hkEmitSound1)>(index::EmitSound1);
 
 
 		if (!strcmp(pSoundEntry, "UIPanorama.popup_accept_match_beep")) {
-			static auto fnAccept = reinterpret_cast<bool(__stdcall*)(const char*)>(Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12"));
+			static auto fnAccept = reinterpret_cast<bool(__stdcall*)(const char*)>(Utils::PatternScan("client_panorama.dll", "55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12"));
 
 			if (fnAccept) {
 
@@ -199,7 +207,7 @@ namespace Hooks {
 	//--------------------------------------------------------------------------------
 	int __fastcall hkDoPostScreenEffects(void* _this, int edx, int a1)
 	{
-		static auto oDoPostScreenEffects = clientmode_hook.get_original<decltype(&hkDoPostScreenEffects)>(index::DoPostScreenSpaceEffects);
+		static auto oDoPostScreenEffects = clientmode_hook->get_original<decltype(&hkDoPostScreenEffects)>(index::DoPostScreenSpaceEffects);
 
 		if (g_LocalPlayer && g_Options.glow_enabled)
 			Glow::Get().Run();
@@ -209,14 +217,14 @@ namespace Hooks {
 	//--------------------------------------------------------------------------------
 	void __fastcall hkFrameStageNotify(void* _this, int edx, ClientFrameStage_t stage)
 	{
-		static auto ofunc = hlclient_hook.get_original<decltype(&hkFrameStageNotify)>(index::FrameStageNotify);
+		static auto ofunc = hlclient_hook->get_original<decltype(&hkFrameStageNotify)>(index::FrameStageNotify);
 		// may be u will use it lol
 		ofunc(g_CHLClient, edx, stage);
 	}
 	//--------------------------------------------------------------------------------
 	void __fastcall hkOverrideView(void* _this, int edx, CViewSetup* vsView)
 	{
-		static auto ofunc = clientmode_hook.get_original<decltype(&hkOverrideView)>(index::OverrideView);
+		static auto ofunc = clientmode_hook->get_original<decltype(&hkOverrideView)>(index::OverrideView);
 
 		if (g_EngineClient->IsInGame() && vsView)
 			Visuals::Get().ThirdPerson();
@@ -226,20 +234,23 @@ namespace Hooks {
 	//--------------------------------------------------------------------------------
 	void __fastcall hkLockCursor(void* _this)
 	{
-		static auto ofunc = vguisurf_hook.get_original<decltype(&hkLockCursor)>(index::LockCursor);
+		static auto ofunc = vguisurf_hook->get_original<decltype(&hkLockCursor)>(index::LockCursor);
 
 		if (Menu::Get().IsVisible()) {
 			g_VGuiSurface->UnlockCursor();
-			g_InputSystem->ResetInputState();
+			g_InputSystem->EnableInput(false);
 			return;
 		}
+		else
+			g_InputSystem->EnableInput(true);
+
 		ofunc(g_VGuiSurface);
 
 	}
 	//--------------------------------------------------------------------------------
 	void __fastcall hkDrawModelExecute(void* _this, int edx, IMatRenderContext* ctx, const DrawModelState_t& state, const ModelRenderInfo_t& pInfo, matrix3x4_t* pCustomBoneToWorld)
 	{
-		static auto ofunc = mdlrender_hook.get_original<decltype(&hkDrawModelExecute)>(index::DrawModelExecute);
+		static auto ofunc = mdlrender_hook->get_original<decltype(&hkDrawModelExecute)>(index::DrawModelExecute);
 
 		if (g_MdlRender->IsForcedMaterialOverride() &&
 			!strstr(pInfo.pModel->szName, "arms") &&
@@ -252,19 +263,5 @@ namespace Hooks {
 		ofunc(_this, edx, ctx, state, pInfo, pCustomBoneToWorld);
 
 		g_MdlRender->ForcedMaterialOverride(nullptr);
-	}
-
-	
-	
-	bool __fastcall hkSvCheatsGetBool(PVOID pConVar, void* edx)
-	{
-		static auto dwCAM_Think = Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "85 C0 75 30 38 86");
-		static auto ofunc = sv_cheats.get_original<bool(__thiscall *)(PVOID)>(13);
-		if (!ofunc)
-			return false;
-
-		if (reinterpret_cast<DWORD>(_ReturnAddress()) == reinterpret_cast<DWORD>(dwCAM_Think))
-			return true;
-		return ofunc(pConVar);
 	}
 }

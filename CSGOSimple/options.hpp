@@ -13,6 +13,11 @@ class Options
 {
 public:
 		// 
+		// AIMBOT
+		// 
+		OPTION(bool, aim_enabled, false);
+		OPTION(float, aim_fov, 0.f);
+		// 
 		// ESP
 		// 
 		OPTION(bool, esp_enabled, false);

@@ -75,6 +75,37 @@ void render_tabs(char* (&names)[N], int& activetab, float w, float h, bool samel
     }
 }
 
+template <std::size_t S>
+void render_tabs(const char* szTabBar, const std::array<CTab, S> arrTabs, int* nCurrentTab, const ImVec4& colActive, ImGuiTabBarFlags flags = ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_NoCloseWithMiddleMouseButton | ImGuiTabBarFlags_NoTooltip)
+{
+    // is empty check
+    if (arrTabs.empty())
+        return;
+
+    // set active tab color
+    ImGui::PushStyleColor(ImGuiCol_TabActive, colActive);
+    if (ImGui::BeginTabBar(szTabBar, flags))
+    {
+        for (auto i = 0U; i < arrTabs.size(); i++)
+        {
+            // add tab
+            if (ImGui::BeginTabItem(arrTabs.at(i).szName))
+            {
+                // set current tab index
+                *nCurrentTab = i;
+                ImGui::EndTabItem();
+            }
+        }
+
+        // render inner tab
+        if (arrTabs.at(*nCurrentTab).pRenderFunction != nullptr)
+            arrTabs.at(*nCurrentTab).pRenderFunction();
+
+        ImGui::EndTabBar();
+    }
+    ImGui::PopStyleColor();
+}
+
 ImVec2 get_sidebar_size()
 {
     constexpr float padding = 10.0f;
@@ -352,60 +383,38 @@ void Menu::Render()
 
     if(!_visible)
         return;
+    
+    static int active_tab = 0;
 
-    const auto sidebar_size = get_sidebar_size();
-    static int active_sidebar_tab = 0;
-
-    //ImGui::PushStyle(_style);
-
+   
     ImGui::SetNextWindowPos(ImVec2{ 0, 0 }, ImGuiCond_Once);
     ImGui::SetNextWindowSize(ImVec2{ 1000, 400 }, ImGuiCond_Once);
-	// https://github.com/spirthack/CSGOSimple/issues/63
-	// quick fix
+    if (ImGui::Begin("CSGOSimple", &_visible, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse))
+    {
+        ImDrawList* pDrawList = ImGui::GetForegroundDrawList();
+        ImVec2 vecPos = ImGui::GetCursorScreenPos();
+        float flWindowWidth = ImGui::GetWindowWidth();
 
-	if (ImGui::Begin("CSGOSimple",
-		&_visible,
-		ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoTitleBar)) {
+        pDrawList->AddRectFilledMultiColor(ImVec2(vecPos.x - 8.f, vecPos.y - 6.f), ImVec2(vecPos.x + flWindowWidth - flWindowWidth / 3.f - 8.f, vecPos.y - 8.f), ImColor(75, 50, 105, 255), ImColor(110, 100, 130, 255), ImColor(110, 100, 130, 255), ImColor(75, 50, 105, 255));
+        pDrawList->AddRectFilledMultiColor(ImVec2(vecPos.x + flWindowWidth - flWindowWidth / 3.f - 8.f, vecPos.y - 6.f), ImVec2(vecPos.x + flWindowWidth - 8.f, vecPos.y - 8.f), ImColor(110, 100, 130, 255), ImColor(75, 50, 105, 255), ImColor(75, 50, 105, 255), ImColor(110, 100, 130, 255));
 
-		//auto& style = ImGui::GetStyle();
-        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,0));
+        static std::array<CTab, 4U> const arrTabs =
         {
-            ImGui::BeginGroupBox("##sidebar", sidebar_size);
-            {
-				//ImGui::GetCurrentWindow()->Flags &= ~ImGuiWindowFlags_ShowBorders;
+            CTab{ "rage", &RenderEmptyTab },
+            CTab{ "legit", &RenderEmptyTab },
+            CTab{ "visuals", &RenderEspTab },
+            CTab{ "miscellaneous", &RenderMiscTab }
+        };
 
-                render_tabs(sidebar_tabs, active_sidebar_tab, get_sidebar_item_width(), get_sidebar_item_height(), false);
-            }
-            ImGui::EndGroupBox();
-        }
-        ImGui::PopStyleVar();
-        ImGui::SameLine();
+        render_tabs<arrTabs.size()>("main_tabs", arrTabs, &active_tab, ImGui::GetStyle().Colors[ImGuiCol_TabActive]);
 
-        // Make the body the same vertical size as the sidebar
-        // except for the width, which we will set to auto
-        auto size = ImVec2{ 0.0f, sidebar_size.y };
-
-		ImGui::BeginGroupBox("##body", size);
-        if(active_sidebar_tab == TAB_ESP) {
-            RenderEspTab();
-        } else if(active_sidebar_tab == TAB_AIMBOT) {
-            RenderEmptyTab();
-        } else if(active_sidebar_tab == TAB_MISC) {
-            RenderMiscTab();
-        } else if(active_sidebar_tab == TAB_CONFIG) {
-            RenderConfigTab();
-        }
-        ImGui::EndGroupBox();
-
-        ImGui::TextColored(ImVec4{ 0.0f, 0.5f, 0.0f, 1.0f }, "FPS: %03d", get_fps());
-        ImGui::SameLine(ImGui::GetWindowWidth() - 150 - ImGui::GetStyle().WindowPadding.x);
-        if(ImGui::Button("Unload", ImVec2{ 150, 25 })) {
+        if (ImGui::Button("Unload", ImVec2{ 150, 25 })) {
             g_Unload = true;
         }
-        ImGui::End();
+
     }
+    ImGui::End();
+    
 }
 
 void Menu::Toggle()
