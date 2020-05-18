@@ -26,7 +26,7 @@ namespace Hooks {
 		ConVar* sv_cheats_con = g_CVar->FindVar("sv_cheats");
 		sv_cheats.setup(sv_cheats_con);
 
-		direct3d_hook.hook_index(index::EndScene, hkEndScene);
+		direct3d_hook.hook_index(index::Present, hkPresent);
 		direct3d_hook.hook_index(index::Reset, hkReset);
 		hlclient_hook.hook_index(index::FrameStageNotify, hkFrameStageNotify);
 		hlclient_hook.hook_index(index::CreateMove, hkCreateMove_Proxy);
@@ -37,6 +37,20 @@ namespace Hooks {
 		clientmode_hook.hook_index(index::DoPostScreenSpaceEffects, hkDoPostScreenEffects);
 		clientmode_hook.hook_index(index::OverrideView, hkOverrideView);
 		sv_cheats.hook_index(index::SvCheatsGetBool, hkSvCheatsGetBool);
+
+		static auto viewmodel_fov = g_CVar->FindVar("viewmodel_fov");
+		static auto mat_ambient_light_r = g_CVar->FindVar("mat_ambient_light_r");
+		static auto mat_ambient_light_g = g_CVar->FindVar("mat_ambient_light_g");
+		static auto mat_ambient_light_b = g_CVar->FindVar("mat_ambient_light_b");
+		static auto crosshair_cvar = g_CVar->FindVar("crosshair");
+
+		viewmodel_fov->m_fnChangeCallbacks.m_Size = 0;
+		viewmodel_fov->SetValue(g_Options.viewmodel_fov);
+		mat_ambient_light_r->SetValue(g_Options.mat_ambient_light_r);
+		mat_ambient_light_g->SetValue(g_Options.mat_ambient_light_g);
+		mat_ambient_light_b->SetValue(g_Options.mat_ambient_light_b);
+
+		crosshair_cvar->SetValue(!(g_Options.esp_enabled && g_Options.esp_crosshair));
 	}
 	//--------------------------------------------------------------------------------
 	void Shutdown()
@@ -53,68 +67,35 @@ namespace Hooks {
 		Glow::Get().Shutdown();
 	}
 	//--------------------------------------------------------------------------------
-	long __stdcall hkEndScene(IDirect3DDevice9* pDevice)
+	long __stdcall hkPresent(IDirect3DDevice9* device, RECT* src_rect, RECT* dest_rect, HWND dest_wnd_override, RGNDATA* dirty_region)
 	{
-		static auto oEndScene = direct3d_hook.get_original<decltype(&hkEndScene)>(index::EndScene);
+		static auto oPresent = direct3d_hook.get_original<decltype(&hkPresent)>(index::Present);
 
-		static auto viewmodel_fov = g_CVar->FindVar("viewmodel_fov");
-		static auto mat_ambient_light_r = g_CVar->FindVar("mat_ambient_light_r");
-		static auto mat_ambient_light_g = g_CVar->FindVar("mat_ambient_light_g");
-		static auto mat_ambient_light_b = g_CVar->FindVar("mat_ambient_light_b");
-		static auto crosshair_cvar = g_CVar->FindVar("crosshair");
+		IDirect3DVertexDeclaration9* vert_dec;
+		if (device->GetVertexDeclaration(&vert_dec))
+			return oPresent(device, src_rect, dest_rect, dest_wnd_override, dirty_region);
 
-		viewmodel_fov->m_fnChangeCallbacks.m_Size = 0;
-		viewmodel_fov->SetValue(g_Options.viewmodel_fov);
-		mat_ambient_light_r->SetValue(g_Options.mat_ambient_light_r);
-		mat_ambient_light_g->SetValue(g_Options.mat_ambient_light_g);
-		mat_ambient_light_b->SetValue(g_Options.mat_ambient_light_b);
-		
-		crosshair_cvar->SetValue(!(g_Options.esp_enabled && g_Options.esp_crosshair));
+		IDirect3DVertexShader9* vert_shader;
+		if (device->GetVertexShader(&vert_shader))
+			return oPresent(device, src_rect, dest_rect, dest_wnd_override, dirty_region);
 
-		DWORD colorwrite, srgbwrite;
-		IDirect3DVertexDeclaration9* vert_dec = nullptr;
-		IDirect3DVertexShader9* vert_shader = nullptr;
-		DWORD dwOld_D3DRS_COLORWRITEENABLE = NULL;
-		pDevice->GetRenderState(D3DRS_COLORWRITEENABLE, &colorwrite);
-		pDevice->GetRenderState(D3DRS_SRGBWRITEENABLE, &srgbwrite);
-
-		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xffffffff);
-		//removes the source engine color correction
-		pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, false);
-
-		pDevice->GetRenderState(D3DRS_COLORWRITEENABLE, &dwOld_D3DRS_COLORWRITEENABLE);
-		pDevice->GetVertexDeclaration(&vert_dec);
-		pDevice->GetVertexShader(&vert_shader);
-		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xffffffff);
-		pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, false);
-		pDevice->SetSamplerState(NULL, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-		pDevice->SetSamplerState(NULL, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-		pDevice->SetSamplerState(NULL, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP);
-		pDevice->SetSamplerState(NULL, D3DSAMP_SRGBTEXTURE, NULL);
-
-		
 		ImGui_ImplDX9_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-
-		auto esp_drawlist = Render::Get().RenderScene();
-
 		Menu::Get().Render();
-	
 
-		ImGui::Render(esp_drawlist);
+		Render::Get().AddToDrawList();
 
+		ImGui::EndFrame();
+		ImGui::Render();
 		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
-		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, colorwrite);
-		pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, srgbwrite);
-		pDevice->SetRenderState(D3DRS_COLORWRITEENABLE, dwOld_D3DRS_COLORWRITEENABLE);
-		pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, true);
-		pDevice->SetVertexDeclaration(vert_dec);
-		pDevice->SetVertexShader(vert_shader);
+		device->SetVertexShader(vert_shader);
+		device->SetVertexDeclaration(vert_dec);
 
-		return oEndScene(pDevice);
+
+		return oPresent(device, src_rect, dest_rect, dest_wnd_override, dirty_region);
 	}
 	//--------------------------------------------------------------------------------
 	long __stdcall hkReset(IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* pPresentationParameters)
@@ -198,7 +179,7 @@ namespace Hooks {
 			if (bSkip)
 				return;
 
-			Render::Get().BeginScene();
+			Render::Get().Begin();
 		}
 	}
 	//--------------------------------------------------------------------------------

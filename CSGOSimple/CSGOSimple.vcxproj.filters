@@ -30,6 +30,9 @@
     <Filter Include="Header Files\fonts">
       <UniqueIdentifier>{69d9715e-6194-4271-9c84-4b80235b0dba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\freetype">
+      <UniqueIdentifier>{bc85ee4b-d282-4142-a698-4b63644c81f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Helpers\math.cpp">
@@ -123,6 +126,9 @@
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_widgets.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_freetype.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
   </ItemGroup>
@@ -391,5 +397,167 @@
     <ClInclude Include="config.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="freetype\freetype.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftadvanc.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftbbox.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftbdf.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftbitmap.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftbzip2.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftcache.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftchapters.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftcid.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftcolor.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftdriver.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\fterrdef.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\fterrors.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftfntfmt.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftgasp.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftglyph.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftgxval.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftgzip.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftimage.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftincrem.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftlcdfil.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftlist.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftlzw.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftmac.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftmm.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftmodapi.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftmoderr.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftotval.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftoutln.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftparams.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftpfr.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftrender.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftsizes.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftsnames.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftstroke.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftsynth.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftsystem.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\fttrigon.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\fttypes.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ftwinfnt.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\t1tables.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\ttnameid.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\tttables.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\tttags.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\config\ftconfig.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\config\ftheader.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\config\ftmodule.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\config\ftoption.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="freetype\config\ftstdlib.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="ft2build.h">
+      <Filter>Header Files\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_freetype.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers\point.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers\rect.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
