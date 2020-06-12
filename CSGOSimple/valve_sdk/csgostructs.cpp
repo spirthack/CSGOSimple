@@ -212,7 +212,7 @@ int C_BasePlayer::GetSequenceActivity(int sequence)
 
 CCSGOPlayerAnimState *C_BasePlayer::GetPlayerAnimState()
 {
-	return *(CCSGOPlayerAnimState**)((DWORD)this + 0x3900);
+	return *(CCSGOPlayerAnimState**)((DWORD)this + 0x3914);
 }
 
 void C_BasePlayer::UpdateAnimationState(CCSGOPlayerAnimState *state, QAngle angle)
@@ -438,5 +438,5 @@ void C_BaseViewModel::SendViewModelMatchingSequence(int sequence)
 
 float_t C_BasePlayer::m_flSpawnTime()
 {
-	return *(float_t*)((uintptr_t)this + 0xA360);
+	return *(float_t*)((uintptr_t)this + 0xA370);
 }
