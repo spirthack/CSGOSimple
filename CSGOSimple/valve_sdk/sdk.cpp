@@ -24,7 +24,7 @@ namespace Interfaces
     void Initialize()
     {
         auto engineFactory    = get_module_factory(GetModuleHandleW(L"engine.dll"));
-        auto clientFactory    = get_module_factory(GetModuleHandleW(L"client_panorama.dll"));
+        auto clientFactory    = get_module_factory(GetModuleHandleW(L"client.dll"));
         auto valveStdFactory  = get_module_factory(GetModuleHandleW(L"vstdlib.dll"));
         auto vguiFactory      = get_module_factory(GetModuleHandleW(L"vguimatsurface.dll"));
         auto vgui2Factory     = get_module_factory(GetModuleHandleW(L"vgui2.dll"));
@@ -53,7 +53,7 @@ namespace Interfaces
         g_PhysSurface         = get_interface<IPhysicsSurfaceProps>(vphysicsFactory , "VPhysicsSurfaceProps001");
         g_InputSystem         = get_interface<IInputSystem>        (inputSysFactory , "InputSystemVersion001");
 
-        auto client = GetModuleHandleW(L"client_panorama.dll");
+        auto client = GetModuleHandleW(L"client.dll");
         auto engine = GetModuleHandleW(L"engine.dll");
         auto dx9api = GetModuleHandleW(L"shaderapidx9.dll");
 		do {

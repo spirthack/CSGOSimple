@@ -207,7 +207,7 @@ namespace Hooks {
 
 
 		if (!strcmp(pSoundEntry, "UIPanorama.popup_accept_match_beep")) {
-			static auto fnAccept = reinterpret_cast<bool(__stdcall*)(const char*)>(Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12"));
+			static auto fnAccept = reinterpret_cast<bool(__stdcall*)(const char*)>(Utils::PatternScan(GetModuleHandleA("client.dll"), "55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12"));
 
 			if (fnAccept) {
 
@@ -290,7 +290,7 @@ namespace Hooks {
 	
 	bool __fastcall hkSvCheatsGetBool(PVOID pConVar, void* edx)
 	{
-		static auto dwCAM_Think = Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "85 C0 75 30 38 86");
+		static auto dwCAM_Think = Utils::PatternScan(GetModuleHandleW(L"client.dll"), "85 C0 75 30 38 86");
 		static auto ofunc = sv_cheats.get_original<bool(__thiscall *)(PVOID)>(13);
 		if (!ofunc)
 			return false;
