@@ -104,6 +104,8 @@ int get_fps()
     return fps;
 }
 
+static char* boxes[] = { "Off", "Regular", "Edge", "Rounded" };
+
 void RenderEspTab()
 {
     static char* esp_tab_names[] = { "ESP", "GLOW", "CHAMS" };
@@ -129,11 +131,14 @@ void RenderEspTab()
 
             ImGui::Checkbox("Enabled", g_Options.esp_enabled);
             ImGui::Checkbox("Team check", g_Options.esp_enemies_only);
-            ImGui::Checkbox("Boxes", g_Options.esp_player_boxes);
+            ImGui::Checkbox("Visible Only", g_Options.esp_visible_only);
+            ImGui::Combo("Boxes", g_Options.esp_player_boxes, boxes, IM_ARRAYSIZE(boxes), 4);
+            ImGui::Checkbox("Skeleton", g_Options.esp_player_skeleton);
             ImGui::Checkbox("Names", g_Options.esp_player_names);
             ImGui::Checkbox("Health", g_Options.esp_player_health);
             ImGui::Checkbox("Armour", g_Options.esp_player_armour);
             ImGui::Checkbox("Weapon", g_Options.esp_player_weapons);
+            ImGui::Checkbox("Ammo", g_Options.esp_player_ammo);
             ImGui::Checkbox("Snaplines", g_Options.esp_player_snaplines);
 
             ImGui::NextColumn();
@@ -151,6 +156,7 @@ void RenderEspTab()
             ImGuiEx::ColorEdit3("Enemies Visible", g_Options.color_esp_enemy_visible);
             ImGuiEx::ColorEdit3("Allies Occluded", g_Options.color_esp_ally_occluded);
             ImGuiEx::ColorEdit3("Enemies Occluded", g_Options.color_esp_enemy_occluded);
+            ImGuiEx::ColorEdit3("Skeleton", g_Options.color_esp_skeleton);
             ImGuiEx::ColorEdit3("Crosshair", g_Options.color_esp_crosshair);
             ImGuiEx::ColorEdit3("Dropped Weapons", g_Options.color_esp_weapons);
             ImGuiEx::ColorEdit3("Defuse Kit", g_Options.color_esp_defuse);

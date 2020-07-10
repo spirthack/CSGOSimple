@@ -34,6 +34,7 @@ public:
 
 		bool Begin(C_BasePlayer * pl);
 		void RenderBox();
+		void RenderSkeleton();
 		void RenderName();
 		void RenderWeaponName();
 		void RenderHealth();
