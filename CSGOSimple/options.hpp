@@ -83,6 +83,7 @@ public:
 		OPTION(bool, misc_thirdperson, false);
 		OPTION(bool, misc_showranks, true);
 		OPTION(bool, misc_watermark, true);
+		OPTION(bool, hide_from_obs, true);
 		OPTION(float, misc_thirdperson_dist, 50.f);
 		OPTION(int, viewmodel_fov, 68);
 		OPTION(float, mat_ambient_light_r, 0.0f);

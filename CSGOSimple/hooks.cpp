@@ -57,6 +57,22 @@ namespace Hooks {
 	{
 		static auto oEndScene = direct3d_hook.get_original<decltype(&hkEndScene)>(index::EndScene);
 
+		static uintptr_t gameoverlay_return_address = 0;
+
+		if (!gameoverlay_return_address) {
+			MEMORY_BASIC_INFORMATION info;
+			VirtualQuery(_ReturnAddress(), &info, sizeof(MEMORY_BASIC_INFORMATION));
+
+			char mod[MAX_PATH];
+			GetModuleFileNameA(static_cast<HMODULE>(info.AllocationBase), mod, MAX_PATH);
+
+			if (strstr(mod, "gameoverlay"))
+				gameoverlay_return_address = reinterpret_cast<uintptr_t>(_ReturnAddress());
+		}
+
+		if (gameoverlay_return_address != reinterpret_cast<uintptr_t>(_ReturnAddress()) && g_Options.hide_from_obs)
+			return oEndScene(pDevice);
+
 		static auto viewmodel_fov = g_CVar->FindVar("viewmodel_fov");
 		static auto mat_ambient_light_r = g_CVar->FindVar("mat_ambient_light_r");
 		static auto mat_ambient_light_g = g_CVar->FindVar("mat_ambient_light_g");
