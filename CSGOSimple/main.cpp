@@ -87,7 +87,7 @@ BOOL WINAPI DllMain(
     _In_      HINSTANCE hinstDll,
     _In_      DWORD     fdwReason,
     _In_opt_  LPVOID    lpvReserved
-)	
+)
 {
     switch(fdwReason) {
         case DLL_PROCESS_ATTACH:
