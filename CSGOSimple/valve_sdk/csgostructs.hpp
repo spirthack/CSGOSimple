@@ -254,8 +254,8 @@ public:
 
 	NETVAR(QAngle, m_angAbsAngles, "DT_BaseEntity", "m_angAbsAngles");
 	NETVAR(Vector, m_angAbsOrigin, "DT_BaseEntity", "m_angAbsOrigin");
-	NETVAR(float, m_flDuckSpeed, "DT_BaseEntity", "m_flDuckSpeed");
-	NETVAR(float, m_flDuckAmount, "DT_BaseEntity", "m_flDuckAmount");
+	NETVAR(float, m_flDuckSpeed, "DT_BasePlayer", "m_flDuckSpeed");
+	NETVAR(float, m_flDuckAmount, "DT_BasePlayer", "m_flDuckAmount");
 	std::array<float, 24> &m_flPoseParameter() const {
 		static int _m_flPoseParameter = NetvarSys::Get().GetOffset("DT_BaseAnimating", "m_flPoseParameter");
 		return *(std::array<float, 24>*)((uintptr_t)this + _m_flPoseParameter);
