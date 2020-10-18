@@ -29,50 +29,91 @@ public:
     uint32_t m_nClientTick;     //0x004C
 }; //Size: 0x0050
 
-// This struct is most likely wrong
-// Only fields that I know to be valid are:
-// - m_NetChannel
-// - m_nCurrentSequence
-// - m_nDeltaTick
-// - m_nMaxClients
-// - viewangles
+class CEventInfo
+{
+public:
+    enum
+    {
+        EVENT_INDEX_BITS = 8,
+        EVENT_DATA_LEN_BITS = 11,
+        MAX_EVENT_DATA = 192,  // ( 1<<8 bits == 256, but only using 192 below )
+    };
+
+    inline CEventInfo()
+    {
+        classID = 0;
+        fire_delay = 0.0f;
+        flags = 0;
+        pSendTable = NULL;
+        pClientClass = NULL;
+        m_Packed = 0;
+    }
+
+    short classID;
+    short pad;
+    float fire_delay;
+    const void* pSendTable;
+    const ClientClass* pClientClass;
+    int m_Packed;
+    int		flags;
+    int filter[8];
+    CEventInfo* next;
+};
+
+// Thanks soufiw 
 class CClientState
 {
 public:
-    void ForceFullUpdate()
-    {
-        m_nDeltaTick = -1;
-    }
+	void ForceFullUpdate()
+	{
+		m_nDeltaTick = -1;
+	}
 
-    char pad_0000[156];             //0x0000
-    uint32_t m_NetChannel;          //0x009C
-    uint32_t m_nChallengeNr;        //0x00A0
-    char pad_00A4[100];             //0x00A4
-    uint32_t m_nSignonState;        //0x0108
-    char pad_010C[8];               //0x010C
-    float m_flNextCmdTime;          //0x0114
-    uint32_t m_nServerCount;        //0x0118
-    uint32_t m_nCurrentSequence;    //0x011C
-    char pad_0120[8];               //0x0120
-    CClockDriftMgr m_ClockDriftMgr; //0x0128
-    uint32_t m_nDeltaTick;          //0x0178
-    bool m_bPaused;                 //0x017C
-    char pad_017D[3];               //0x017D
-    uint32_t m_nViewEntity;         //0x0180
-    uint32_t m_nPlayerSlot;         //0x0184
-    char m_szLevelName[260];        //0x0188
-    char m_szLevelNameShort[40];    //0x028C
-    char m_szGroupName[40];         //0x02B4
-    char pad_02DC[56];              //0x02DC
-    uint32_t m_nMaxClients;         //0x0310
-    char pad_0314[18940];           //0x0314
-    Vector viewangles;              //0x4D10
-}; //Size: 0x4D1C
+	char pad_0000[156];
+	INetChannel* m_NetChannel;
+	int m_nChallengeNr;
+	char pad_00A4[100];
+	int m_nSignonState;
+	int signon_pads[2];
+	float m_flNextCmdTime;
+	int m_nServerCount;
+	int m_nCurrentSequence;
+	int musor_pads[2];
+	CClockDriftMgr m_ClockDriftMgr;
+	int m_nDeltaTick;
+	bool m_bPaused;
+	char paused_align[3];
+	int m_nViewEntity;
+	int m_nPlayerSlot;
+	int bruh;
+	char m_szLevelName[260];
+	char m_szLevelNameShort[80];
+	char m_szGroupName[80];
+	char pad_032[92];
+	int m_nMaxClients;
+	char pad_0314[18828];
+	float m_nLastServerTickTime;
+	bool m_bInSimulation;
+	char pad_4C9D[3];
+	int m_nOldTickCount;
+	float m_flTickReminder;
+	float m_flFrametime;
+	int m_nLastOutgoingCommand;
+	int m_nChokedCommands;
+	int m_nLastCommandAck;
+	int m_nPacketEndTickUpdate;
+	int m_nCommandAck;
+	int m_nSoundSequence;
+	char pad_4CCD[76];
+	QAngle viewangles;
+	int pads[54];
+	CEventInfo* m_pEvents;
+};
 
 #pragma pack(pop)
 
 static_assert(FIELD_OFFSET(CClientState, m_NetChannel)       == 0x009C, "Wrong struct offset");
 static_assert(FIELD_OFFSET(CClientState, m_nCurrentSequence) == 0x011C, "Wrong struct offset");
 static_assert(FIELD_OFFSET(CClientState, m_nDeltaTick)       == 0x0174, "Wrong struct offset");
-static_assert(FIELD_OFFSET(CClientState, m_nMaxClients)      == 0x0310, "Wrong struct offset");
-static_assert(FIELD_OFFSET(CClientState, viewangles)         == 0x4D10, "Wrong struct offset");
+static_assert(FIELD_OFFSET(CClientState, m_nMaxClients)      == 0x0388, "Wrong struct offset");
+static_assert(FIELD_OFFSET(CClientState, viewangles)         == 0x4D90, "Wrong struct offset");
