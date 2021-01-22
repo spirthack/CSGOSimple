@@ -159,8 +159,9 @@ enum ItemDefinitionIndex
 	GLOVE_HYDRA = 5035
 };
 
-enum ClassId {
-	ClassId_CAI_BaseNPC = 0,
+enum ClassId
+{
+	ClassId_CAI_BaseNPC,
 	ClassId_CAK47,
 	ClassId_CBaseAnimating,
 	ClassId_CBaseAnimatingOverlay,
@@ -270,6 +271,7 @@ enum ClassId {
 	ClassId_CKnife,
 	ClassId_CKnifeGG,
 	ClassId_CLightGlow,
+	ClassId_CMapVetoPickController,
 	ClassId_CMaterialModifyControl,
 	ClassId_CMelee,
 	ClassId_CMolotovGrenade,
@@ -433,6 +435,7 @@ enum ClassId {
 	ClassId_CWeaponUMP45,
 	ClassId_CWeaponUSP,
 	ClassId_CWeaponXM1014,
+	ClassId_CWeaponZoneRepulsor,
 	ClassId_CWorld,
 	ClassId_CWorldVguiText,
 	ClassId_DustTrail,
