@@ -341,56 +341,65 @@ public:
 class CCSGOPlayerAnimState
 {
 public:
-	void* pThis;
-	char pad2[91];
-	void* pBaseEntity; //0x60
-	void* pActiveWeapon; //0x64
-	void* pLastActiveWeapon; //0x68
-	float m_flLastClientSideAnimationUpdateTime; //0x6C
-	int m_iLastClientSideAnimationUpdateFramecount; //0x70
-	float m_flEyePitch; //0x74
-	float m_flEyeYaw; //0x78
-	float m_flPitch; //0x7C
-	float m_flGoalFeetYaw; //0x80
-	float m_flCurrentFeetYaw; //0x84
-	float m_flCurrentTorsoYaw; //0x88
-	float m_flUnknownVelocityLean; //0x8C //changes when moving/jumping/hitting ground
-	float m_flLeanAmount; //0x90
-	char pad4[4]; //NaN
-	float m_flFeetCycle; //0x98 0 to 1
-	float m_flFeetYawRate; //0x9C 0 to 1
-	float m_fUnknown2;
-	float m_fDuckAmount; //0xA4
-	float m_fLandingDuckAdditiveSomething; //0xA8
-	float m_fUnknown3; //0xAC
-	Vector m_vOrigin; //0xB0, 0xB4, 0xB8
-	Vector m_vLastOrigin; //0xBC, 0xC0, 0xC4
-	float m_vVelocityX; //0xC8
-	float m_vVelocityY; //0xCC
-	char pad5[4];
-	float m_flUnknownFloat1; //0xD4 Affected by movement and direction
-	char pad6[8];
-	float m_flUnknownFloat2; //0xE0 //from -1 to 1 when moving and affected by direction
-	float m_flUnknownFloat3; //0xE4 //from -1 to 1 when moving and affected by direction
-	float m_unknown; //0xE8
-	float speed_2d; //0xEC
-	float flUpVelocity; //0xF0
-	float m_flSpeedNormalized; //0xF4 //from 0 to 1
-	float m_flFeetSpeedForwardsOrSideWays; //0xF8 //from 0 to 2. something  is 1 when walking, 2.something when running, 0.653 when crouch walking
-	float m_flFeetSpeedUnknownForwardOrSideways; //0xFC //from 0 to 3. something
-	float m_flTimeSinceStartedMoving; //0x100
-	float m_flTimeSinceStoppedMoving; //0x104
-	unsigned char m_bOnGround; //0x108
-	unsigned char m_bInHitGroundAnimation; //0x109
-	char pad7[10];
-	float m_flLastOriginZ; //0x114
-	float m_flHeadHeightOrOffsetFromHittingGroundAnimation; //0x118 from 0 to 1, is 1 when standing
-	float m_flStopToFullRunningFraction; //0x11C from 0 to 1, doesnt change when walking or crouching, only running
-	char pad8[4]; //NaN
-	float m_flUnknownFraction; //0x124 affected while jumping and running, or when just jumping, 0 to 1
-	char pad9[4]; //NaN
-	float m_flUnknown3;
-	char pad10[528];
+	char				pad2[ 0x5F ];
+	void*				m_pBaseEntity;								//0x0060
+	void*				m_pActiveWeapon;							//0x0064
+	void*				m_pLastActiveWeapon;						//0x0068
+	float				m_flLastClientSideAnimationUpdateTime;		//0x006C
+	int					m_iLastClientSideAnimationUpdateFramecount; //0x0070
+	float				m_flLastClientSideAnimationUpdateTimeDelta; //0x0074
+	float				m_flEyeYaw;									//0x0078
+	float				m_flPitch;									//0x007C
+	float				m_flGoalFeetYaw;							//0x0080
+	float				m_flCurrentFeetYaw;							//0x0084
+	float				m_flCurrentMoveDirGoalFeetDelta;			//0x0088
+	float				m_flGoalMoveDirGoalFeetDelta;				//0x008C
+	float				m_flFeetVelDirDelta;						//0x0090
+	float				m_flPad0094;								//0x0094
+	float				m_flFeetYawCycle;							//0x0098
+	float				m_flFeetYawWeight;							//0x009C
+	float				m_flUnknown2;								//0x00A0
+	float				m_flDuckAmount;								//0x00A4
+	float				m_flHitGroundCycle;							//0x00A8
+	float				m_flUnknown3;								//0x00AC
+	Vector				m_vecOrigin;								//0x00B0, 0x00B4, 0x00B8
+	Vector				m_vecLastOrigin;							//0x00BC, 0x00C0, 0x00C4
+	Vector				m_vecVelocity;								//0x00C8, 0x00CC, 0x00D0
+	Vector				m_vVelocityNormalized;						//0x00D4, 0x00D8, 0x00DC
+	Vector				m_vecLastAcceleratingVelocity;				//0x00E0, 0x00E4, 0x00E8
+	float				m_flSpeed2D;								//0x00EC
+	float				m_flAbsVelocityZ;							//0x00F0
+	float				m_flSpeedNormalized;						//0x00F4
+	float				m_flRunningSpeed;							//0x00F8 
+	float				m_flDuckingSpeed;							//0x00FC
+	float				m_flTimeSinceStartedMoving;					//0x0100
+	float				m_flTimeSinceStoppedMoving;					//0x0104
+	bool				m_bOnGround;								//0x0108
+	bool				m_bInHitGroundAnimation;					//0x0109
+	char				m_pad010A[ 2 ];								//0x010A
+	float				m_flNextLowerBodyYawUpdateTime;				//0x010F
+	float				m_flTotalTimeInAir;							//0x0110
+	float				m_flStartJumpZOrigin;						//0x0114
+	float				m_flHitGroundWeight;						//0x011A
+	float				m_flGroundFraction;							//0x0116
+	bool				m_bJustLanded;								//0x011B
+	bool				m_bJustLeftFromGround;						//0x011C
+	char				pad_0120[ 2 ];								//0x011E
+	float				m_flDuckRate;								//0x0124
+	bool				m_bOnLadder;								//0x0126
+	char				pad_0128[ 2 ];								//0x0128
+	float				m_flLadderCycle;							//0x012C
+	float				m_flLadderWeight;							//0x0130
+	bool				m_bIsStanding;								//0x0132
+	char				pad_0135[ 3 ];								//0x0135
+	bool				m_bInBalanceAdjust;							//0x0138
+	char				pad_060[ 0x54 ];							//0x018C
+	float				m_flStrafeWeight;							//0x0190
+	int					m_iUnknownInteger;							//0x0194
+	float				m_flStrafeCycle;							//0x0198
+	int					m_iStrafeSequence;							//0x019C
+	bool				m_bIsStrafing;								//0x0200
+	char				m_aSomePad[ 0x144 ];						//0x0344
 }; //Size=0x344
 
 class DT_CSPlayerResource
