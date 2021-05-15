@@ -68,7 +68,7 @@ private:
 	using str_32 = char[32];
 public:
 	NETVAR(int32_t, m_bInitialized, "DT_BaseAttributableItem", "m_bInitialized");
-	NETVAR(int32_t, m_iItemDefinitionIndex, "DT_BaseAttributableItem", "m_iItemDefinitionIndex");
+	NETVAR(int16_t, m_iItemDefinitionIndex, "DT_BaseAttributableItem", "m_iItemDefinitionIndex");
 	NETVAR(int32_t, m_iEntityLevel, "DT_BaseAttributableItem", "m_iEntityLevel");
 	NETVAR(int32_t, m_iAccountID, "DT_BaseAttributableItem", "m_iAccountID");
 	NETVAR(int32_t, m_iItemIDLow, "DT_BaseAttributableItem", "m_iItemIDLow");
