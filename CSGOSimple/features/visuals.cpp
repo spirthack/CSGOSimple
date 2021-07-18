@@ -6,6 +6,23 @@
 #include "../helpers/math.hpp"
 #include "../helpers/utils.hpp"
 
+std::string string_format(const std::string fmt_str, ...) {
+	int final_n, n = ((int)fmt_str.size()) * 2; /* Reserve two times as much as the length of the fmt_str */
+	std::unique_ptr<char[]> formatted;
+	va_list ap;
+	while (1) {
+		formatted.reset(new char[n]); /* Wrap the plain char array into the unique_ptr */
+		strcpy(&formatted[0], fmt_str.c_str());
+		va_start(ap, fmt_str);
+		final_n = vsnprintf(&formatted[0], n, fmt_str.c_str(), ap);
+		va_end(ap);
+		if (final_n < 0 || final_n >= n)
+			n += abs(final_n - n + 1);
+		else
+			break;
+	}
+	return std::string(formatted.get());
+}
 
 RECT GetBBox(C_BaseEntity* ent)
 {
@@ -83,6 +100,9 @@ bool Visuals::Player::Begin(C_BasePlayer* pl)
 	ctx.is_enemy = g_LocalPlayer->m_iTeamNum() != pl->m_iTeamNum();
 	ctx.is_visible = g_LocalPlayer->CanSeePlayer(pl, HITBOX_CHEST);
 
+	if (!ctx.is_visible && g_Options.esp_visible_only)
+		return false;
+
 	if (!ctx.is_enemy && g_Options.esp_enemies_only)
 		return false;
 
@@ -109,7 +129,74 @@ bool Visuals::Player::Begin(C_BasePlayer* pl)
 }
 //--------------------------------------------------------------------------------
 void Visuals::Player::RenderBox() {
-	Render::Get().RenderBoxByType(ctx.bbox.left, ctx.bbox.top, ctx.bbox.right, ctx.bbox.bottom, ctx.clr, 1);
+	float edge_size;
+
+	float
+		length_horizontal = (ctx.bbox.right - ctx.bbox.left) * 0.2f,
+		length_vertical = (ctx.bbox.bottom - ctx.bbox.top) * 0.2f;
+
+	switch (g_Options.esp_player_boxes) {
+	case 1:
+		Render::Get().RenderBox(ctx.bbox, ctx.clr);
+		Render::Get().RenderBox(ctx.bbox.left - 1.f, ctx.bbox.top - 1.f, ctx.bbox.right + 1.f, ctx.bbox.bottom + 1.f, Color(0, 0, 0, ctx.clr.a()));
+		Render::Get().RenderBox(ctx.bbox.left + 1.f, ctx.bbox.top + 1.f, ctx.bbox.right - 1.f, ctx.bbox.bottom - 1.f, Color(0, 0, 0, ctx.clr.a()));
+		break;
+
+	case 2:
+		Render::Get().RenderBoxFilled(ctx.bbox.left - 1.f, ctx.bbox.top - 1.f, ctx.bbox.left + 1.f + length_horizontal, ctx.bbox.top + 2.f, Color(0, 0, 0, ctx.clr.a()));
+		Render::Get().RenderBoxFilled(ctx.bbox.right - 1.f - length_horizontal, ctx.bbox.top - 1.f, ctx.bbox.right + 1.f, ctx.bbox.top + 2.f, Color(0, 0, 0, ctx.clr.a()));
+		Render::Get().RenderBoxFilled(ctx.bbox.left - 1.f, ctx.bbox.bottom - 2.f, ctx.bbox.left + 1.f + length_horizontal, ctx.bbox.bottom + 1.f, Color(0, 0, 0, ctx.clr.a()));
+		Render::Get().RenderBoxFilled(ctx.bbox.right - 1.f - length_horizontal, ctx.bbox.bottom - 2.f, ctx.bbox.right + 1.f, ctx.bbox.bottom + 1.f, Color(0, 0, 0, ctx.clr.a()));
+
+		Render::Get().RenderBoxFilled(ctx.bbox.left - 1.f, ctx.bbox.top + 2.f, ctx.bbox.left + 2.f, ctx.bbox.top + 1.f + length_vertical, Color(0, 0, 0, ctx.clr.a()));
+		Render::Get().RenderBoxFilled(ctx.bbox.right - 2.f, ctx.bbox.top + 2.f, ctx.bbox.right + 1.f, ctx.bbox.top + 1.f + length_vertical, Color(0, 0, 0, ctx.clr.a()));
+		Render::Get().RenderBoxFilled(ctx.bbox.left - 1.f, ctx.bbox.bottom - 1.f - length_vertical, ctx.bbox.left + 2.f, ctx.bbox.bottom - 2.f, Color(0, 0, 0, ctx.clr.a()));
+		Render::Get().RenderBoxFilled(ctx.bbox.right - 2.f, ctx.bbox.bottom - 1.f - length_vertical, ctx.bbox.right + 1.f, ctx.bbox.bottom - 2.f, Color(0, 0, 0, ctx.clr.a()));
+
+
+		Render::Get().RenderLine(float(ctx.bbox.left), float(ctx.bbox.top), ctx.bbox.left + length_horizontal - 1.f, float(ctx.bbox.top), ctx.clr);
+		Render::Get().RenderLine(ctx.bbox.right - length_horizontal, float(ctx.bbox.top), ctx.bbox.right - 1.f, float(ctx.bbox.top), ctx.clr);
+		Render::Get().RenderLine(float(ctx.bbox.left), ctx.bbox.bottom - 1.f, ctx.bbox.left + length_horizontal - 1.f, ctx.bbox.bottom - 1.f, ctx.clr);
+		Render::Get().RenderLine(ctx.bbox.right - length_horizontal, ctx.bbox.bottom - 1.f, ctx.bbox.right - 1.f, ctx.bbox.bottom - 1.f, ctx.clr);
+
+		Render::Get().RenderLine(float(ctx.bbox.left), float(ctx.bbox.top), float(ctx.bbox.left), ctx.bbox.top + length_vertical - 1.f, ctx.clr);
+		Render::Get().RenderLine(ctx.bbox.right - 1.f, float(ctx.bbox.top), ctx.bbox.right - 1.f, ctx.bbox.top + length_vertical - 1.f, ctx.clr);
+		Render::Get().RenderLine(float(ctx.bbox.left), ctx.bbox.bottom - length_vertical, float(ctx.bbox.left), ctx.bbox.bottom - 1.f, ctx.clr);
+		Render::Get().RenderLine(ctx.bbox.right - 1.f, ctx.bbox.bottom - length_vertical, ctx.bbox.right - 1.f, ctx.bbox.bottom - 1.f, ctx.clr);
+		break;
+
+	case 3:
+		Render::Get().RenderBox(ctx.bbox, ctx.clr, 1.0f, 7.0f);
+		//Render::Get().RenderBox(ctx.bbox, ctx.clr, 7.0f);
+		break;
+	}
+}
+//--------------------------------------------------------------------------------
+void Visuals::Player::RenderSkeleton()
+{
+	studiohdr_t* pStudioModel = g_MdlInfo->GetStudiomodel(ctx.pl->GetModel());
+
+	if (pStudioModel) {
+		static matrix3x4_t pBoneToWorldOut[128];
+		//if (ctx.pl->HandleBoneSetup(pBoneToWorldOut, 256, g_GlobalVars->curtime)) {
+		if (ctx.pl->SetupBones(pBoneToWorldOut, 128, 256, g_GlobalVars->curtime)) {
+			for (int i = 0; i < pStudioModel->numbones; i++) {
+				mstudiobone_t* pBone = pStudioModel->GetBone(i);
+				if (!pBone || !(pBone->flags & 256) || pBone->parent == -1)
+					continue;
+
+				Vector vBonePos1;
+				if (!Math::WorldToScreen(Vector(pBoneToWorldOut[i][0][3], pBoneToWorldOut[i][1][3], pBoneToWorldOut[i][2][3]), vBonePos1))
+					continue;
+
+				Vector vBonePos2;
+				if (!Math::WorldToScreen(Vector(pBoneToWorldOut[pBone->parent][0][3], pBoneToWorldOut[pBone->parent][1][3], pBoneToWorldOut[pBone->parent][2][3]), vBonePos2))
+					continue;
+
+				Render::Get().RenderLine(vBonePos1.x, vBonePos1.y, vBonePos2.x, vBonePos2.y, ctx.pl->IsDormant() ? ctx.clr : Color(g_Options.color_esp_skeleton));
+			}
+		}
+	}
 }
 //--------------------------------------------------------------------------------
 void Visuals::Player::RenderName()
@@ -169,8 +256,12 @@ void Visuals::Player::RenderWeaponName()
 
 	auto text = weapon->GetCSWeaponData()->szWeaponName + 7;
 	auto sz = g_pDefaultFont->CalcTextSizeA(14.f, FLT_MAX, 0.0f, text);
-	Render::Get().RenderText(text, ctx.feet_pos.x, ctx.feet_pos.y, 14.f, ctx.clr, true,
-		g_pDefaultFont);
+	std::string ammo = string_format("[%i/%i]", weapon->m_iPrimaryReserveAmmoCount(), weapon->m_iClip1());
+	auto sz2 = g_pDefaultFont->CalcTextSizeA(15.f, FLT_MAX, 0.0f, ammo.c_str());
+
+	Render::Get().RenderText(text, ctx.bbox.left + (ctx.bbox.right - ctx.bbox.left) * 0.5f - sz.x * 0.5f, ctx.bbox.bottom + 1.f, 14.f, ctx.pl->IsDormant() ? ctx.clr : Color(255, 255, 255, 255), false, false);
+	if (g_Options.esp_player_ammo)
+		Render::Get().RenderText(ammo, ctx.bbox.left + (ctx.bbox.right - ctx.bbox.left) * 0.5f - sz2.x * 0.5f, ctx.bbox.bottom + 1.f + sz2.y, 14.f, ctx.pl->IsDormant() ? ctx.clr : Color(255, 255, 255, 255), false, false);
 }
 //--------------------------------------------------------------------------------
 void Visuals::Player::RenderSnapline()
@@ -413,6 +504,7 @@ void Visuals::AddToDrawList() {
 			if (player.Begin((C_BasePlayer*)entity)) {
 				if (g_Options.esp_player_snaplines) player.RenderSnapline();
 				if (g_Options.esp_player_boxes)     player.RenderBox();
+				if (g_Options.esp_player_skeleton)  player.RenderSkeleton();
 				if (g_Options.esp_player_weapons)   player.RenderWeaponName();
 				if (g_Options.esp_player_names)     player.RenderName();
 				if (g_Options.esp_player_health)    player.RenderHealth();
