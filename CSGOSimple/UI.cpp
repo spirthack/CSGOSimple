@@ -298,8 +298,8 @@ bool ImGui::Hotkey(const char* label, int* k, const ImVec2& size_arg)
 	if (!ImGui::ItemAdd(total_bb, id))
 		return false;
 
-	const bool focus_requested = ImGui::FocusableItemRegister(window, g.ActiveId == id, false);
-	const bool focus_requested_by_code = focus_requested && (window->FocusIdxAllCounter == window->FocusIdxAllRequestCurrent);
+	const bool focus_requested = ImGui::FocusableItemRegister(window, g.ActiveId == id);
+	const bool focus_requested_by_code = focus_requested && (window->DC.FocusCounterRegular ==  g.FocusRequestCurrCounterRegular);
 	const bool focus_requested_by_tab = focus_requested && !focus_requested_by_code;
 
 	const bool hovered = ImGui::ItemHoverable(frame_bb, id);

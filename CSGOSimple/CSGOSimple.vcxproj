@@ -57,7 +57,7 @@
     <IntDir>$(SolutionDir)build\$(ProjectName)\$(Configuration)\</IntDir>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(DXSDK_DIR)Include</IncludePath>
     <TargetName>csgosimple</TargetName>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(DXSDK_DIR)Lib\x86</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(DXSDK_DIR)Lib\x86;C:\Users\ZeroX\Desktop\Simple\CSGOSimple\packages\freetype.2.8.0.1\build\native\lib\Win32\v141\static\Release</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -108,6 +108,7 @@
     <ClCompile Include="hooks.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_freetype.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="imgui\impl\imgui_impl_dx9.cpp" />
     <ClCompile Include="imgui\impl\imgui_impl_win32.cpp" />
@@ -133,6 +134,59 @@
     <ClInclude Include="config.hpp" />
     <ClInclude Include="fonts\cousine.hpp" />
     <ClInclude Include="fonts\fonts.hpp" />
+    <ClInclude Include="freetype\config\ftconfig.h" />
+    <ClInclude Include="freetype\config\ftheader.h" />
+    <ClInclude Include="freetype\config\ftmodule.h" />
+    <ClInclude Include="freetype\config\ftoption.h" />
+    <ClInclude Include="freetype\config\ftstdlib.h" />
+    <ClInclude Include="freetype\freetype.h" />
+    <ClInclude Include="freetype\ftadvanc.h" />
+    <ClInclude Include="freetype\ftbbox.h" />
+    <ClInclude Include="freetype\ftbdf.h" />
+    <ClInclude Include="freetype\ftbitmap.h" />
+    <ClInclude Include="freetype\ftbzip2.h" />
+    <ClInclude Include="freetype\ftcache.h" />
+    <ClInclude Include="freetype\ftchapters.h" />
+    <ClInclude Include="freetype\ftcid.h" />
+    <ClInclude Include="freetype\ftcolor.h" />
+    <ClInclude Include="freetype\ftdriver.h" />
+    <ClInclude Include="freetype\fterrdef.h" />
+    <ClInclude Include="freetype\fterrors.h" />
+    <ClInclude Include="freetype\ftfntfmt.h" />
+    <ClInclude Include="freetype\ftgasp.h" />
+    <ClInclude Include="freetype\ftglyph.h" />
+    <ClInclude Include="freetype\ftgxval.h" />
+    <ClInclude Include="freetype\ftgzip.h" />
+    <ClInclude Include="freetype\ftimage.h" />
+    <ClInclude Include="freetype\ftincrem.h" />
+    <ClInclude Include="freetype\ftlcdfil.h" />
+    <ClInclude Include="freetype\ftlist.h" />
+    <ClInclude Include="freetype\ftlzw.h" />
+    <ClInclude Include="freetype\ftmac.h" />
+    <ClInclude Include="freetype\ftmm.h" />
+    <ClInclude Include="freetype\ftmodapi.h" />
+    <ClInclude Include="freetype\ftmoderr.h" />
+    <ClInclude Include="freetype\ftotval.h" />
+    <ClInclude Include="freetype\ftoutln.h" />
+    <ClInclude Include="freetype\ftparams.h" />
+    <ClInclude Include="freetype\ftpfr.h" />
+    <ClInclude Include="freetype\ftrender.h" />
+    <ClInclude Include="freetype\ftsizes.h" />
+    <ClInclude Include="freetype\ftsnames.h" />
+    <ClInclude Include="freetype\ftstroke.h" />
+    <ClInclude Include="freetype\ftsynth.h" />
+    <ClInclude Include="freetype\ftsystem.h" />
+    <ClInclude Include="freetype\fttrigon.h" />
+    <ClInclude Include="freetype\fttypes.h" />
+    <ClInclude Include="freetype\ftwinfnt.h" />
+    <ClInclude Include="freetype\t1tables.h" />
+    <ClInclude Include="freetype\ttnameid.h" />
+    <ClInclude Include="freetype\tttables.h" />
+    <ClInclude Include="freetype\tttags.h" />
+    <ClInclude Include="ft2build.h" />
+    <ClInclude Include="helpers\point.hpp" />
+    <ClInclude Include="helpers\rect.hpp" />
+    <ClInclude Include="imgui\imgui_freetype.h" />
     <ClInclude Include="imgui\impl\imgui_impl_dx9.h" />
     <ClInclude Include="imgui\impl\imgui_impl_win32.h" />
     <ClInclude Include="resource.h" />
@@ -219,7 +273,19 @@
     <ClInclude Include="valve_sdk\misc\vfunc.hpp" />
     <ClInclude Include="valve_sdk\netvars.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets" Condition="Exists('..\packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets')" />
+    <Import Project="..\packages\freetype.2.8.0.1\build\native\freetype.targets" Condition="Exists('..\packages\freetype.2.8.0.1\build\native\freetype.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\freetype.redist.2.8.0.1\build\native\freetype.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\freetype.2.8.0.1\build\native\freetype.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\freetype.2.8.0.1\build\native\freetype.targets'))" />
+  </Target>
 </Project>

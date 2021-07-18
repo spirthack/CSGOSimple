@@ -8,7 +8,7 @@ namespace index
 {
 	constexpr auto EmitSound1               = 5;
 	constexpr auto EmitSound2               = 6;
-    constexpr auto EndScene                 = 42;
+    constexpr auto Present                  = 17;
     constexpr auto Reset                    = 16;
     constexpr auto PaintTraverse            = 41;
     constexpr auto CreateMove               = 22;
@@ -37,7 +37,7 @@ namespace Hooks
 	inline vfunc_hook sv_cheats;
 
 
-    long __stdcall hkEndScene(IDirect3DDevice9* device);
+    long __stdcall hkPresent(IDirect3DDevice9* device, RECT* src_rect, RECT* dest_rect, HWND dest_wnd_override, RGNDATA* dirty_region);
     long __stdcall hkReset(IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* pPresentationParameters);
     void __stdcall hkCreateMove(int sequence_number, float input_sample_frametime, bool active, bool& bSendPacket);
 	void __fastcall hkCreateMove_Proxy(void* _this, int, int sequence_number, float input_sample_frametime, bool active);
@@ -48,5 +48,5 @@ namespace Hooks
 	void __fastcall hkOverrideView(void* _this, int, CViewSetup * vsView);
 	void __fastcall hkLockCursor(void* _this);
     int  __fastcall hkDoPostScreenEffects(void* _this, int, int a1);
-	bool __fastcall hkSvCheatsGetBool(void* pConVar, void* edx);
+	bool __fastcall hkSvCheatsGetBool(PVOID pConVar, void* edx);
 }

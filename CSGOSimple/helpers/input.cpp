@@ -4,7 +4,7 @@
 #include "../imgui/imgui.h"
 #include "../imgui/impl/imgui_impl_win32.h"
 #include "../menu.hpp"
-
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 InputSys::InputSys()
 	: m_hTargetWindow(nullptr), m_ulOldWndProc(0)
 {

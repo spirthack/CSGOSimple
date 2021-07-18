@@ -1,9 +1,9 @@
 #pragma once
 
 #include "../singleton.hpp"
-
 #include "../render.hpp"
 #include "../helpers/math.hpp"
+#include "../helpers/rect.hpp"
 #include "../valve_sdk/csgostructs.hpp"
 
 
@@ -11,12 +11,6 @@
 
 class Visuals : public Singleton<Visuals>
 {
-	friend class Singleton<Visuals>;
-
-	CRITICAL_SECTION cs;
-
-	Visuals();
-	~Visuals();
 public:
 	class Player
 	{
@@ -29,7 +23,7 @@ public:
 			Color         clr;
 			Vector        head_pos;
 			Vector        feet_pos;
-			RECT          bbox;
+			SRect         bbox;
 		} ctx;
 
 		bool Begin(C_BasePlayer * pl);
@@ -47,6 +41,5 @@ public:
 	void RenderItemEsp(C_BaseEntity* ent);
 	void ThirdPerson();
 public:
-	void AddToDrawList();
 	void Render();
 };
