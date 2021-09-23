@@ -10,7 +10,7 @@ bool C_BaseEntity::IsPlayer()
 	//index: 152
 	//ref: "effects/nightvision"
 	//sig: 8B 92 ? ? ? ? FF D2 84 C0 0F 45 F7 85 F6
-	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 157 + VALVE_ADDED_FUNCS)(this);
+	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 158 + VALVE_ADDED_FUNCS)(this);
 }
 
 bool C_BaseEntity::IsLoot() {
@@ -30,7 +30,7 @@ bool C_BaseEntity::IsWeapon()
 	//index: 160
 	//ref: "CNewParticleEffect::DrawModel"
 	//sig: 8B 80 ? ? ? ? FF D0 84 C0 74 6F 8B 4D A4
-	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 165 + VALVE_ADDED_FUNCS)(this);
+	return CallVFunction<bool(__thiscall*)(C_BaseEntity*)>(this, 166 + VALVE_ADDED_FUNCS)(this);
 }
 
 
@@ -147,7 +147,7 @@ bool C_BaseCombatWeapon::IsReloading()
 
 float C_BaseCombatWeapon::GetInaccuracy()
 {
-	return CallVFunction<float(__thiscall*)(void*)>(this, 482 + VALVE_ADDED_FUNCS)(this);
+	return CallVFunction<float(__thiscall*)(void*)>(this, 483 + VALVE_ADDED_FUNCS)(this);
 }
 
 float C_BaseCombatWeapon::GetSpread()
@@ -157,7 +157,7 @@ float C_BaseCombatWeapon::GetSpread()
 
 void C_BaseCombatWeapon::UpdateAccuracyPenalty()
 {
-	CallVFunction<void(__thiscall*)(void*)>(this, 483 + VALVE_ADDED_FUNCS)(this);
+	CallVFunction<void(__thiscall*)(void*)>(this, 484 + VALVE_ADDED_FUNCS)(this);
 }
 
 CUtlVector<IRefCounted*>& C_BaseCombatWeapon::m_CustomMaterials()
@@ -400,7 +400,7 @@ bool C_BasePlayer::CanSeePlayer(C_BasePlayer* player, const Vector& pos)
 
 void C_BasePlayer::UpdateClientSideAnimation()
 {
-	return CallVFunction<void(__thiscall*)(void*)>(this, 223 + VALVE_ADDED_FUNCS)(this);
+	return CallVFunction<void(__thiscall*)(void*)>(this, 224 + VALVE_ADDED_FUNCS)(this);
 }
 
 void C_BasePlayer::InvalidateBoneCache()
@@ -433,7 +433,7 @@ void C_BaseAttributableItem::SetGloveModelIndex(int modelIndex)
 
 void C_BaseViewModel::SendViewModelMatchingSequence(int sequence)
 {
-	return CallVFunction<void(__thiscall*)(void*, int)>(this, 246 + VALVE_ADDED_FUNCS)(this, sequence);
+	return CallVFunction<void(__thiscall*)(void*, int)>(this, 247 + VALVE_ADDED_FUNCS)(this, sequence);
 }
 
 float_t C_BasePlayer::m_flSpawnTime()
