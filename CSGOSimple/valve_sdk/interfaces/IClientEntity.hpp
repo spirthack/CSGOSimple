@@ -35,7 +35,7 @@ public:
 	float_t flArmorRatio;
 	int32_t iBullets;
 	float_t flPenetration;
-	int8_t pad7[12];
+	int8_t pad7[8];
 	float_t flRange;
 	float_t flRangeModifier;
 	int8_t pad8[16];
