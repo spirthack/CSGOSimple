@@ -20,6 +20,11 @@ DWORD WINAPI OnDllAttach(LPVOID base)
 #endif
 
     try {
+        // Bypass disconnection from officials servers
+        LPCWSTR modules[]{ L"client.dll", L"engine.dll", L"server.dll", L"studiorender.dll", L"materialsystem.dll" };
+        long long patch = 0x69690004C201B0;
+        for (auto base : modules) WriteProcessMemory(GetCurrentProcess(), Utils::PatternScan(GetModuleHandleW(base), "55 8B EC 56 8B F1 33 C0 57 8B 7D 08"), &patch, 5, 0);
+
         Utils::ConsolePrint("Initializing...\n");
 
         Interfaces::Initialize();
