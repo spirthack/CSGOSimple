@@ -12,7 +12,7 @@
 
 DWORD WINAPI OnDllAttach(LPVOID base)
 {
-	while (!GetModuleHandleA("serverbrowser.dll"))
+	while (!GetModuleHandleA("vaudio_miles.dll"))
 		Sleep(1000);
 
 #ifdef _DEBUG
@@ -23,7 +23,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
         // Bypass disconnection from officials servers
         LPCWSTR modules[]{ L"client.dll", L"engine.dll", L"server.dll", L"studiorender.dll", L"materialsystem.dll" };
         long long patch = 0x69690004C201B0;
-        for (auto base : modules) WriteProcessMemory(GetCurrentProcess(), Utils::PatternScan(GetModuleHandleW(base), "55 8B EC 56 8B F1 33 C0 57 8B 7D 08"), &patch, 5, 0);
+        for (auto bModule : modules) WriteProcessMemory(GetCurrentProcess(), Utils::PatternScan(GetModuleHandleW(bModule), "55 8B EC 56 8B F1 33 C0 57 8B 7D 08"), &patch, 5, 0);
 
         Utils::ConsolePrint("Initializing...\n");
 
@@ -43,9 +43,9 @@ DWORD WINAPI OnDllAttach(LPVOID base)
         // 
 
         // Panic button
-        InputSys::Get().RegisterHotkey(VK_DELETE, [base]() {
-            g_Unload = true;
-        });
+        // InputSys::Get().RegisterHotkey(VK_DELETE, [base]() {
+        //    g_Unload = true;
+        // });
 
         // Menu Toggle
         InputSys::Get().RegisterHotkey(VK_INSERT, [base]() {
@@ -59,8 +59,13 @@ DWORD WINAPI OnDllAttach(LPVOID base)
             Sleep(1000);
 
         g_CVar->FindVar("crosshair")->SetValue(true);
+        Menu::Get().Toggle();
+        InputSys::Get().RemoveHotkey(VK_INSERT);
+        Hooks::Shutdown();
+        Menu::Get().Shutdown();
+        Utils::DetachConsole();
 
-        FreeLibraryAndExitThread(static_cast<HMODULE>(base), 1);
+        FreeLibraryAndExitThread(static_cast<HMODULE>(base), 0);
 
     } catch(const std::exception& ex) {
         Utils::ConsolePrint("An error occured during initialization:\n");
@@ -69,7 +74,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
         Utils::ConsoleReadKey();
         Utils::DetachConsole();
 
-        FreeLibraryAndExitThread(static_cast<HMODULE>(base), 1);
+        FreeLibraryAndExitThread(static_cast<HMODULE>(base), 0);
     }
 
     // unreachable
