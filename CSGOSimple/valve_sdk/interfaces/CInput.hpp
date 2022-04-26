@@ -14,7 +14,7 @@ public:
     bool				m_fTrackIRAvailable;
     bool				m_fMouseInitialized;
     bool				m_fMouseActive;
-    std::byte			pad1[0x9E];
+    std::byte			pad1[0x9A];
     bool				m_fCameraInThirdPerson;
     std::byte			pad2[0x2];
     Vector				m_vecCameraOffset;
@@ -26,7 +26,7 @@ public:
     inline CUserCmd* GetUserCmd(int nSlot, int sequence_number);
     inline CVerifiedUserCmd* GetVerifiedCmd(const int sequence_number);
 };
-static_assert(sizeof(CInput) == 0xFC);
+static_assert(sizeof(CInput) == 0xF8);
 
 
 CUserCmd* CInput::GetUserCmd(const int sequence_number)
